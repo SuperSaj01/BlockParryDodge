@@ -1,0 +1,179 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PlayerLocomotion : MonoBehaviour
+{
+    PlayerManager playerManager;
+    CharacterController playerController;
+
+    [Header("InputManager")]
+    public float hInput;
+    public float vInput;
+
+    [Header("Movement")]
+    Vector3 moveDirection;
+    Vector3 lastfacingDirection;
+    Vector3 velocity;
+    float movementSpeed;
+    private float walkingSpeed = 3f; 
+    private float runningSpeed = 7.5f;
+    public bool isRunning;
+
+    [Header("Jumping")]
+    public bool isJumping;
+    public float jumpHeight = 3f;
+    
+    [Header("Gravity")]
+    private bool isGrounded;
+    private float gravityIntensity = -15f;        
+    public LayerMask groundLayer;
+
+    [Header("Camera")]
+    Transform cam;
+    private float rotationSpeed = 15f;
+
+    [Header("HandlingFalling")]
+    private float maxDistance = 0.1f;
+    private float inAirTimer;
+    private float inAirSpeed = 2.5f;
+    private float rayCastheighOffset = 0.5f;
+
+
+    public float dashTime;
+    public float dashSpeed;
+
+    private void Awake()
+    {
+        movementSpeed = walkingSpeed;
+        isGrounded = true;
+        playerManager = GetComponent<PlayerManager>();
+        playerController = GetComponent<CharacterController>();
+    }
+
+    public void HandleAllMovement()
+    {			
+        HandleFallingAndLanding();
+        HandleMovement();
+        HandleRotation();
+    }
+
+    private void HandleMovement()
+    {  
+        movementSpeed = HandleSpeed();
+        Vector3 forward = CameraManager.instance.transform.forward;
+        forward.y = 0;
+        moveDirection = forward * vInput + CameraManager.instance.transform.right * hInput;
+        moveDirection.Normalize();
+
+        if(moveDirection != Vector3.zero)
+        {
+            lastfacingDirection = moveDirection;
+        }
+
+        moveDirection *= movementSpeed * Time.deltaTime;
+        playerController.Move(moveDirection);   
+        
+        
+        
+    }
+    private void HandleRotation()
+    {
+        Vector3 targetDirection = Vector3.zero;
+
+        targetDirection = CameraManager.instance.transform.forward * vInput;
+        targetDirection = targetDirection + CameraManager.instance.transform.right * hInput;
+        targetDirection.y = 0;
+        targetDirection.Normalize();
+
+        if(targetDirection == Vector3.zero) targetDirection = transform.forward;
+
+        Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
+        Quaternion playerRotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+
+        transform.rotation = playerRotation;
+    }
+
+    private void HandleFallingAndLanding()
+    {
+        
+        RaycastHit hit;
+        Vector3 rayCastOrigin = transform.position;
+
+        if(Physics.SphereCast((rayCastOrigin + new Vector3(0, 1, 0)), 0.2f, Vector3.down, out hit, 1, groundLayer))
+        {
+
+            inAirTimer = 0;
+            isGrounded = true;
+            isJumping = false;
+        }
+        else
+        {
+            isGrounded = false;
+        }
+
+        if(!isGrounded)
+        {
+            inAirTimer += Time.deltaTime;
+            velocity.y += gravityIntensity * inAirTimer * Time.deltaTime;
+        }
+        else
+        {
+            if(velocity.y < 0)
+            {
+                velocity.y = -1f;
+            }
+        }
+
+        playerController.Move(velocity * Time.deltaTime);
+        
+    }// fix checking isGrounded
+
+    //To be worked on the physics
+    public void HandleJumping() 
+    {
+       if(!isGrounded) return;
+        isJumping = true;
+        float jumpPos = Mathf.Sqrt(jumpHeight * -2f * gravityIntensity);
+        velocity.y = jumpPos;
+    }
+
+    public void HandleRolling()
+    {   
+        StartCoroutine(Roll());
+    }
+
+    IEnumerator Roll()
+    {
+        float startTime = Time.time;
+
+        while(Time.time < startTime + dashTime)
+        {
+            playerController.Move(lastfacingDirection * dashSpeed * Time.deltaTime);
+
+            yield return null;
+        }
+    }
+    
+    private float HandleSpeed()
+    {
+        if(isGrounded && !isRunning)
+        {
+            return walkingSpeed;
+        }
+        else if(isGrounded && isRunning)
+        {
+            return runningSpeed;
+        }
+        else if(!isGrounded)
+        {
+            return inAirSpeed;
+        }
+        else
+        {
+            return walkingSpeed;
+        }
+    }
+
+    
+}
