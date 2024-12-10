@@ -28,6 +28,11 @@ public class PlayerManager : NetworkBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    private void Start()
+    {
+        IgnoreMyOwnColliders();
+    }
+
     void Update()
     {
         UpdatePlayers();
@@ -69,6 +74,7 @@ public class PlayerManager : NetworkBehaviour
                 CameraManager.instance.player = this;
             }
     } 
+    
 
     void UpdatePlayers()
     {
@@ -113,6 +119,28 @@ public class PlayerManager : NetworkBehaviour
             //posture
             characterStatHandler.currentPosture = characterNetworkManager.netCurrentPosture.Value;
             
+        }
+    }
+
+    void IgnoreMyOwnColliders()
+    {
+        Collider characterControllerCollider = GetComponent<Collider>();
+        Collider[] damageableColliders = GetComponentsInChildren<Collider>();
+
+        List<Collider> ignoredColliders = new List<Collider>();
+
+        foreach(Collider col in damageableColliders)
+        {
+            ignoredColliders.Add(col);
+        }
+        ignoredColliders.Add(characterControllerCollider);
+
+        foreach(Collider col in ignoredColliders)
+        {
+            foreach(Collider otherCol in ignoredColliders)
+            {
+                Physics.IgnoreCollision(col, otherCol, true);
+            }
         }
     }
 
