@@ -12,10 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa79dab440d96d7419b1e7451c0cf58b, type: 3}
   m_Name: GreatSword
   m_EditorClassIdentifier: 
-  wepName: GreatSword
-  wepPrefab: {fileID: 0}
-  b_Damage: 14
+  name: 
+  itenPrefab: {fileID: 0}
   b_Pressure: 3
   b_SwingSpeed: 7
   range: 6
-  scale: 4

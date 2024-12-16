@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -24,6 +25,11 @@ public class InputManager : MonoBehaviour
 
     public bool basicHit;
 
+    public event EventHandler OnJumpBtnPressed;
+    public event EventHandler OnRollBtnPressed;
+    public event EventHandler OnAttackBtnPressed;
+    public event EventHandler OnLockCameraPressed;
+
     private void Awake() 
     { 
         
@@ -44,10 +50,22 @@ public class InputManager : MonoBehaviour
             playerControls.PlayerActions.Running.performed += i => isRunning = true;
             playerControls.PlayerActions.Running.canceled += i => isRunning = false;
 
-            playerControls.PlayerActions.Jumping.performed += i => jumped = true;
-            playerControls.PlayerActions.Rolling.performed += i => rolled = true;
-
-            playerControls.PlayerActions.BasicAttack.performed += i => basicHit = true;
+            playerControls.PlayerActions.Jumping.performed += i => 
+            {
+                OnJumpBtnPressed?.Invoke(this, EventArgs.Empty);
+            };
+            playerControls.PlayerActions.Rolling.performed += i => 
+            {
+                OnRollBtnPressed?.Invoke(this, EventArgs.Empty);
+            };
+            playerControls.PlayerActions.BasicAttack.performed += i => 
+            {
+                OnAttackBtnPressed?.Invoke(this, EventArgs.Empty);
+            };
+            playerControls.PlayerActions.LockCamera.performed += i => 
+            {
+                OnLockCameraPressed?.Invoke(this, EventArgs.Empty);
+            };
         }
 
         playerControls.Enable();

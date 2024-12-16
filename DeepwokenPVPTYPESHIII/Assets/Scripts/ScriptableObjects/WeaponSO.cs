@@ -1,24 +1,19 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "ScriptableObjects/WeaponsSO")]
-public class WeaponSO : ScriptableObject
+[CreateAssetMenu(menuName = "ScriptableObjects/Items/WeaponsSO")]
+public class WeaponSO : ItemSO
 {
-    [SerializeField] private string wepName;
-    public GameObject wepPrefab;
-
     //"b_" = base
-    [SerializeField] private float b_Damage;
+    [SerializeField] public float b_Damage { get; private set; }
 
     [Tooltip("hits it takes to break posture when opponent is blocking")]
     [SerializeField] private int b_Pressure;
     [SerializeField] private float b_SwingSpeed;
     [SerializeField] private float range;
-    [SerializeField] private float scale; //In Question? Good idea or nah 
+    [SerializeField] public string[] b_aniamtions;
 
-
- 
- 
 
 }

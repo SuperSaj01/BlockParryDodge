@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -10,6 +11,7 @@ public class PlayerManager : NetworkBehaviour
     PlayerLocomotion playerLocomotion;
     CharacterStatHandler characterStatHandler; //to be changed to playerStatHandler possibly?
     AnimatorManager animatorManager;
+    PlayerCombatManager playerCombatManager;
     public CharacterNetworkManager characterNetworkManager {get; private set;}
     CameraManager camManager;
 
@@ -24,6 +26,7 @@ public class PlayerManager : NetworkBehaviour
         playerLocomotion = GetComponent<PlayerLocomotion>();
         characterNetworkManager = GetComponent<CharacterNetworkManager>();
         characterStatHandler = GetComponent<CharacterStatHandler>();
+        playerCombatManager = GetComponent<PlayerCombatManager>();
         camManager = CameraManager.instance;
         DontDestroyOnLoad(gameObject);
     }
@@ -31,6 +34,13 @@ public class PlayerManager : NetworkBehaviour
     private void Start()
     {
         IgnoreMyOwnColliders();
+
+        //subscribing to events
+        SubscribeToInputEvents();
+
+        Cursor.lockState = CursorLockMode.Locked;
+        
+        
     }
 
     void Update()
@@ -40,16 +50,6 @@ public class PlayerManager : NetworkBehaviour
         HandleCamera();
         HandleMovementLocomotion();
         ResetFlags();
-        if(isInteracting) return;
-        HandleJumping();
-        HandleAttacking();
-        HandleRolling();
-
-        if(Input.GetKeyDown(KeyCode.J))
-        {
-            TakeDamage(2);
-        }
-
     }
     
     private void FixedUpdate()
@@ -75,6 +75,14 @@ public class PlayerManager : NetworkBehaviour
             }
     } 
     
+
+    private void SubscribeToInputEvents()
+    {
+        inputManager.OnAttackBtnPressed += _OnAttackBtnPressed;// attack needs to be changed to interact
+        inputManager.OnJumpBtnPressed += _OnJumpBtnPressed;// jump
+        inputManager.OnRollBtnPressed += _OnRollBtnPressed;
+        inputManager.OnLockCameraPressed += _OnLockCameraPressed;// lock camera
+    }
 
     void UpdatePlayers()
     {
@@ -161,33 +169,28 @@ public class PlayerManager : NetworkBehaviour
             camManager.camVInput = inputManager.cameraInput.y;
     }    
 
-    private void HandleJumping()
+    void _OnLockCameraPressed(object sender, EventArgs e)
     {
-        if(inputManager.jumped)
-        {
-            playerLocomotion.HandleJumping();
-            inputManager.jumped = false;
-
-        }
-    }
-    private void HandleRolling()
-    {
-        if(inputManager.rolled)
-        {
-            inputManager.rolled = false;
-            playerLocomotion.HandleRolling();
-            PlayActionAnimation("Rolling", true, IsOwner);
-        }
+        playerLocomotion.fixedRotation = !playerLocomotion.fixedRotation;
     }
 
-    private void HandleAttacking()
+    private void _OnJumpBtnPressed(object sender, EventArgs e)
     {
-        if(inputManager.basicHit)
-        {
-            inputManager.basicHit = false;
-            Debug.Log("Hello");
-            PlayActionAnimation("Basic Hit", true, IsOwner);
-        }
+        if(isInteracting) return;
+        playerLocomotion.HandleJumping();
+
+    }
+    private void _OnRollBtnPressed(object sender, EventArgs e)
+    {
+        if(isInteracting) return;    
+        playerLocomotion.HandleRolling();
+        PlayActionAnimation("Rolling", true, IsOwner);        
+    }
+
+    private void _OnAttackBtnPressed(object sender, EventArgs e)
+    {
+        if(isInteracting) return;
+        playerCombatManager.AttackBtnPressed();
     } 
 
     public void PlayActionAnimation(string animationID, bool isInteracting, bool IsOwner)

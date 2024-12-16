@@ -264,6 +264,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""LockCamera"",
+                    ""type"": ""Button"",
+                    ""id"": ""13a9bde5-1fa4-43d8-ae92-9558ebdf1d03"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -354,6 +363,28 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""Basic Attack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9239f5fe-9d41-450d-9af0-7cfb872105e5"",
+                    ""path"": ""<Keyboard>/z"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LockCamera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1c0b65ec-f95e-4557-bf48-3d79374b8e94"",
+                    ""path"": ""<Gamepad>/rightStick/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LockCamera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -370,6 +401,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_PlayerActions_Jumping = m_PlayerActions.FindAction("Jumping", throwIfNotFound: true);
         m_PlayerActions_Rolling = m_PlayerActions.FindAction("Rolling", throwIfNotFound: true);
         m_PlayerActions_BasicAttack = m_PlayerActions.FindAction("Basic Attack", throwIfNotFound: true);
+        m_PlayerActions_LockCamera = m_PlayerActions.FindAction("LockCamera", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -489,6 +521,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerActions_Jumping;
     private readonly InputAction m_PlayerActions_Rolling;
     private readonly InputAction m_PlayerActions_BasicAttack;
+    private readonly InputAction m_PlayerActions_LockCamera;
     public struct PlayerActionsActions
     {
         private @PlayerControls m_Wrapper;
@@ -497,6 +530,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @Jumping => m_Wrapper.m_PlayerActions_Jumping;
         public InputAction @Rolling => m_Wrapper.m_PlayerActions_Rolling;
         public InputAction @BasicAttack => m_Wrapper.m_PlayerActions_BasicAttack;
+        public InputAction @LockCamera => m_Wrapper.m_PlayerActions_LockCamera;
         public InputActionMap Get() { return m_Wrapper.m_PlayerActions; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -518,6 +552,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @BasicAttack.started += instance.OnBasicAttack;
             @BasicAttack.performed += instance.OnBasicAttack;
             @BasicAttack.canceled += instance.OnBasicAttack;
+            @LockCamera.started += instance.OnLockCamera;
+            @LockCamera.performed += instance.OnLockCamera;
+            @LockCamera.canceled += instance.OnLockCamera;
         }
 
         private void UnregisterCallbacks(IPlayerActionsActions instance)
@@ -534,6 +571,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @BasicAttack.started -= instance.OnBasicAttack;
             @BasicAttack.performed -= instance.OnBasicAttack;
             @BasicAttack.canceled -= instance.OnBasicAttack;
+            @LockCamera.started -= instance.OnLockCamera;
+            @LockCamera.performed -= instance.OnLockCamera;
+            @LockCamera.canceled -= instance.OnLockCamera;
         }
 
         public void RemoveCallbacks(IPlayerActionsActions instance)
@@ -562,5 +602,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnJumping(InputAction.CallbackContext context);
         void OnRolling(InputAction.CallbackContext context);
         void OnBasicAttack(InputAction.CallbackContext context);
+        void OnLockCamera(InputAction.CallbackContext context);
     }
 }

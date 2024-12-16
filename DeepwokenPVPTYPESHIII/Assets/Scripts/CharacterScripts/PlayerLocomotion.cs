@@ -33,6 +33,11 @@ public class PlayerLocomotion : MonoBehaviour
     Transform cam;
     private float rotationSpeed = 15f;
 
+    [Header("Rotation")]
+    Quaternion playerRotation = Quaternion.identity;
+    public bool fixedRotation = false;
+
+
     [Header("HandlingFalling")]
     private float maxDistance = 0.1f;
     private float inAirTimer;
@@ -82,14 +87,28 @@ public class PlayerLocomotion : MonoBehaviour
         Vector3 targetDirection = Vector3.zero;
 
         targetDirection = CameraManager.instance.transform.forward * vInput;
-        targetDirection = targetDirection + CameraManager.instance.transform.right * hInput;
+        targetDirection += CameraManager.instance.transform.right * hInput;
         targetDirection.y = 0;
         targetDirection.Normalize();
 
-        if(targetDirection == Vector3.zero) targetDirection = transform.forward;
+        if(!fixedRotation)
+        {
+            if(targetDirection == Vector3.zero) targetDirection = transform.forward;
 
-        Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
-        Quaternion playerRotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+            Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
+            playerRotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        }
+        else
+        {
+            Vector3 cameraForward = CameraManager.instance.transform.forward;
+
+            cameraForward.y = 0f;
+            cameraForward.Normalize();
+
+            Quaternion targetRotation = Quaternion.LookRotation(cameraForward);
+            playerRotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        }
+        
 
         transform.rotation = playerRotation;
     }
