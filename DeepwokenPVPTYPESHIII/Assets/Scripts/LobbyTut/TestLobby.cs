@@ -41,7 +41,7 @@ public class TestLobby : MonoBehaviour
             heartbeatTimer -= Time.deltaTime;
             if(heartbeatTimer < 0f)
             {
-                float heartbeatTimerMax = 15f;
+                float heartbeatTimerMax = 27f;
                 heartbeatTimer = heartbeatTimerMax;
 
                 await LobbyService.Instance.SendHeartbeatPingAsync(hostLobby.Id);
@@ -55,8 +55,8 @@ public class TestLobby : MonoBehaviour
             lobbyUpdateTimer -= Time.deltaTime;
             if(lobbyUpdateTimer < 0f)
             {
-                float lobbyUpdateTimerMax = 2f;
-                heartbeatTimer = lobbyUpdateTimerMax;
+                float lobbyUpdateTimerMax = 100f;
+                lobbyUpdateTimer = lobbyUpdateTimerMax;
 
                 Lobby lobby = await LobbyService.Instance.GetLobbyAsync(joinedLobby.Id);
                 joinedLobby = lobby;
