@@ -19,7 +19,7 @@ public class TestLobby : MonoBehaviour
     private Lobby joinedLobby;
     private float heartbeatTimer;
     private float lobbyUpdateTimer;
-    public InputField joinCodeField;
+    public GameObject joinCodeField;
 
     private async void Start()
     {
@@ -40,9 +40,9 @@ public class TestLobby : MonoBehaviour
         HandleLobbyHeartbeat();
         HandleLobbyPollForUpdates();
 
-        if(Input.GetKeyDown("Space"))
+        if(Input.GetKeyDown(KeyCode.Space))
         {
-            JoinRelay(joinCodeField.text);
+            JoinRelay(joinCodeField.GetComponent<TMP_InputField>().text);
         }
         if(Input.GetKeyDown(KeyCode.J))
         {
