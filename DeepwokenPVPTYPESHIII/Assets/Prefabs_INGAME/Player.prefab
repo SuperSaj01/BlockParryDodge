@@ -277,6 +277,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Katana
       objectReference: {fileID: 0}
+    - target: {fileID: 214556882243777573, guid: 5276c1a826bbc414198bffb269eefeb6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3792342598091769398, guid: 5276c1a826bbc414198bffb269eefeb6, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.77401507

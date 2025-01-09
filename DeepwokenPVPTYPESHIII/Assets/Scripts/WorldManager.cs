@@ -25,6 +25,11 @@ public class WorldManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    public void LoadNewGameBTN()
+    {
+        StartCoroutine(LoadNewGame());
+    }
+
     public IEnumerator LoadNewGame()
     {
         AsyncOperation LoadOperation = SceneManager.LoadSceneAsync(worldSceneIndex);

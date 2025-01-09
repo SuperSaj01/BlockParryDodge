@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Katana
   m_EditorClassIdentifier: 
   name: 
-  itenPrefab: {fileID: 0}
+  itenPrefab: {fileID: 214556882243777573, guid: 5276c1a826bbc414198bffb269eefeb6, type: 3}
   b_Pressure: 6
   b_SwingSpeed: 2
   range: 4

@@ -29,7 +29,6 @@ public class DealDamage : MonoBehaviour
         target.TakeDamage((int)damage);
 
         listOfTargets.Remove(target);
-
     }
 
 }

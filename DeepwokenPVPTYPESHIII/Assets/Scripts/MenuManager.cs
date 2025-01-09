@@ -6,7 +6,7 @@ public class MenuManager : MonoBehaviour
 {
     public void StartNetworkHost()
     {
-        NetworkManager.Singleton.StartHost();
+        
     }
 
     public void StartNewGame()

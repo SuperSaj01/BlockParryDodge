@@ -18,10 +18,9 @@ public class PlayerCombatManager : MonoBehaviour
 
     private PlayerManager playerManager;
 
+    [SerializeField] private GameObject placeWeaponLH;
     public WeaponSO currentWeaponSO;
     //private GameObject currentWeapon;
-
-    public GameObject currentWeapon; //temp
 
     private DealDamage dealDamage;
 
@@ -35,14 +34,11 @@ public class PlayerCombatManager : MonoBehaviour
         playerManager = GetComponent<PlayerManager>();
         // make current wep spawn from SO
 
-        dealDamage = currentWeapon.GetComponent<DealDamage>();
-        
-     
+
     }
 
     public void AttackBtnPressed()
     {
-        
         playerManager.PlayActionAnimation(currentWeaponSO.b_aniamtions[0], true, playerManager.IsOwner);// needs to be in custom logic
     }
 

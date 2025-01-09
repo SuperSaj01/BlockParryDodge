@@ -38,7 +38,7 @@ public class PlayerManager : NetworkBehaviour
         //subscribing to events
         SubscribeToInputEvents();
 
-        Cursor.lockState = CursorLockMode.Locked;
+        
         
         
     }
@@ -70,7 +70,6 @@ public class PlayerManager : NetworkBehaviour
 
             if(IsOwner)
             {
-                Debug.Log(CameraManager.instance.name);
                 CameraManager.instance.player = this;
             }
     } 
