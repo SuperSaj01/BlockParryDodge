@@ -24,6 +24,5 @@ public class TEST_TakeDamageCollider : MonoBehaviour
         opponentPlayer.TakeDamage(damage);
         Debug.Log("player has taken " + damage + " damage");
     }
-
     
 }

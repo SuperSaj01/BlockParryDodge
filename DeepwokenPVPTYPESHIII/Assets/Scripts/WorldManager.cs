@@ -2,12 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Unity.Netcode;
 
-public class WorldManager : MonoBehaviour
+public class WorldManager : NetworkBehaviour
 {
     public static WorldManager instance { get; private set; }
     [SerializeField] int worldSceneIndex = 1;
-
+    
     private void Awake() 
     {
         if(instance == null)
@@ -32,7 +33,7 @@ public class WorldManager : MonoBehaviour
 
     public IEnumerator LoadNewGame()
     {
-        AsyncOperation LoadOperation = SceneManager.LoadSceneAsync(worldSceneIndex);
+        NetworkManager.Singleton.SceneManager.LoadScene("Testing", LoadSceneMode.Single);
         yield return null;
     }
 }
