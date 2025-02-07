@@ -87,15 +87,7 @@ public class TestLobby : MonoBehaviour
                 joinedLobby = lobby;
             }
 
-            if(joinedLobby.Data[RELAYCODE_KEY].Value != "0")
-            {
-                if(!IsLobbyHost())
-                {
-                    JoinRelay(joinedLobby.Data[RELAYCODE_KEY].Value);
-                }
-
-                joinedLobby = null;
-            }
+            StartRestofClients();
         }
         
     }
@@ -120,23 +112,10 @@ public class TestLobby : MonoBehaviour
             joinedLobby = hostLobby;
 
             Debug.Log("We created: " + lobby.Name);
-            Debug.Log(hostLobby.LobbyCode); // how to access lobby code
-            
+            Debug.Log(hostLobby.LobbyCode); // how to access lobby code;
             
             PrintPlayers(hostLobby);
             
-            
-            relayCode = await CreateRelay(); //we will not be sending the relay code ONLY lobby code
-
-            lobby = await LobbyService.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions
-            {
-                Data = new Dictionary<string, DataObject>
-                {
-                    {RELAYCODE_KEY, new DataObject(DataObject.VisibilityOptions.Member, relayCode)}
-                }
-            });
-
-            joinedLobby = lobby;
 
             CreateLobbyBTN(hostLobby.LobbyCode);
         }
@@ -189,18 +168,24 @@ public class TestLobby : MonoBehaviour
         }
     }
 
+    #region Buttons
 
     public void JoinLobbyBtn()
     {
         string joinCode = inputField.GetComponent<TMP_InputField>().text;
+        Debug.Log("Joining lobby with code " + joinCode);
         JoinLobbyByCode(joinCode);
     }
     public void CreateLobbyBTN(string joinCode)
     {
         codeText.GetComponent<TMP_Text>().text = joinCode; 
     }
+    #endregion 
+    
+    #region  Lobby Functions -- Joining
     public async void JoinLobbyByCode(string lobbyCode)
     {
+        Debug.Log("Joining lobby " + lobbyCode);
         try{
             JoinLobbyByCodeOptions joinLobbyByCodeOptions  = new JoinLobbyByCodeOptions
             {
@@ -225,6 +210,9 @@ public class TestLobby : MonoBehaviour
             Debug.Log(e);
         }
     }
+
+    #endregion 
+
 
     private void PrintPlayers(Lobby lobby)
     {
@@ -294,6 +282,36 @@ public class TestLobby : MonoBehaviour
         if(AuthenticationService.Instance.PlayerId == joinedLobby.HostId) return true;
         else return false;
     }
+//Starting Game ------------------------------------#endregion
+
+    public async void StartGameBTN()
+    {
+        relayCode = await CreateRelay(); //we will not be sending the relay code ONLY lobby code // This makes the host spawn
+
+            hostLobby = await LobbyService.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions
+            {
+                Data = new Dictionary<string, DataObject>
+                {
+                    {RELAYCODE_KEY, new DataObject(DataObject.VisibilityOptions.Member, relayCode)}
+                }
+            });
+
+            joinedLobby = hostLobby;
+    }
+
+    private void StartRestofClients()
+    {
+        if(joinedLobby.Data[RELAYCODE_KEY].Value != "0")
+            {
+                if(!IsLobbyHost())
+                {
+                    JoinRelay(joinedLobby.Data[RELAYCODE_KEY].Value);
+                }
+
+                joinedLobby = null;
+            }
+    }
+
 
 //RELAY --------------------------------------------#endregion
     private async Task<string> CreateRelay()

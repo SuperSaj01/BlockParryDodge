@@ -33,14 +33,7 @@ public class PlayerManager : NetworkBehaviour
 
     private void Start()
     {
-        IgnoreMyOwnColliders();
-
-        //subscribing to events
-        SubscribeToInputEvents();
-
-        
-        
-        
+        IgnoreMyOwnColliders();    
     }
 
     void Update()
@@ -66,21 +59,37 @@ public class PlayerManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-            base.OnNetworkSpawn();
+        base.OnNetworkSpawn();
 
-            if(IsOwner)
-            {
-                CameraManager.instance.player = this;
-            }
+        if(IsOwner)
+        {
+            CameraManager.instance.player = this;
+        }
+
+        WorldManager.instance.AddPlayer(NetworkManager.Singleton.LocalClientId, this);
     } 
     
 
-    private void SubscribeToInputEvents()
+    private void OnEnable()
     {
+        //Input Events
         inputManager.OnAttackBtnPressed += _OnAttackBtnPressed;// attack needs to be changed to interact
         inputManager.OnJumpBtnPressed += _OnJumpBtnPressed;// jump
         inputManager.OnRollBtnPressed += _OnRollBtnPressed;
         inputManager.OnLockCameraPressed += _OnLockCameraPressed;// lock camera
+
+        //World Events
+        WorldManager.instance.OnLoadSceneEvent += _OnSceneLoaded;
+
+    }
+
+    private void OnDisable()
+    {
+        inputManager.OnAttackBtnPressed -= _OnAttackBtnPressed;
+        inputManager.OnJumpBtnPressed -= _OnJumpBtnPressed;
+        inputManager.OnRollBtnPressed -= _OnRollBtnPressed;
+        inputManager.OnLockCameraPressed -= _OnLockCameraPressed;
+        WorldManager.instance.OnLoadSceneEvent -= _OnSceneLoaded;
     }
 
     void UpdatePlayers()
@@ -210,5 +219,10 @@ public class PlayerManager : NetworkBehaviour
             inputManager.rolled = false;
             inputManager.basicHit = false;
         }
+    }
+
+    private void _OnSceneLoaded()
+    {
+        WorldManager.instance.AddPlayer(NetworkManager.Singleton.LocalClientId, this);
     }
 }

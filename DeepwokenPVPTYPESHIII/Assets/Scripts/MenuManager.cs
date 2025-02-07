@@ -11,6 +11,6 @@ public class MenuManager : MonoBehaviour
 
     public void StartNewGame()
     {
-        StartCoroutine(WorldManager.instance.LoadNewGame());
+        //StartCoroutine(WorldManager.instance.LoadNewGame());
     }
 }
