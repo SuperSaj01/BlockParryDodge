@@ -11,7 +11,7 @@ public class WorldManager : NetworkBehaviour
 
     public event Action OnLoadSceneEvent;
 
-    //ssss[SerializeField] private SpawnPointSO testingSpawnPoints; //to be changed to a list of spawn points
+    [SerializeField] private SpawnPointSO testingSpawnPoints; //to be changed to a list of spawn points
 
     private Dictionary<uint, PlayerManager> playerDict = new Dictionary<uint, PlayerManager>();
     
@@ -49,13 +49,13 @@ public class WorldManager : NetworkBehaviour
         OnLoadSceneEvent?.Invoke();
         
 
-        //if (playerDict.Count > 0)
-        //{
-        //    foreach (var player in playerDict.Values)
-       //     {
-       //         player.transform.position = testingSpawnPoints.spawnPoints[0];
-        //    }
-        //}
+        if (playerDict.Count > 0)
+        {
+            foreach (var player in playerDict.Values)
+            {
+                player.transform.position = testingSpawnPoints.spawnPoints[0];
+            }
+        }
         yield return null;   
     }
     #endregion

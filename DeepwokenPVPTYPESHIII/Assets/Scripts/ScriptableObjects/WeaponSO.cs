@@ -15,5 +15,9 @@ public class WeaponSO : ItemSO
     [SerializeField] private float range;
     [SerializeField] public string[] b_aniamtions;
 
+    [SerializeField] public GameObject weapon;
+    [SerializeField] public GameObject damageCollider; //this is subject to change perhaps. 
+    //I am using a collider to check if a player is being hit. Then deal damage script will be on the damage collider. 
+    //This allows me to perform perfect dodges. 
 
 }

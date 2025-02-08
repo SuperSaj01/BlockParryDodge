@@ -2703,6 +2703,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 051e5b768b995d64292d787229dcbc31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  testingSpawnPoints: {fileID: 11400000, guid: 6df143bc931dfe2469202e0351578764, type: 2}
 --- !u!4 &1598537285
 Transform:
   m_ObjectHideFlags: 0

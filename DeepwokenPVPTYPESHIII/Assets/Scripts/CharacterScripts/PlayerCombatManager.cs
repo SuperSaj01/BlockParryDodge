@@ -39,8 +39,31 @@ public class PlayerCombatManager : MonoBehaviour
 
     public void AttackBtnPressed()
     {
+        if(!HasWeaponEquipped()) return;
         playerManager.PlayActionAnimation(currentWeaponSO.b_aniamtions[0], true, playerManager.IsOwner);// needs to be in custom logic
+        
     }
 
+
+    public void HandleIFrames()
+    {
+        //Check if player executed perfect dodge [OPTIONAL]
+        //Disable hitbox for a few seconds. Perhaps use a coroutine
+    }
+
+    #region Equipping/Dequipping Weapons
+    private bool HasWeaponEquipped()
+    {
+        if(currentWeaponSO != null) return true; //Possibly add right hand in the mix later. Still need to handle player types firtst and weps  
+        else return false;
+    }
+
+    public void EquipWeapon(WeaponSO newWeapon)
+    {
+        currentWeaponSO = newWeapon;
+        placeWeaponLH = currentWeaponSO.weapon;
+
+    }    
+    #endregion
 
 }
