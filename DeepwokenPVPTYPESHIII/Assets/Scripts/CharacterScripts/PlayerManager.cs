@@ -15,6 +15,10 @@ public class PlayerManager : NetworkBehaviour
     public CharacterNetworkManager characterNetworkManager {get; private set;}
     CameraManager camManager;
 
+
+    //temp
+    public WeaponSO tempWempSO;
+
     bool isRunning;
 
     public bool isInteracting;
@@ -29,6 +33,8 @@ public class PlayerManager : NetworkBehaviour
         playerCombatManager = GetComponent<PlayerCombatManager>();
         camManager = CameraManager.instance;
         DontDestroyOnLoad(gameObject);
+
+        playerCombatManager.currentWeaponSO = null;
     }
 
     private void Start()
@@ -43,6 +49,11 @@ public class PlayerManager : NetworkBehaviour
         HandleCamera();
         HandleMovementLocomotion();
         ResetFlags();
+
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            playerCombatManager.EquipWeapon(tempWempSO);
+        }
     }
     
     private void FixedUpdate()

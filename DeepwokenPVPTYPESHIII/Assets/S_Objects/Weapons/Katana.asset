@@ -13,9 +13,12 @@ MonoBehaviour:
   m_Name: Katana
   m_EditorClassIdentifier: 
   name: 
-  itenPrefab: {fileID: 214556882243777573, guid: 5276c1a826bbc414198bffb269eefeb6, type: 3}
+  itemPrefab: {fileID: 214556882243777573, guid: 5276c1a826bbc414198bffb269eefeb6, type: 3}
+  offset: {x: 0.01, y: 0, z: -0.1}
   b_Pressure: 6
   b_SwingSpeed: 2
   range: 4
   b_aniamtions:
   - Basic Hit
+  - Basic Hit Mirrored
+  damageCollider: {fileID: 0}
