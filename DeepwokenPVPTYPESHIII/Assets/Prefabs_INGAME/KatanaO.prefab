@@ -119,4 +119,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ownPlayer: {fileID: 0}
   isActive: 0
-  damage: 0
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 128

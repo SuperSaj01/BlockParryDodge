@@ -12,13 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa79dab440d96d7419b1e7451c0cf58b, type: 3}
   m_Name: Katana
   m_EditorClassIdentifier: 
-  name: 
+  name: Katana
+  itemID: 1
   itemPrefab: {fileID: 214556882243777573, guid: 5276c1a826bbc414198bffb269eefeb6, type: 3}
   offset: {x: 0.01, y: 0, z: -0.1}
   b_Pressure: 6
   b_SwingSpeed: 2
-  range: 4
+  range: 1.5
   b_aniamtions:
   - Basic Hit
   - Basic Hit Mirrored
-  damageCollider: {fileID: 0}
+  boxColliderSize: {x: 1, y: 2.08, z: 1.5}

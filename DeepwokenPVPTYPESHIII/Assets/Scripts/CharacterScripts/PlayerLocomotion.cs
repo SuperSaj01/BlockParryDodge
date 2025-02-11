@@ -21,12 +21,12 @@ public class PlayerLocomotion : MonoBehaviour
     public bool isRunning;
 
     [Header("Jumping")]
-    public bool isJumping;
-    public float jumpHeight = 3f;
+    private bool isJumping;
+    private float jumpHeight = 0.15f;
     
     [Header("Gravity")]
     private bool isGrounded;
-    private float gravityIntensity = -15f;        
+    private float gravityIntensity = -90f;        
     public LayerMask groundLayer;
 
     [Header("Camera")]
@@ -39,10 +39,10 @@ public class PlayerLocomotion : MonoBehaviour
 
 
     [Header("HandlingFalling")]
-    private float maxDistance = 0.1f;
+    private float maxDistance = 0.16f;
     private float inAirTimer;
     private float inAirSpeed = 2.5f;
-    private float rayCastheighOffset = 0.5f;
+    private float rayCastheighOffset = 0.25f;
 
 
     public float dashTime;
@@ -119,9 +119,8 @@ public class PlayerLocomotion : MonoBehaviour
         RaycastHit hit;
         Vector3 rayCastOrigin = transform.position;
 
-        if(Physics.SphereCast((rayCastOrigin + new Vector3(0, 1, 0)), 0.2f, Vector3.down, out hit, 1, groundLayer))
+        if(Physics.SphereCast(rayCastOrigin + new Vector3(0, rayCastheighOffset, 0), 0.2f, Vector3.down, out hit, maxDistance, groundLayer))
         {
-
             inAirTimer = 0;
             isGrounded = true;
             isJumping = false;
@@ -148,6 +147,7 @@ public class PlayerLocomotion : MonoBehaviour
         
     }// fix checking isGrounded
 
+
     //To be worked on the physics
     public void HandleJumping() 
     {
@@ -156,6 +156,7 @@ public class PlayerLocomotion : MonoBehaviour
         float jumpPos = Mathf.Sqrt(jumpHeight * -2f * gravityIntensity);
         velocity.y = jumpPos;
     }
+
 
     public void HandleRolling()
     {   

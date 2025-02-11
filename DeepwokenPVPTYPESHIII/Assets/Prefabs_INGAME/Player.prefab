@@ -183,8 +183,6 @@ MonoBehaviour:
   hInput: 0
   vInput: 0
   isRunning: 0
-  isJumping: 0
-  jumpHeight: 0.1
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -238,7 +236,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   placeWeaponLH: {fileID: 3369617991105717634}
-  currentWeaponSO: {fileID: 11400000, guid: c52d5613eebb387429ddd40d568e6506, type: 2}
 --- !u!114 &9099736365931057602
 MonoBehaviour:
   m_ObjectHideFlags: 0

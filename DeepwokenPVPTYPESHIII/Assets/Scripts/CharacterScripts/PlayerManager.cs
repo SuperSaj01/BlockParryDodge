@@ -34,7 +34,7 @@ public class PlayerManager : NetworkBehaviour
         camManager = CameraManager.instance;
         DontDestroyOnLoad(gameObject);
 
-        playerCombatManager.currentWeaponSO = null;
+        playerCombatManager.DequipWeapon();
     }
 
     private void Start()
@@ -52,7 +52,7 @@ public class PlayerManager : NetworkBehaviour
 
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            playerCombatManager.EquipWeapon(tempWempSO);
+            playerCombatManager.EquipWeapon(1, IsOwner);
         }
     }
     
@@ -188,6 +188,10 @@ public class PlayerManager : NetworkBehaviour
             camManager.camVInput = inputManager.cameraInput.y;
     }    
 
+
+    #region Communicate with other scripts
+        #region Event
+
     void _OnLockCameraPressed(object sender, EventArgs e)
     {
         playerLocomotion.fixedRotation = !playerLocomotion.fixedRotation;
@@ -211,17 +215,26 @@ public class PlayerManager : NetworkBehaviour
         if(isInteracting) return;
         playerCombatManager.AttackBtnPressed();
     } 
+        #endregion
 
+    
     public void PlayActionAnimation(string animationID, bool isInteracting, bool IsOwner)
     {
         animatorManager.PlayActionAnimation(animationID, isInteracting, IsOwner);
     }
-
+    public void EquipWeapon(int weaponID, bool IsOwner)
+    {
+        playerCombatManager.EquipWeapon(weaponID, IsOwner);
+    }
+    public void DequipWeapon()
+    {
+        playerCombatManager.DequipWeapon();
+    }
     public void TakeDamage(int damage)
     {
         characterStatHandler.TakeDamage(damage);
     }
-
+    #endregion
     private void ResetFlags()
     {
         if(isInteracting)

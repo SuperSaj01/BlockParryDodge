@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
 public class PlayerCombatManager : MonoBehaviour
 {
@@ -21,11 +22,14 @@ public class PlayerCombatManager : MonoBehaviour
     private PlayerManager playerManager;
 
     [SerializeField] private GameObject placeWeaponLH;
-    public WeaponSO currentWeaponSO;
+    private WeaponSO currentWeaponSO;
     private GameObject currentWeaponObject;
-    //private GameObject currentWeapon;
+    //private GameObject currentWeapon
 
-    private DealDamage dealDamage;
+
+    [Header("Checking Hit")]
+    private DealDamage dealDamage; // accesses the damage script on the weapon
+
 
     private int i = 0;
 
@@ -42,16 +46,16 @@ public class PlayerCombatManager : MonoBehaviour
 
     public void AttackBtnPressed()
     {
-        if(!HasWeaponEquipped()) return;
+        if(!HasWeaponEquipped() && dealDamage.isActive) return;
+        dealDamage.isActive = true;
         if(i == 2)
         {
             i = 0;
         }
         
         playerManager.PlayActionAnimation(currentWeaponSO.b_aniamtions[i++], true, playerManager.IsOwner);// needs to be in custom logic
-    
-        
-        
+
+        StartCoroutine(SwingCooldown());
     }
 
 
@@ -61,6 +65,12 @@ public class PlayerCombatManager : MonoBehaviour
         //Disable hitbox for a few seconds. Perhaps use a coroutine
     }
 
+    private IEnumerator SwingCooldown()
+    {
+        yield return new WaitForSeconds(currentWeaponSO.b_SwingSpeed);
+        dealDamage.isActive = false;
+    }
+
     #region Equipping/Dequipping Weapons
     private bool HasWeaponEquipped()
     {
@@ -68,10 +78,10 @@ public class PlayerCombatManager : MonoBehaviour
         else return false;
     }
 
-    public void EquipWeapon(WeaponSO newWeapon)
+    public void EquipWeapon(int newWeaponID, bool IsOwner)
     {
         DequipWeapon();
-        currentWeaponSO = newWeapon;
+        currentWeaponSO = ItemDatabse.GetWeaponByID(newWeaponID);
         Func<GameObject, GameObject, Vector3, Quaternion, GameObject> EquippingWeapon = (wepPrefab, parent, offset, rotation) => {
             GameObject temp = Instantiate(wepPrefab, parent.transform.position, rotation); //temp is the local reference to the weapon that will be spawned. 
             temp.transform.SetParent(parent.transform, true);
@@ -80,8 +90,12 @@ public class PlayerCombatManager : MonoBehaviour
             playerManager.PlayActionAnimation(currentWeaponSO.b_aniamtions[0], true, playerManager.IsOwner); //need to make by default the first animation in the array the pull out animation  
             return temp;    
         };
-
+        
         currentWeaponObject = EquippingWeapon(currentWeaponSO.itemPrefab, placeWeaponLH, currentWeaponSO.offset, placeWeaponLH.transform.rotation);
+        ChangeWeaponStats(currentWeaponSO);
+        if(!IsOwner) return;
+        playerManager.characterNetworkManager.NotifyServerOfInstantiatedObjectServerRpc(NetworkManager.Singleton.LocalClientId, newWeaponID);
+
     }
     public void DequipWeapon()
     {
@@ -92,5 +106,13 @@ public class PlayerCombatManager : MonoBehaviour
         currentWeaponSO = null;
     }
     #endregion
+
+    private void ChangeWeaponStats(WeaponSO currentWeaponSO)
+    {
+        dealDamage.SetWeaponStats(this.GetComponent<PlayerManager>(), currentWeaponSO.b_Damage, currentWeaponSO.range, currentWeaponSO.boxColliderSize);
+    }
+    
+
+    
 
 }

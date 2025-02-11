@@ -48,6 +48,7 @@ public class CharacterNetworkManager : NetworkBehaviour
     private void Awake()
     {
         player = GetComponent<PlayerManager>();
+        var _ = ItemDatabse.GetWeaponByID(-1); //dummy call to initialise the database
     }
 
     [ServerRpc] //invoked by the client to be recieved by the server/host
@@ -71,6 +72,30 @@ public class CharacterNetworkManager : NetworkBehaviour
     private void PlayActionAnimation(string animationID, bool isInteracting)
     {
         player.PlayActionAnimation(animationID, isInteracting, false);
+    }
+
+    [ServerRpc] //invoked by the client to be recieved by the server/host
+    public void NotifyServerOfInstantiatedObjectServerRpc(ulong clientID, int weaponID)
+    {
+        if(IsServer)
+        {
+            NotifyClientsOfInstantiatedObjectClientRpc(clientID, weaponID);
+        }
+    }
+    [ClientRpc] //invoked by the server/host to be recieved to all clients
+    private void NotifyClientsOfInstantiatedObjectClientRpc(ulong clientID, int weaponID)
+    {
+        if(clientID != NetworkManager.Singleton.LocalClientId)
+        {
+            if(weaponID != -1)
+            {
+                player.EquipWeapon(weaponID, false);
+            }
+            else
+            {
+                player.DequipWeapon();
+            }
+        }
     }
     
 }
