@@ -30,20 +30,28 @@ public class CharacterStatHandler : MonoBehaviour
         }
     }
 
-    public void TakeDamage(int dmg)
+    public float TakeDamage(int dmg)
     {
         if(currentHealth  > 0)
         {
             currentHealth -= dmg * (1 - resistance);
             Debug.Log(currentHealth);
         }
+        
+        CheckIfAlive();
+        return currentHealth;
+    }
 
+    public void NewHealthAmt(float newHealth)
+    {
+        currentHealth = newHealth;
         CheckIfAlive();
     }
 
     private void CheckIfAlive()
     {
         if(currentHealth <= 0) Die();
+        currentHealth = 0;
     }
 
     private void Die()

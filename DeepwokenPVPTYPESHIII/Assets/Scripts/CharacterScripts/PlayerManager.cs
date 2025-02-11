@@ -117,9 +117,9 @@ public class PlayerManager : NetworkBehaviour
 
             //Stats:
             //health
-            characterNetworkManager.netCurrentHealth.Value = characterStatHandler.currentHealth;
+            //characterNetworkManager.netCurrentHealth.Value = characterStatHandler.currentHealth;
             //posture
-            characterNetworkManager.netCurrentPosture.Value = characterStatHandler.currentPosture;
+          //  characterNetworkManager.netCurrentPosture.Value = characterStatHandler.currentPosture;
             
         }
         else
@@ -142,9 +142,9 @@ public class PlayerManager : NetworkBehaviour
 
             //Stats:
             //health
-            characterStatHandler.currentHealth = characterNetworkManager.netCurrentHealth.Value;
+           // characterStatHandler.currentHealth = characterNetworkManager.netCurrentHealth.Value;
             //posture
-            characterStatHandler.currentPosture = characterNetworkManager.netCurrentPosture.Value;
+           // characterStatHandler.currentPosture = characterNetworkManager.netCurrentPosture.Value;
             
         }
     }
@@ -232,7 +232,17 @@ public class PlayerManager : NetworkBehaviour
     }
     public void TakeDamage(int damage)
     {
-        characterStatHandler.TakeDamage(damage);
+        float newHealth = characterStatHandler.TakeDamage(damage);
+        SetNewHealthAmt(newHealth);
+    }
+
+    public void SetNewHealthAmt(float newHealth)
+    {
+        characterStatHandler.NewHealthAmt(newHealth);
+
+        if(!IsOwner) return;
+        characterNetworkManager.NotifyServerOfPlayerNewHealthServerRpc(NetworkManager.Singleton.LocalClientId, newHealth);
+
     }
     #endregion
     private void ResetFlags()

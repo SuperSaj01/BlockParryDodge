@@ -97,5 +97,23 @@ public class CharacterNetworkManager : NetworkBehaviour
             }
         }
     }
+
+    [ServerRpc]
+    public void NotifyServerOfPlayerNewHealthServerRpc(ulong clientID, float newHealth)
+    {
+        if(IsServer)
+        {
+            netCurrentHealth.Value = newHealth;
+
+        }
+    }
+    [ClientRpc]
+    private void NotifyClientsOfPlayerNewHealthClientRpc(ulong clientID, float newHealth)
+    {
+        if(clientID != NetworkManager.Singleton.LocalClientId)
+        {
+            player.SetNewHealthAmt(newHealth);
+        }
+    }
     
 }
