@@ -104,7 +104,7 @@ public class CharacterNetworkManager : NetworkBehaviour
         if(IsServer)
         {
             netCurrentHealth.Value = newHealth;
-
+            NotifyClientsOfPlayerNewHealthClientRpc(clientID, netCurrentHealth.Value);
         }
     }
     [ClientRpc]
@@ -112,7 +112,7 @@ public class CharacterNetworkManager : NetworkBehaviour
     {
         if(clientID != NetworkManager.Singleton.LocalClientId)
         {
-            player.SetNewHealthAmt(newHealth);
+            player.SetNewHealthAmt(netCurrentHealth.Value, false);
         }
     }
     

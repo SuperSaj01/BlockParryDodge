@@ -7,7 +7,8 @@ using UnityEngine;
 public class WeaponSO : ItemSO
 {
     //"b_" = base
-    [SerializeField] public float b_Damage { get; private set; }
+    [SerializeField] public float b_Damage;
+    public LayerMask b_LayerMask;
 
     [Tooltip("hits it takes to break posture when opponent is blocking")] 
     [SerializeField] private int b_Pressure;

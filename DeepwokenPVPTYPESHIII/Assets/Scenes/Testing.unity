@@ -250,7 +250,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ownPlayer: {fileID: 0}
   isActive: 1
-  damage: 20
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!65 &120674692
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1959,6 +1961,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 051e5b768b995d64292d787229dcbc31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  testingSpawnPoints: {fileID: 0}
 --- !u!114 &1377974825
 MonoBehaviour:
   m_ObjectHideFlags: 0

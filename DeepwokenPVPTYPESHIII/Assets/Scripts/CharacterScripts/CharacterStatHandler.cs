@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
 public class CharacterStatHandler : MonoBehaviour
 {
@@ -30,7 +31,7 @@ public class CharacterStatHandler : MonoBehaviour
         }
     }
 
-    public float TakeDamage(int dmg)
+    public void TakeDamage(int dmg)
     {
         if(currentHealth  > 0)
         {
@@ -39,19 +40,26 @@ public class CharacterStatHandler : MonoBehaviour
         }
         
         CheckIfAlive();
-        return currentHealth;
+        NewHealthAmt(currentHealth, true);
     }
 
-    public void NewHealthAmt(float newHealth)
+    public void NewHealthAmt(float newHealth, bool IsOwner)
     {
         currentHealth = newHealth;
         CheckIfAlive();
+
+        
+        if(!IsOwner) return;
+        playerManager.characterNetworkManager.NotifyServerOfPlayerNewHealthServerRpc(NetworkManager.Singleton.LocalClientId, newHealth);
     }
 
     private void CheckIfAlive()
     {
-        if(currentHealth <= 0) Die();
-        currentHealth = 0;
+        if(currentHealth <= 0) 
+        {
+            Die();
+            currentHealth = 0;
+        }
     }
 
     private void Die()

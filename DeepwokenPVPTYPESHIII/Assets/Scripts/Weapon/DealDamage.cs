@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using UnityEngine;
 
 public class DealDamage : MonoBehaviour
@@ -7,48 +8,76 @@ public class DealDamage : MonoBehaviour
 
     public PlayerManager? ownPlayer;
     public bool isActive = true;//Instead of bool needs to be changed into coroutine by logic so syncing does not matter
-    private float damage;
+    private float damage = 4;
     private float range;
     private Vector3 boxColliderSize;
-    [SerializeField] private LayerMask layerMask; 
+    [SerializeField] private LayerMask layerMask;
     List<PlayerManager> listOfTargets = new List<PlayerManager>();
 
     int offset = 1; //offset box collider (the detection) up from floor as it spawns on floor 
 
-    public void SetWeaponStats(PlayerManager self, float damage, float range, Vector3 boxColliderSize)
+    void Awake()
+    {
+
+    }
+    public void SetWeaponStats(PlayerManager self, float damage, float range, Vector3 boxColliderSize, LayerMask layerMask)
     {
         ownPlayer = self;
         this.damage = damage;
         this.range = range;
         this.boxColliderSize = boxColliderSize;
+        this.layerMask = layerMask;
     }
 
     void Update()
     {
-        if(ownPlayer == null) return;
-        DetectCollision();
-
     }
-    private void DetectCollision()
+    public void DetectCollision()
     {
+        if(ownPlayer == null) return;
         Vector3 center = ownPlayer.transform.position + new Vector3(0, offset, 0) + ownPlayer.transform.forward * range;
         Collider[] playerColliders = Physics.OverlapBox(center, boxColliderSize / 2, ownPlayer.transform.rotation, layerMask);
-        if(playerColliders.Length == 0) return;
+        if (playerColliders.Length == 0) return;
 
-        PlayerManager target = playerColliders[0].GetComponent<PlayerManager>();
-
-        if(isActive && target != null && target != ownPlayer)
+        Debug.Log("Hit: " + playerColliders.Length + " targets");
+        foreach (Collider col in playerColliders) // Loop through all detected colliders
         {
-            Debug.Log("Hit: " + target.name);
-            DamageTarget(target);
+            PlayerManager target = col.GetComponent<PlayerManager>();
+
+            if(target != null ) Debug.Log("not null");
+            if(target == null) Debug.Log("null");
+
+            Debug.Log(target);
+
+            if (target != null && target != ownPlayer) // Ignore self
+            {
+                Debug.Log("Hit: " + target.name);
+                DamageTarget(target);
+                return; // Stop after hitting the first valid target
+            }
         }
     }
+
+   /* private void OnTriggerEnter(Collider other)
+    {
+        if(isActive)
+        {
+            PlayerManager target = other.GetComponent<PlayerManager>();
+            if(target != null && target != ownPlayer)
+            {
+                Debug.Log("Hit: " + target.name);
+                DamageTarget(target);
+            }
+        }
+    } */
     
     void DamageTarget(PlayerManager target)
     {
         if(listOfTargets.Contains(target)) return;
 
         listOfTargets.Add(target);
+
+        Debug.Log("Dealing damage to: " + target.name);
 
         target.TakeDamage((int)damage);
 

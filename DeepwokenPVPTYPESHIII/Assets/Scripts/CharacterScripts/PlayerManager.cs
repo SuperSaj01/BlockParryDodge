@@ -232,17 +232,12 @@ public class PlayerManager : NetworkBehaviour
     }
     public void TakeDamage(int damage)
     {
-        float newHealth = characterStatHandler.TakeDamage(damage);
-        SetNewHealthAmt(newHealth);
+        characterStatHandler.TakeDamage(damage);
     }
 
-    public void SetNewHealthAmt(float newHealth)
+    public void SetNewHealthAmt(float newHealth, bool IsOwner)
     {
-        characterStatHandler.NewHealthAmt(newHealth);
-
-        if(!IsOwner) return;
-        characterNetworkManager.NotifyServerOfPlayerNewHealthServerRpc(NetworkManager.Singleton.LocalClientId, newHealth);
-
+        characterStatHandler.NewHealthAmt(newHealth, IsOwner);
     }
     #endregion
     private void ResetFlags()

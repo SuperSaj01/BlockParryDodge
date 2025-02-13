@@ -54,6 +54,7 @@ public class PlayerCombatManager : MonoBehaviour
         }
         
         playerManager.PlayActionAnimation(currentWeaponSO.b_aniamtions[i++], true, playerManager.IsOwner);// needs to be in custom logic
+        dealDamage.DetectCollision();
 
         StartCoroutine(SwingCooldown());
     }
@@ -109,7 +110,7 @@ public class PlayerCombatManager : MonoBehaviour
 
     private void ChangeWeaponStats(WeaponSO currentWeaponSO)
     {
-        dealDamage.SetWeaponStats(this.GetComponent<PlayerManager>(), currentWeaponSO.b_Damage, currentWeaponSO.range, currentWeaponSO.boxColliderSize);
+        dealDamage.SetWeaponStats(this.GetComponent<PlayerManager>(), currentWeaponSO.b_Damage, currentWeaponSO.range, currentWeaponSO.boxColliderSize, currentWeaponSO.b_LayerMask);
     }
     
 
