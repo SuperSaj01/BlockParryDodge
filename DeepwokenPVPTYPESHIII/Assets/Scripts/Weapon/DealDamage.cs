@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using Unity.Netcode;
 using UnityEngine;
 
-public class DealDamage : MonoBehaviour
+public class DealDamage : NetworkBehaviour
 {
 
     public PlayerManager? ownPlayer;
+    private PlayerCombatManager playerCombatManager;
     public bool isActive = true;//Instead of bool needs to be changed into coroutine by logic so syncing does not matter
     private float damage = 4;
     private float range;
@@ -20,7 +22,7 @@ public class DealDamage : MonoBehaviour
     {
 
     }
-    public void SetWeaponStats(PlayerManager self, float damage, float range, Vector3 boxColliderSize, LayerMask layerMask)
+    public void SetWeaponStats(PlayerManager self, PlayerCombatManager playerCombatManager, float damage, float range, Vector3 boxColliderSize, LayerMask layerMask)
     {
         ownPlayer = self;
         this.damage = damage;
@@ -78,8 +80,18 @@ public class DealDamage : MonoBehaviour
         listOfTargets.Add(target);
 
         Debug.Log("Dealing damage to: " + target.name);
+        ulong targetId = target.ClientID;
+        Debug.Log(targetId);
+        ulong ownId = ownPlayer.ClientID;
+        
+        Debug.Log($"Is {gameObject.name} NetworkObject spawned? {NetworkObject.IsSpawned}");
+        Debug.Log("My ClientId: " + ownId);
+        Debug.Log($"Client {NetworkManager.Singleton.LocalClientId} is calling ServerRpc!");
+        Debug.Log($"Client Connected: {NetworkManager.Singleton.IsConnectedClient}");
 
-        target.TakeDamage((int)damage);
+        Debug.Log($"Calling ServerRpc on {ownId}");
+        Debug.Log("Client is calling RequestDamageServerRpc");
+        ownPlayer.characterNetworkManager.RequestDamageServerRpc(targetId, ownId, damage);
 
         listOfTargets.Remove(target);
     }

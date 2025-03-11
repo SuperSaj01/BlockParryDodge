@@ -74,13 +74,10 @@ public class PlayerLocomotion : MonoBehaviour
         if(moveDirection != Vector3.zero)
         {
             lastfacingDirection = moveDirection;
-        }
+            }
 
         moveDirection *= movementSpeed * Time.deltaTime;
         playerController.Move(moveDirection);   
-        
-        
-        
     }
     private void HandleRotation()
     {
@@ -151,7 +148,7 @@ public class PlayerLocomotion : MonoBehaviour
     //To be worked on the physics
     public void HandleJumping() 
     {
-       if(!isGrounded) return;
+        if(!isGrounded) return;
         isJumping = true;
         float jumpPos = Mathf.Sqrt(jumpHeight * -2f * gravityIntensity);
         velocity.y = jumpPos;

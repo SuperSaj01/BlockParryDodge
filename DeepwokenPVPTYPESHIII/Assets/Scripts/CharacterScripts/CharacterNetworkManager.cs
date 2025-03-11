@@ -99,21 +99,38 @@ public class CharacterNetworkManager : NetworkBehaviour
     }
 
     [ServerRpc]
-    public void NotifyServerOfPlayerNewHealthServerRpc(ulong clientID, float newHealth)
+    public void RequestDamageServerRpc(ulong targetId, ulong clientID, float damage)
     {
-        if(IsServer)
-        {
-            netCurrentHealth.Value = newHealth;
-            NotifyClientsOfPlayerNewHealthClientRpc(clientID, netCurrentHealth.Value);
-        }
+        Debug.Log($"Server received RequestDamageServerRpc from {clientID}");
+            if (!NetworkManager.Singleton.ConnectedClients.ContainsKey(targetId))
+            { 
+                Debug.Log("Target not found");
+                return;
+            }  // Validate target exists
+
+            PlayerManager targetPlayer = NetworkManager.Singleton.ConnectedClients[targetId].PlayerObject.GetComponent<PlayerManager>();
+            if (targetPlayer != null)
+            {
+                targetPlayer.TakeDamage(damage);
+            }
+        
+    }
+    [ClientRpc]
+    private void HandleDamageClientRpc()
+    {
+
     }
     [ClientRpc]
     private void NotifyClientsOfPlayerNewHealthClientRpc(ulong clientID, float newHealth)
     {
-        if(clientID != NetworkManager.Singleton.LocalClientId)
+        if(IsServer)
         {
-            player.SetNewHealthAmt(netCurrentHealth.Value, false);
+            if(clientID != NetworkManager.Singleton.LocalClientId)
+            {
+                player.SetNewHealthAmt(netCurrentHealth.Value, false);
+            }
         }
+        
     }
     
 }

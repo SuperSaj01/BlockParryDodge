@@ -31,11 +31,11 @@ public class CharacterStatHandler : MonoBehaviour
         }
     }
 
-    public void TakeDamage(int dmg)
+    public void TakeDamage(float damage)
     {
         if(currentHealth  > 0)
         {
-            currentHealth -= dmg * (1 - resistance);
+            currentHealth -= damage * (1 - resistance);
             Debug.Log(currentHealth);
         }
         
@@ -47,10 +47,6 @@ public class CharacterStatHandler : MonoBehaviour
     {
         currentHealth = newHealth;
         CheckIfAlive();
-
-        
-        if(!IsOwner) return;
-        playerManager.characterNetworkManager.NotifyServerOfPlayerNewHealthServerRpc(NetworkManager.Singleton.LocalClientId, newHealth);
     }
 
     private void CheckIfAlive()

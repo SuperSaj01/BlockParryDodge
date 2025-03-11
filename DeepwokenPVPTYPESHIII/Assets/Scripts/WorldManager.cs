@@ -13,7 +13,7 @@ public class WorldManager : NetworkBehaviour
 
     [SerializeField] private SpawnPointSO testingSpawnPoints; //to be changed to a list of spawn points
 
-    private Dictionary<uint, PlayerManager> playerDict = new Dictionary<uint, PlayerManager>();
+    private static Dictionary<PlayerManager, ulong> playerDict = new Dictionary<PlayerManager, ulong>();
     
     private void Awake() 
     {
@@ -51,7 +51,7 @@ public class WorldManager : NetworkBehaviour
 
         if (playerDict.Count > 0)
         {
-            foreach (var player in playerDict.Values)
+            foreach (var player in playerDict.Keys)
             {
                 player.transform.position = testingSpawnPoints.spawnPoints[0];
             }
@@ -61,18 +61,27 @@ public class WorldManager : NetworkBehaviour
     #endregion
 
     #region[Player Management]
-    public void AddPlayer(ulong playerId, PlayerManager player)
+    public void AddPlayer(PlayerManager player, ulong playerId)
     {
-        if (!playerDict.ContainsKey((uint)playerId))
+        if (!playerDict.ContainsKey(player))
         {
-            playerDict.Add((uint)playerId, player);
+            playerDict.Add(player, playerId);
         }
         else
         {
-            Debug.LogWarning($"Player with ID {playerId} already exists in the dictionary.");
+            Debug.LogWarning($"Player with ID {player} already exists in the dictionary.");
         }
 
-        Debug.Log(playerDict.Count + playerDict[(uint)playerId].name);
+        Debug.Log(playerDict.Count + playerDict[player].ToString());
     }
+
+    public ulong GetPlayerId(PlayerManager playerManager)
+{
+    if (playerDict.TryGetValue(playerManager, out ulong playerId))
+    {
+        return playerId;
+    }
+    return 0; // Return null if the player is not found
+}
     #endregion
 }

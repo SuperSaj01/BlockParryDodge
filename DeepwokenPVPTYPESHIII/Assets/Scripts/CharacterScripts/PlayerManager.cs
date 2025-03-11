@@ -15,6 +15,7 @@ public class PlayerManager : NetworkBehaviour
     public CharacterNetworkManager characterNetworkManager {get; private set;}
     CameraManager camManager;
 
+    public ulong ClientID {get; private set;}
 
     //temp
     public WeaponSO tempWempSO;
@@ -35,6 +36,8 @@ public class PlayerManager : NetworkBehaviour
         DontDestroyOnLoad(gameObject);
 
         playerCombatManager.DequipWeapon();
+
+        ClientID = NetworkManager.Singleton.LocalClientId;
     }
 
     private void Start()
@@ -77,7 +80,7 @@ public class PlayerManager : NetworkBehaviour
             CameraManager.instance.player = this;
         }
 
-        WorldManager.instance.AddPlayer(NetworkManager.Singleton.LocalClientId, this);
+        WorldManager.instance.AddPlayer(this, NetworkManager.Singleton.LocalClientId);
     } 
     
 
@@ -117,9 +120,9 @@ public class PlayerManager : NetworkBehaviour
 
             //Stats:
             //health
-            //characterNetworkManager.netCurrentHealth.Value = characterStatHandler.currentHealth;
+            characterNetworkManager.netCurrentHealth.Value = characterStatHandler.currentHealth;
             //posture
-          //  characterNetworkManager.netCurrentPosture.Value = characterStatHandler.currentPosture;
+            characterNetworkManager.netCurrentPosture.Value = characterStatHandler.currentPosture;
             
         }
         else
@@ -132,8 +135,8 @@ public class PlayerManager : NetworkBehaviour
             
             //rotation
             transform.rotation = Quaternion.Slerp(transform.rotation,
-             characterNetworkManager.netRotation.Value,
-             characterNetworkManager.rotationSpeed);
+                characterNetworkManager.netRotation.Value,
+                characterNetworkManager.rotationSpeed);
 
             //animation
             inputManager.moveAmount = characterNetworkManager.netMoveAmount.Value;
@@ -142,11 +145,16 @@ public class PlayerManager : NetworkBehaviour
 
             //Stats:
             //health
-           // characterStatHandler.currentHealth = characterNetworkManager.netCurrentHealth.Value;
+            characterStatHandler.currentHealth = characterNetworkManager.netCurrentHealth.Value;
             //posture
-           // characterStatHandler.currentPosture = characterNetworkManager.netCurrentPosture.Value;
+            // characterStatHandler.currentPosture = characterNetworkManager.netCurrentPosture.Value;
             
         }
+    }
+
+    public void RequestDamage(targetId, ownId, damage);
+    {
+
     }
 
     void IgnoreMyOwnColliders()
@@ -230,7 +238,7 @@ public class PlayerManager : NetworkBehaviour
     {
         playerCombatManager.DequipWeapon();
     }
-    public void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
         characterStatHandler.TakeDamage(damage);
     }
@@ -252,6 +260,6 @@ public class PlayerManager : NetworkBehaviour
 
     private void _OnSceneLoaded()
     {
-        WorldManager.instance.AddPlayer(NetworkManager.Singleton.LocalClientId, this);
+        WorldManager.instance.AddPlayer(this, NetworkManager.Singleton.LocalClientId);
     }
 }
