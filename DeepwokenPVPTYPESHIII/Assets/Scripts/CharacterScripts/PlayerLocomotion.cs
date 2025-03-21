@@ -16,12 +16,10 @@ public class PlayerLocomotion : MonoBehaviour
     Vector3 lastfacingDirection;
     Vector3 velocity;
     float movementSpeed;
-    private float walkingSpeed = 3f; 
-    private float runningSpeed = 7.5f;
     public bool isRunning;
 
     [Header("Jumping")]
-    private bool isJumping;
+    private bool isJumping; 
     private float jumpHeight = 0.15f;
     
     [Header("Gravity")]
@@ -50,8 +48,7 @@ public class PlayerLocomotion : MonoBehaviour
 
     private void Awake()
     {
-        movementSpeed = walkingSpeed;
-        isGrounded = true;
+        isGrounded = true;//!!
         playerManager = GetComponent<PlayerManager>();
         playerController = GetComponent<CharacterController>();
     }
@@ -65,7 +62,6 @@ public class PlayerLocomotion : MonoBehaviour
 
     private void HandleMovement()
     {  
-        movementSpeed = HandleSpeed();
         Vector3 forward = CameraManager.instance.transform.forward;
         forward.y = 0;
         moveDirection = forward * vInput + CameraManager.instance.transform.right * hInput;
@@ -172,24 +168,9 @@ public class PlayerLocomotion : MonoBehaviour
         }
     }
     
-    private float HandleSpeed()
+    public void SetSpeed(float movementSpeed)
     {
-        if(isGrounded && !isRunning)
-        {
-            return walkingSpeed;
-        }
-        else if(isGrounded && isRunning)
-        {
-            return runningSpeed;
-        }
-        else if(!isGrounded)
-        {
-            return inAirSpeed;
-        }
-        else
-        {
-            return walkingSpeed;
-        }
+        this.movementSpeed = movementSpeed;
     }
 
     

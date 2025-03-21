@@ -25,6 +25,7 @@ public class DealDamage : NetworkBehaviour
     public void SetWeaponStats(PlayerManager self, PlayerCombatManager playerCombatManager, float damage, float range, Vector3 boxColliderSize, LayerMask layerMask)
     {
         ownPlayer = self;
+        this.playerCombatManager = playerCombatManager; 
         this.damage = damage;
         this.range = range;
         this.boxColliderSize = boxColliderSize;
@@ -41,20 +42,13 @@ public class DealDamage : NetworkBehaviour
         Collider[] playerColliders = Physics.OverlapBox(center, boxColliderSize / 2, ownPlayer.transform.rotation, layerMask);
         if (playerColliders.Length == 0) return;
 
-        Debug.Log("Hit: " + playerColliders.Length + " targets");
         foreach (Collider col in playerColliders) // Loop through all detected colliders
         {
             PlayerManager target = col.GetComponent<PlayerManager>();
 
-            if(target != null ) Debug.Log("not null");
-            if(target == null) Debug.Log("null");
-
-            Debug.Log(target);
-
             if (target != null && target != ownPlayer) // Ignore self
             {
-                Debug.Log("Hit: " + target.name);
-                DamageTarget(target);
+                ValidateTarget(target);
                 return; // Stop after hitting the first valid target
             }
         }
@@ -73,17 +67,12 @@ public class DealDamage : NetworkBehaviour
         }
     } */
     
-    void DamageTarget(PlayerManager target)
+    void ValidateTarget(PlayerManager target)
     {
         if(listOfTargets.Contains(target)) return;
 
         listOfTargets.Add(target);
-
-        Debug.Log("Dealing damage to: " + target.name);
-        ulong targetId = target.ClientID;
-        Debug.Log(targetId);
-        ulong ownId = ownPlayer.ClientID;
-        
+        /*
         Debug.Log($"Is {gameObject.name} NetworkObject spawned? {NetworkObject.IsSpawned}");
         Debug.Log("My ClientId: " + ownId);
         Debug.Log($"Client {NetworkManager.Singleton.LocalClientId} is calling ServerRpc!");
@@ -91,8 +80,9 @@ public class DealDamage : NetworkBehaviour
 
         Debug.Log($"Calling ServerRpc on {ownId}");
         Debug.Log("Client is calling RequestDamageServerRpc");
-        ownPlayer.characterNetworkManager.RequestDamageServerRpc(targetId, ownId, damage);
-
+        playerCombatManager.DealDamageToTarget(target);
+        */
+        playerCombatManager.DealDamageToTarget(target);
         listOfTargets.Remove(target);
     }
 

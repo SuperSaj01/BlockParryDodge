@@ -13,6 +13,10 @@ public class CharacterStatHandler : MonoBehaviour
     private float maxPosture; // needs to be changed to scriotable object
     public float currentPosture; //need a setter
 
+    public float rollWindow = 5f;
+    public float parryWindow = 0.5f;
+
+
     private float resistance = 0f;
 
     private void Awake()
@@ -33,6 +37,7 @@ public class CharacterStatHandler : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
+        Debug.Log(this.name + " is taking Damage");
         if(currentHealth  > 0)
         {
             currentHealth -= damage * (1 - resistance);

@@ -10,10 +10,10 @@ public class WorldManager : NetworkBehaviour
     public static WorldManager instance { get; private set; }
 
     public event Action OnLoadSceneEvent;
+    public event Action OnPlayerJoinedGame;
 
     [SerializeField] private SpawnPointSO testingSpawnPoints; //to be changed to a list of spawn points
 
-    private static Dictionary<PlayerManager, ulong> playerDict = new Dictionary<PlayerManager, ulong>();
     
     private void Awake() 
     {
@@ -47,41 +47,11 @@ public class WorldManager : NetworkBehaviour
         Debug.Log("Scene Loaded");
         
         OnLoadSceneEvent?.Invoke();
-        
 
-        if (playerDict.Count > 0)
-        {
-            foreach (var player in playerDict.Keys)
-            {
-                player.transform.position = testingSpawnPoints.spawnPoints[0];
-            }
-        }
         yield return null;   
     }
     #endregion
 
     #region[Player Management]
-    public void AddPlayer(PlayerManager player, ulong playerId)
-    {
-        if (!playerDict.ContainsKey(player))
-        {
-            playerDict.Add(player, playerId);
-        }
-        else
-        {
-            Debug.LogWarning($"Player with ID {player} already exists in the dictionary.");
-        }
-
-        Debug.Log(playerDict.Count + playerDict[player].ToString());
-    }
-
-    public ulong GetPlayerId(PlayerManager playerManager)
-{
-    if (playerDict.TryGetValue(playerManager, out ulong playerId))
-    {
-        return playerId;
-    }
-    return 0; // Return null if the player is not found
-}
     #endregion
 }

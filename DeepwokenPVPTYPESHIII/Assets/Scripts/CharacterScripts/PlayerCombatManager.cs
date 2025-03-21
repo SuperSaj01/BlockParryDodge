@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using Unity.Mathematics;
 
 public class PlayerCombatManager : MonoBehaviour
 {
@@ -24,6 +25,13 @@ public class PlayerCombatManager : MonoBehaviour
     [SerializeField] private GameObject placeWeaponLH;
     private WeaponSO currentWeaponSO;
     private GameObject currentWeaponObject;
+
+    [Header("Windows")]
+    private float rollWindow;
+    private float parryWindow;
+
+    private bool canParry = true;
+    bool isInIFrames = false;
     //private GameObject currentWeapon
 
 
@@ -35,7 +43,7 @@ public class PlayerCombatManager : MonoBehaviour
 
 
     [Header("Weapons Stats")]
-    private float damage;
+    private float damage = 12f;
 
     void Awake()
     {
@@ -43,6 +51,8 @@ public class PlayerCombatManager : MonoBehaviour
         playerManager = GetComponent<PlayerManager>();
         // make current wep spawn from SO
     }
+
+
 
     public void AttackBtnPressed()
     {
@@ -60,10 +70,32 @@ public class PlayerCombatManager : MonoBehaviour
     }
 
 
-    public void HandleIFrames()
+    public void HandleIFrames(string action)
     {
         //Check if player executed perfect dodge [OPTIONAL]
+        if(action == "Rolling")
+        {
+            StartCoroutine(RollWindow());
+        }
+        if(action == "Blocking");
         //Disable hitbox for a few seconds. Perhaps use a coroutine
+    }
+    private IEnumerator RollWindow()
+    {
+        isInIFrames = true;
+        Debug.Log("is rolling iframes active inshaAllah");
+        Debug.Log(rollWindow);
+        yield return new WaitForSeconds(rollWindow);
+        isInIFrames = false;
+        Debug.Log("stopped iframes");
+    }
+
+    public void InitiliaseStats(float rollWindow, float parryWindow)
+    {
+        this.rollWindow = rollWindow;
+        Debug.Log(this.rollWindow);
+        Debug.Log(rollWindow);
+        this.parryWindow = parryWindow;
     }
 
     private IEnumerator SwingCooldown()
@@ -71,6 +103,29 @@ public class PlayerCombatManager : MonoBehaviour
         yield return new WaitForSeconds(currentWeaponSO.b_SwingSpeed);
         dealDamage.isActive = false;
     }
+
+    #region Dealing damage and recieving damage
+
+    public void DealDamageToTarget(PlayerManager target)
+    {
+        //handle whatever client sided logic here
+        
+        //tell server to handle the damage
+        ulong targetId = target.OwnerClientId;
+        playerManager.characterNetworkManager.RequestDamageServerRpc(targetId, damage);
+    }
+
+    public bool ValidateDamage()
+    {
+        Debug.Log(isInIFrames);
+        if(isInIFrames)
+        {
+            Debug.Log("was rolling");
+        }
+        return !isInIFrames;
+    }    
+
+    #endregion
 
     #region Equipping/Dequipping Weapons
     private bool HasWeaponEquipped()
@@ -106,15 +161,11 @@ public class PlayerCombatManager : MonoBehaviour
         }
         currentWeaponSO = null;
     }
-    #endregion
 
     private void ChangeWeaponStats(WeaponSO currentWeaponSO)
     {
         dealDamage.SetWeaponStats(this.GetComponent<PlayerManager>(),this, currentWeaponSO.b_Damage, currentWeaponSO.range, currentWeaponSO.boxColliderSize, currentWeaponSO.b_LayerMask);
     }
 
-    
-
-    
-
+    #endregion 
 }

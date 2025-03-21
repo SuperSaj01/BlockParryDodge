@@ -19,9 +19,10 @@ public class AnimatorManager : MonoBehaviour
         vertical = Animator.StringToHash("Vertical");   
     }
 
-    public void UpdateAnimatorValues(float horizontalMovement, float verticalMovement, bool isRunning)
+    public void UpdateAnimatorValues(float horizontalMovement, float verticalMovement, bool isRunning, bool isBlocking)
     {
 
+        
         float snappedHorizontal;
         float snappedVertical;
 
@@ -69,10 +70,30 @@ public class AnimatorManager : MonoBehaviour
             snappedVertical = 0;
         }
         #endregion
+        if(isBlocking)
+        {   
+            if(horizontalMovement > 0) 
+            {
+                snappedHorizontal = 0.5f;
+                if(verticalMovement > 0)
+                {
+                    snappedVertical = 0.5f;
+                }
+                else
+                {
+                    snappedVertical = 1;
+                }
+            }
+            else
+            {
+                snappedHorizontal = 1;
+            }
+        }
         if(isRunning && (horizontalMovement != 0 ||  verticalMovement != 0))
         {
             snappedVertical = 2;
         }
+        
 
         anim.SetFloat(horizontal, snappedHorizontal, 0.1f, Time.deltaTime);
         anim.SetFloat(vertical, snappedVertical, 0.1f, Time.deltaTime);
