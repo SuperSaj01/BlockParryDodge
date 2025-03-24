@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
-using Unity.Mathematics;
 
 public class PlayerCombatManager : MonoBehaviour
 {
@@ -25,6 +24,8 @@ public class PlayerCombatManager : MonoBehaviour
     [SerializeField] private GameObject placeWeaponLH;
     private WeaponSO currentWeaponSO;
     private GameObject currentWeaponObject;
+<<<<<<< Updated upstream
+=======
 
     [Header("Windows")]
     private float rollWindow;
@@ -32,6 +33,8 @@ public class PlayerCombatManager : MonoBehaviour
 
     private bool canParry = true;
     bool isInIFrames = false;
+    bool wasBlocking = false;
+>>>>>>> Stashed changes
     //private GameObject currentWeapon
 
 
@@ -43,7 +46,7 @@ public class PlayerCombatManager : MonoBehaviour
 
 
     [Header("Weapons Stats")]
-    private float damage = 12f;
+    private float damage;
 
     void Awake()
     {
@@ -52,8 +55,20 @@ public class PlayerCombatManager : MonoBehaviour
         // make current wep spawn from SO
     }
 
+<<<<<<< Updated upstream
+=======
+    public void HandleBlocking(bool isBlocking)
+    {
 
+        if(isBlocking && !wasBlocking && canParry)
+        {
+            HandleIFrames("Blocking");
+        }
 
+        wasBlocking = isBlocking;
+    }
+
+>>>>>>> Stashed changes
     public void AttackBtnPressed()
     {
         if(!HasWeaponEquipped() && dealDamage.isActive) return;
@@ -69,7 +84,15 @@ public class PlayerCombatManager : MonoBehaviour
         StartCoroutine(SwingCooldown());
     }
 
+<<<<<<< Updated upstream
 
+    public void HandleIFrames()
+    {
+        //Check if player executed perfect dodge [OPTIONAL]
+        //Disable hitbox for a few seconds. Perhaps use a coroutine
+    }
+=======
+    #region IFrames
     public void HandleIFrames(string action)
     {
         //Check if player executed perfect dodge [OPTIONAL]
@@ -77,7 +100,12 @@ public class PlayerCombatManager : MonoBehaviour
         {
             StartCoroutine(RollWindow());
         }
-        if(action == "Blocking");
+        if(action == "Blocking")
+        {
+            canParry = false;
+            StartCoroutine(ParryWindow());
+
+        }
         //Disable hitbox for a few seconds. Perhaps use a coroutine
     }
     private IEnumerator RollWindow()
@@ -90,6 +118,16 @@ public class PlayerCombatManager : MonoBehaviour
         Debug.Log("stopped iframes");
     }
 
+    private IEnumerator ParryWindow()
+    {
+        isInIFrames = true;
+        Debug.Log("is Parrying frames mashaAllah");
+        yield return new WaitForSeconds(parryWindow);
+        isInIFrames = false;
+        canParry = true;
+        Debug.Log("Stopped iframes");
+    }
+
     public void InitiliaseStats(float rollWindow, float parryWindow)
     {
         this.rollWindow = rollWindow;
@@ -97,6 +135,8 @@ public class PlayerCombatManager : MonoBehaviour
         Debug.Log(rollWindow);
         this.parryWindow = parryWindow;
     }
+    #endregion
+>>>>>>> Stashed changes
 
     private IEnumerator SwingCooldown()
     {
@@ -104,6 +144,8 @@ public class PlayerCombatManager : MonoBehaviour
         dealDamage.isActive = false;
     }
 
+<<<<<<< Updated upstream
+=======
     #region Dealing damage and recieving damage
 
     public void DealDamageToTarget(PlayerManager target)
@@ -120,13 +162,14 @@ public class PlayerCombatManager : MonoBehaviour
         Debug.Log(isInIFrames);
         if(isInIFrames)
         {
-            Debug.Log("was rolling");
+            Debug.Log("No damage");
         }
         return !isInIFrames;
     }    
 
     #endregion
 
+>>>>>>> Stashed changes
     #region Equipping/Dequipping Weapons
     private bool HasWeaponEquipped()
     {
@@ -161,11 +204,15 @@ public class PlayerCombatManager : MonoBehaviour
         }
         currentWeaponSO = null;
     }
+    #endregion
 
     private void ChangeWeaponStats(WeaponSO currentWeaponSO)
     {
         dealDamage.SetWeaponStats(this.GetComponent<PlayerManager>(),this, currentWeaponSO.b_Damage, currentWeaponSO.range, currentWeaponSO.boxColliderSize, currentWeaponSO.b_LayerMask);
     }
 
-    #endregion 
+    
+
+    
+
 }

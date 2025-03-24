@@ -16,10 +16,12 @@ public class PlayerLocomotion : MonoBehaviour
     Vector3 lastfacingDirection;
     Vector3 velocity;
     float movementSpeed;
+    private float walkingSpeed = 3f; 
+    private float runningSpeed = 7.5f;
     public bool isRunning;
 
     [Header("Jumping")]
-    private bool isJumping; 
+    private bool isJumping;
     private float jumpHeight = 0.15f;
     
     [Header("Gravity")]
@@ -42,13 +44,16 @@ public class PlayerLocomotion : MonoBehaviour
     private float inAirSpeed = 2.5f;
     private float rayCastheighOffset = 0.25f;
 
+    float runningSpeed = 5f;
+    float walkSpeed = 2.5f;
 
     public float dashTime;
     public float dashSpeed;
 
     private void Awake()
     {
-        isGrounded = true;//!!
+        movementSpeed = walkingSpeed;
+        isGrounded = true;
         playerManager = GetComponent<PlayerManager>();
         playerController = GetComponent<CharacterController>();
     }
@@ -62,6 +67,11 @@ public class PlayerLocomotion : MonoBehaviour
 
     private void HandleMovement()
     {  
+        movementSpeed = HandleSpeed();
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
         Vector3 forward = CameraManager.instance.transform.forward;
         forward.y = 0;
         moveDirection = forward * vInput + CameraManager.instance.transform.right * hInput;
@@ -168,10 +178,36 @@ public class PlayerLocomotion : MonoBehaviour
         }
     }
     
-    public void SetSpeed(float movementSpeed)
+    private float HandleSpeed()
     {
-        this.movementSpeed = movementSpeed;
+        if(isGrounded && !isRunning)
+        {
+            return walkingSpeed;
+        }
+        else if(isGrounded && isRunning)
+        {
+            return runningSpeed;
+        }
+        else if(!isGrounded)
+        {
+            return inAirSpeed;
+        }
+        else
+        {
+            return walkingSpeed;
+        }
     }
 
+    float HandleSpeed()
+    {
+        if(isRunning)
+        {
+            return runningSpeed;
+        }
+        else
+        {
+            return walkSpeed;
+        }
+    }
     
 }

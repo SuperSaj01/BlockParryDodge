@@ -4,57 +4,76 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerManager : CharacterManager
+public class PlayerManager : NetworkBehaviour
 {
     [Header("Managers")]
-    PlayerStateManager playerStateManager;
+<<<<<<< Updated upstream
+=======
     PlayerLocomotion playerLocomotion;
      //to be changed to playerStatHandler possibly?
+>>>>>>> Stashed changes
     InputManager inputManager;
-    
+    PlayerLocomotion playerLocomotion;
+    CharacterStatHandler characterStatHandler; //to be changed to playerStatHandler possibly?
+    AnimatorManager animatorManager;
+    PlayerCombatManager playerCombatManager;
+    public CharacterNetworkManager characterNetworkManager {get; private set;}
     CameraManager camManager;
 
-    [SerializeField] public ulong clientID {get; private set;}
+    public ulong ClientID {get; private set;}
 
     //temp
     public WeaponSO tempWempSO;
 
     bool isRunning;
-    bool isBlocking;
+
     public bool isInteracting;
 
-    protected override void Awake() 
+    private void Awake() 
     {
+<<<<<<< Updated upstream
+=======
         base.Awake();
         playerLocomotion = GetComponent<PlayerLocomotion>();
-        playerStateManager = GetComponent<PlayerStateManager>();
+>>>>>>> Stashed changes
         inputManager = GetComponent<InputManager>();
-
+        animatorManager = GetComponent<AnimatorManager>();
+        playerLocomotion = GetComponent<PlayerLocomotion>();
+        characterNetworkManager = GetComponent<CharacterNetworkManager>();
+        characterStatHandler = GetComponent<CharacterStatHandler>();
+        playerCombatManager = GetComponent<PlayerCombatManager>();
         camManager = CameraManager.instance;
-
         DontDestroyOnLoad(gameObject);
 
         playerCombatManager.DequipWeapon();
 
-        clientID = NetworkManager.Singleton.LocalClientId;
+        ClientID = NetworkManager.Singleton.LocalClientId;
     }
 
-    protected override void Start()
+    private void Start()
     {
-        base.Start();
-        OnCharacterChange();
+        IgnoreMyOwnColliders();    
     }
 
-    protected override void Update()
+    void Update()
     {
+<<<<<<< Updated upstream
+        UpdatePlayers();
+        if(!IsOwner) return;
+=======
         base.Update();
-
         UpdatePlayers();
         if(!IsOwner) return;
         //Handle states
-        if(isBlocking) isRunning = false;
+        //Need to move and change
+       if(isBlocking) isRunning = false;
+
+        isBlocking = inputManager.isBlocking;
+        playerCombatManager.HandleBlocking(isBlocking);
+       
 
 
+>>>>>>> Stashed changes
         HandleCamera();
         HandleMovementLocomotion();
         ResetFlags();
@@ -63,11 +82,10 @@ public class PlayerManager : CharacterManager
         {
             playerCombatManager.EquipWeapon(1, IsOwner);
         }
+<<<<<<< Updated upstream
+=======
 
-        if(Input.GetKeyDown(KeyCode.J))
-        {
-            Debug.Log(this.OwnerClientId);
-        }
+>>>>>>> Stashed changes
     }
     
     private void FixedUpdate()
@@ -85,22 +103,31 @@ public class PlayerManager : CharacterManager
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
+
         if(IsOwner)
         {
             CameraManager.instance.player = this;
-
-            PlayerDatabase.AddPlayer(clientID, this);
         }
+
+        WorldManager.instance.AddPlayer(this, NetworkManager.Singleton.LocalClientId);
     } 
     
-    void OnCharacterChange()
-    {
-        playerCombatManager.InitiliaseStats(characterStatHandler.rollWindow, characterStatHandler.parryWindow);
-    }
 
-    #region Enable n Disable
     private void OnEnable()
     {
+        //Input Events
+<<<<<<< Updated upstream
+        inputManager.OnAttackBtnPressed += _OnAttackBtnPressed;// attack needs to be changed to interact
+        inputManager.OnJumpBtnPressed += _OnJumpBtnPressed;// jump
+        inputManager.OnRollBtnPressed += _OnRollBtnPressed;
+        inputManager.OnLockCameraPressed += _OnLockCameraPressed;// lock camera
+=======
+        inputManager.OnAttackBtnPressed += _OnAttackBtnPressed; // attack needs to be changed to interact
+        inputManager.OnJumpBtnPressed += _OnJumpBtnPressed; // jump
+        inputManager.OnRollBtnPressed += _OnRollBtnPressed;
+        inputManager.OnLockCameraPressed += _OnLockCameraPressed; // lock camera
+>>>>>>> Stashed changes
+
         //World Events
         WorldManager.instance.OnLoadSceneEvent += _OnSceneLoaded;
 
@@ -108,26 +135,96 @@ public class PlayerManager : CharacterManager
 
     private void OnDisable()
     {
+        inputManager.OnAttackBtnPressed -= _OnAttackBtnPressed;
+        inputManager.OnJumpBtnPressed -= _OnJumpBtnPressed;
+        inputManager.OnRollBtnPressed -= _OnRollBtnPressed;
+        inputManager.OnLockCameraPressed -= _OnLockCameraPressed;
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
         WorldManager.instance.OnLoadSceneEvent -= _OnSceneLoaded;
     }
-    #endregion
 
-
-    protected override void UpdatePlayers()
+    void UpdatePlayers()
     {
-        base.UpdatePlayers();
         if(IsOwner)
         {
+            //position
+            characterNetworkManager.netPosition.Value = transform.position;
+            //rotation
+            characterNetworkManager.netRotation.Value = transform.rotation;
+            //animation
             characterNetworkManager.netMoveAmount.Value = inputManager.moveAmount;
-            characterNetworkManager.netIsRunning.Value = playerStateManager.isRunning;
+<<<<<<< Updated upstream
+            characterNetworkManager.netIsRunning.Value = inputManager.GetRunningBool();
+
+            //Stats:
+            //health
+            characterNetworkManager.netCurrentHealth.Value = characterStatHandler.currentHealth;
+            //posture
+            characterNetworkManager.netCurrentPosture.Value = characterStatHandler.currentPosture;
+            
+=======
             //characterNetworkManager.netIsRunning.Value = inputManager.GetBlockingBool();
+>>>>>>> Stashed changes
         }
         else
         {
+            //movement
+            transform.position = Vector3.SmoothDamp(transform.position,
+            characterNetworkManager.netPosition.Value,
+            ref characterNetworkManager.netPositionVel,
+            characterNetworkManager.netPositionSmoothTime);
+            
+            //rotation
+            transform.rotation = Quaternion.Slerp(transform.rotation,
+                characterNetworkManager.netRotation.Value,
+                characterNetworkManager.rotationSpeed);
+
+            //animation
             inputManager.moveAmount = characterNetworkManager.netMoveAmount.Value;
-            playerStateManager.isRunning = characterNetworkManager.netIsRunning.Value;
+<<<<<<< Updated upstream
+            isRunning = characterNetworkManager.netIsRunning.Value;
+            animatorManager.UpdateAnimatorValues(0, characterNetworkManager.netMoveAmount.Value, isRunning);
+
+            //Stats:
+            //health
+            characterStatHandler.currentHealth = characterNetworkManager.netCurrentHealth.Value;
+            //posture
+            // characterStatHandler.currentPosture = characterNetworkManager.netCurrentPosture.Value;
+            
+        }
+    }
+
+    public void RequestDamage(targetId, ownId, damage);
+    {
+
+    }
+
+    void IgnoreMyOwnColliders()
+    {
+        Collider characterControllerCollider = GetComponent<Collider>();
+        Collider[] damageableColliders = GetComponentsInChildren<Collider>();
+
+        List<Collider> ignoredColliders = new List<Collider>();
+
+        foreach(Collider col in damageableColliders)
+        {
+            ignoredColliders.Add(col);
+        }
+        ignoredColliders.Add(characterControllerCollider);
+
+        foreach(Collider col in ignoredColliders)
+        {
+            foreach(Collider otherCol in ignoredColliders)
+            {
+                Physics.IgnoreCollision(col, otherCol, true);
+            }
+=======
             //isBlocking = characterNetworkManager.netIsRunning.Value;
             animatorManager.UpdateAnimatorValues(0, characterNetworkManager.netMoveAmount.Value, isRunning, isBlocking);
+>>>>>>> Stashed changes
         }
     }
 
@@ -138,9 +235,11 @@ public class PlayerManager : CharacterManager
             
             playerLocomotion.isRunning = inputManager.GetRunningBool();
 
+            inputManager.HandleAllInputs();
             playerLocomotion.HandleAllMovement();
-            playerLocomotion.SetSpeed(playerStateManager.GetCurrentState().GetMovementSpeed());
     }
+
+ 
 
     void HandleCamera()
     {
@@ -161,14 +260,12 @@ public class PlayerManager : CharacterManager
     {
         if(isInteracting) return;
         playerLocomotion.HandleJumping();
-
     }
     private void _OnRollBtnPressed(object sender, EventArgs e)
     {
         if(isInteracting) return;    
         playerLocomotion.HandleRolling();
-        PlayActionAnimation("Rolling", true, IsOwner);
-        playerCombatManager.HandleIFrames("Rolling");       
+        PlayActionAnimation("Rolling", true, IsOwner);        
     }
 
     private void _OnAttackBtnPressed(object sender, EventArgs e)
@@ -191,30 +288,28 @@ public class PlayerManager : CharacterManager
     {
         playerCombatManager.DequipWeapon();
     }
-    public void HandleDamage(float damage)
+    public void TakeDamage(float damage)
     {
-        if(playerCombatManager.ValidateDamage())
-        {
-            characterStatHandler.TakeDamage(damage);
-        }
-        else
-        {
-            Debug.Log("Didnt do jack");
-        }
+        characterStatHandler.TakeDamage(damage);
+    }
+
+    public void SetNewHealthAmt(float newHealth, bool IsOwner)
+    {
+        characterStatHandler.NewHealthAmt(newHealth, IsOwner);
     }
     #endregion
     private void ResetFlags()
     {
         if(isInteracting)
         {
-            inputManager.jumped = false;
-            inputManager.rolled = false;
+            inputManager.isJumping = false;
+            inputManager.isRoling = false;
             inputManager.basicHit = false;
         }
     }
 
     private void _OnSceneLoaded()
     {
-
+        WorldManager.instance.AddPlayer(this, NetworkManager.Singleton.LocalClientId);
     }
 }

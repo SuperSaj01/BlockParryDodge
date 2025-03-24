@@ -25,7 +25,6 @@ public class DealDamage : NetworkBehaviour
     public void SetWeaponStats(PlayerManager self, PlayerCombatManager playerCombatManager, float damage, float range, Vector3 boxColliderSize, LayerMask layerMask)
     {
         ownPlayer = self;
-        this.playerCombatManager = playerCombatManager; 
         this.damage = damage;
         this.range = range;
         this.boxColliderSize = boxColliderSize;
@@ -42,13 +41,20 @@ public class DealDamage : NetworkBehaviour
         Collider[] playerColliders = Physics.OverlapBox(center, boxColliderSize / 2, ownPlayer.transform.rotation, layerMask);
         if (playerColliders.Length == 0) return;
 
+        Debug.Log("Hit: " + playerColliders.Length + " targets");
         foreach (Collider col in playerColliders) // Loop through all detected colliders
         {
-            PlayerManager target = col.GetComponent<PlayerManager>();
+            CharacterManager target = col.GetComponent<CharacterManager>();
+
+            if(target != null ) Debug.Log("not null");
+            if(target == null) Debug.Log("null");
+
+            Debug.Log(target);
 
             if (target != null && target != ownPlayer) // Ignore self
             {
-                ValidateTarget(target);
+                Debug.Log("Hit: " + target.name);
+                DamageTarget(target);
                 return; // Stop after hitting the first valid target
             }
         }
@@ -67,12 +73,26 @@ public class DealDamage : NetworkBehaviour
         }
     } */
     
-    void ValidateTarget(PlayerManager target)
+<<<<<<< Updated upstream
+    void DamageTarget(PlayerManager target)
+=======
+    void ValidateTarget(CharacterManager target)
+>>>>>>> Stashed changes
     {
-        if(listOfTargets.Contains(target)) return;
+        if(listOfTargets.Contains(target.GetComponent<PlayerManager>())) return;
 
+<<<<<<< Updated upstream
         listOfTargets.Add(target);
+
+        Debug.Log("Dealing damage to: " + target.name);
+        ulong targetId = target.ClientID;
+        Debug.Log(targetId);
+        ulong ownId = ownPlayer.ClientID;
+        
+=======
+        listOfTargets.Add(target.GetComponent<PlayerManager>());
         /*
+>>>>>>> Stashed changes
         Debug.Log($"Is {gameObject.name} NetworkObject spawned? {NetworkObject.IsSpawned}");
         Debug.Log("My ClientId: " + ownId);
         Debug.Log($"Client {NetworkManager.Singleton.LocalClientId} is calling ServerRpc!");
@@ -80,10 +100,16 @@ public class DealDamage : NetworkBehaviour
 
         Debug.Log($"Calling ServerRpc on {ownId}");
         Debug.Log("Client is calling RequestDamageServerRpc");
+<<<<<<< Updated upstream
+        ownPlayer.characterNetworkManager.RequestDamageServerRpc(targetId, ownId, damage);
+
+        listOfTargets.Remove(target);
+=======
         playerCombatManager.DealDamageToTarget(target);
         */
-        playerCombatManager.DealDamageToTarget(target);
-        listOfTargets.Remove(target);
+        playerCombatManager.DealDamageToTarget(target.GetComponent<PlayerManager>());
+        listOfTargets.Remove(target.GetComponent<PlayerManager>());
+>>>>>>> Stashed changes
     }
 
     

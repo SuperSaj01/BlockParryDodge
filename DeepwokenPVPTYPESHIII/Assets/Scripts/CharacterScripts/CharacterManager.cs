@@ -63,7 +63,7 @@ public class CharacterManager : NetworkBehaviour
                 characterNetworkManager.rotationSpeed);
 
             //animation
-        
+
 
             //Stats:
             //health
