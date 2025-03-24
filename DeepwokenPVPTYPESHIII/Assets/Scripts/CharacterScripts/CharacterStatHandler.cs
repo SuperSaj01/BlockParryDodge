@@ -14,6 +14,7 @@ public class CharacterStatHandler : MonoBehaviour
     public float currentPosture; //need a setter
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
     public float rollWindow = 5f;
@@ -21,6 +22,8 @@ public class CharacterStatHandler : MonoBehaviour
 
 
 >>>>>>> Stashed changes
+=======
+>>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
 =======
 >>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
     private float resistance = 0f;

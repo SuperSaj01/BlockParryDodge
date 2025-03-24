@@ -69,10 +69,13 @@ public class PlayerLocomotion : MonoBehaviour
     {  
         movementSpeed = HandleSpeed();
 <<<<<<< HEAD
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
 
 >>>>>>> Stashed changes
+=======
+>>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
 =======
 >>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
         Vector3 forward = CameraManager.instance.transform.forward;

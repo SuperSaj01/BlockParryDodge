@@ -8,11 +8,14 @@ public class PlayerManager : NetworkBehaviour
 {
     [Header("Managers")]
 <<<<<<< HEAD
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
     PlayerLocomotion playerLocomotion;
      //to be changed to playerStatHandler possibly?
 >>>>>>> Stashed changes
+=======
+>>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
 =======
 >>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
     InputManager inputManager;
@@ -35,11 +38,14 @@ public class PlayerManager : NetworkBehaviour
     private void Awake() 
     {
 <<<<<<< HEAD
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
         base.Awake();
         playerLocomotion = GetComponent<PlayerLocomotion>();
 >>>>>>> Stashed changes
+=======
+>>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
 =======
 >>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
         inputManager = GetComponent<InputManager>();
@@ -64,6 +70,7 @@ public class PlayerManager : NetworkBehaviour
     void Update()
     {
 <<<<<<< HEAD
+<<<<<<< HEAD
 <<<<<<< Updated upstream
         UpdatePlayers();
         if(!IsOwner) return;
@@ -85,6 +92,10 @@ public class PlayerManager : NetworkBehaviour
         UpdatePlayers();
         if(!IsOwner) return;
 >>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
+=======
+        UpdatePlayers();
+        if(!IsOwner) return;
+>>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
         HandleCamera();
         HandleMovementLocomotion();
         ResetFlags();
@@ -94,10 +105,13 @@ public class PlayerManager : NetworkBehaviour
             playerCombatManager.EquipWeapon(1, IsOwner);
         }
 <<<<<<< HEAD
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
 
 >>>>>>> Stashed changes
+=======
+>>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
 =======
 >>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
     }
@@ -131,7 +145,10 @@ public class PlayerManager : NetworkBehaviour
     {
         //Input Events
 <<<<<<< HEAD
+<<<<<<< HEAD
 <<<<<<< Updated upstream
+=======
+>>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
 =======
 >>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
         inputManager.OnAttackBtnPressed += _OnAttackBtnPressed;// attack needs to be changed to interact
@@ -139,12 +156,15 @@ public class PlayerManager : NetworkBehaviour
         inputManager.OnRollBtnPressed += _OnRollBtnPressed;
         inputManager.OnLockCameraPressed += _OnLockCameraPressed;// lock camera
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         inputManager.OnAttackBtnPressed += _OnAttackBtnPressed; // attack needs to be changed to interact
         inputManager.OnJumpBtnPressed += _OnJumpBtnPressed; // jump
         inputManager.OnRollBtnPressed += _OnRollBtnPressed;
         inputManager.OnLockCameraPressed += _OnLockCameraPressed; // lock camera
 >>>>>>> Stashed changes
+=======
+>>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
 =======
 >>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
 
@@ -160,10 +180,13 @@ public class PlayerManager : NetworkBehaviour
         inputManager.OnRollBtnPressed -= _OnRollBtnPressed;
         inputManager.OnLockCameraPressed -= _OnLockCameraPressed;
 <<<<<<< HEAD
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
 
 >>>>>>> Stashed changes
+=======
+>>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
 =======
 >>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
         WorldManager.instance.OnLoadSceneEvent -= _OnSceneLoaded;
@@ -180,7 +203,10 @@ public class PlayerManager : NetworkBehaviour
             //animation
             characterNetworkManager.netMoveAmount.Value = inputManager.moveAmount;
 <<<<<<< HEAD
+<<<<<<< HEAD
 <<<<<<< Updated upstream
+=======
+>>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
 =======
 >>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
             characterNetworkManager.netIsRunning.Value = inputManager.GetRunningBool();
@@ -192,9 +218,12 @@ public class PlayerManager : NetworkBehaviour
             characterNetworkManager.netCurrentPosture.Value = characterStatHandler.currentPosture;
             
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
             //characterNetworkManager.netIsRunning.Value = inputManager.GetBlockingBool();
 >>>>>>> Stashed changes
+=======
+>>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
 =======
 >>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
         }
@@ -214,7 +243,10 @@ public class PlayerManager : NetworkBehaviour
             //animation
             inputManager.moveAmount = characterNetworkManager.netMoveAmount.Value;
 <<<<<<< HEAD
+<<<<<<< HEAD
 <<<<<<< Updated upstream
+=======
+>>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
 =======
 >>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
             isRunning = characterNetworkManager.netIsRunning.Value;
@@ -254,10 +286,13 @@ public class PlayerManager : NetworkBehaviour
                 Physics.IgnoreCollision(col, otherCol, true);
             }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
             //isBlocking = characterNetworkManager.netIsRunning.Value;
             animatorManager.UpdateAnimatorValues(0, characterNetworkManager.netMoveAmount.Value, isRunning, isBlocking);
 >>>>>>> Stashed changes
+=======
+>>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
 =======
 >>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
         }

@@ -25,6 +25,7 @@ public class PlayerCombatManager : MonoBehaviour
     private WeaponSO currentWeaponSO;
     private GameObject currentWeaponObject;
 <<<<<<< HEAD
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
 
@@ -36,6 +37,8 @@ public class PlayerCombatManager : MonoBehaviour
     bool isInIFrames = false;
     bool wasBlocking = false;
 >>>>>>> Stashed changes
+=======
+>>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
 =======
 >>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
     //private GameObject currentWeapon
@@ -59,6 +62,7 @@ public class PlayerCombatManager : MonoBehaviour
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
     public void HandleBlocking(bool isBlocking)
@@ -73,6 +77,8 @@ public class PlayerCombatManager : MonoBehaviour
     }
 
 >>>>>>> Stashed changes
+=======
+>>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
 =======
 >>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
     public void AttackBtnPressed()
@@ -93,6 +99,7 @@ public class PlayerCombatManager : MonoBehaviour
 <<<<<<< Updated upstream
 
     public void HandleIFrames()
+<<<<<<< HEAD
 <<<<<<< HEAD
     {
         //Check if player executed perfect dodge [OPTIONAL]
@@ -150,6 +157,12 @@ public class PlayerCombatManager : MonoBehaviour
         //Disable hitbox for a few seconds. Perhaps use a coroutine
     }
 >>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
+=======
+    {
+        //Check if player executed perfect dodge [OPTIONAL]
+        //Disable hitbox for a few seconds. Perhaps use a coroutine
+    }
+>>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
 
     private IEnumerator SwingCooldown()
     {
@@ -157,6 +170,7 @@ public class PlayerCombatManager : MonoBehaviour
         dealDamage.isActive = false;
     }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
@@ -184,6 +198,8 @@ public class PlayerCombatManager : MonoBehaviour
     #endregion
 
 >>>>>>> Stashed changes
+=======
+>>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
 =======
 >>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
     #region Equipping/Dequipping Weapons

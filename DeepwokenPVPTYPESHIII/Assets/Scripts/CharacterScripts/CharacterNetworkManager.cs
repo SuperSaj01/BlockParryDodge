@@ -9,6 +9,7 @@ public class CharacterNetworkManager : NetworkBehaviour
     PlayerManager player;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
     [Header("Client")]
@@ -16,6 +17,8 @@ public class CharacterNetworkManager : NetworkBehaviour
         NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Owner);
 >>>>>>> Stashed changes
+=======
+>>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
 =======
 >>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
 
@@ -74,10 +77,13 @@ public class CharacterNetworkManager : NetworkBehaviour
     private void NotifyClientsOfActionAnimationClientRpc(ulong clientID, string animationID, bool isInteracting)
     {
 <<<<<<< HEAD
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
         
 >>>>>>> Stashed changes
+=======
+>>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
 =======
 >>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
         if(clientID != NetworkManager.Singleton.LocalClientId)

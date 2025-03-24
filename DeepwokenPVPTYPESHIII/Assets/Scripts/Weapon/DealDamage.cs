@@ -56,6 +56,11 @@ public class DealDamage : NetworkBehaviour
 
             Debug.Log(target);
 
+            if(target != null ) Debug.Log("not null");
+            if(target == null) Debug.Log("null");
+
+            Debug.Log(target);
+
             if (target != null && target != ownPlayer) // Ignore self
             {
                 Debug.Log("Hit: " + target.name);
@@ -79,11 +84,15 @@ public class DealDamage : NetworkBehaviour
     } */
     
 <<<<<<< HEAD
+<<<<<<< HEAD
 <<<<<<< Updated upstream
     void DamageTarget(PlayerManager target)
 =======
     void ValidateTarget(CharacterManager target)
 >>>>>>> Stashed changes
+=======
+    void DamageTarget(PlayerManager target)
+>>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
 =======
     void DamageTarget(PlayerManager target)
 >>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
@@ -99,10 +108,13 @@ public class DealDamage : NetworkBehaviour
         ulong ownId = ownPlayer.ClientID;
         
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         listOfTargets.Add(target.GetComponent<PlayerManager>());
         /*
 >>>>>>> Stashed changes
+=======
+>>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
 =======
 >>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
         Debug.Log($"Is {gameObject.name} NetworkObject spawned? {NetworkObject.IsSpawned}");
@@ -112,6 +124,7 @@ public class DealDamage : NetworkBehaviour
 
         Debug.Log($"Calling ServerRpc on {ownId}");
         Debug.Log("Client is calling RequestDamageServerRpc");
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< Updated upstream
         ownPlayer.characterNetworkManager.RequestDamageServerRpc(targetId, ownId, damage);
@@ -124,6 +137,8 @@ public class DealDamage : NetworkBehaviour
         listOfTargets.Remove(target.GetComponent<PlayerManager>());
 >>>>>>> Stashed changes
 =======
+=======
+>>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
         ownPlayer.characterNetworkManager.RequestDamageServerRpc(targetId, ownId, damage);
 
         listOfTargets.Remove(target);
