@@ -20,8 +20,9 @@ public class InputManager : MonoBehaviour
 
     public Vector2 cameraInput;
 
-    public bool jumped;
-    public bool rolled;
+    public bool isJumping;
+    public bool isRolling;
+    public bool isBlocking;
 
     public bool basicHit;
 
@@ -49,6 +50,9 @@ public class InputManager : MonoBehaviour
 
             playerControls.PlayerActions.Running.performed += i => isRunning = true;
             playerControls.PlayerActions.Running.canceled += i => isRunning = false;
+            
+            playerControls.PlayerActions.Blocking.performed += i => isRunning = true;
+            playerControls.PlayerActions.Blocking.canceled += i => isRunning = false;
 
             playerControls.PlayerActions.Jumping.performed += i => 
             {
@@ -87,7 +91,7 @@ public class InputManager : MonoBehaviour
         vertical = movementInput.y;
         moveAmount = Mathf.Clamp01(Mathf.Abs(horizontal) + Mathf.Abs(vertical));
 
-        animManager.UpdateAnimatorValues(0, moveAmount, isRunning);
+        animManager.UpdateAnimatorValues(0, moveAmount, isRunning, isBlocking);
     }
     
     public bool GetRunningBool()

@@ -19,7 +19,7 @@ public class AnimatorManager : MonoBehaviour
         vertical = Animator.StringToHash("Vertical");   
     }
 
-    public void UpdateAnimatorValues(float horizontalMovement, float verticalMovement, bool isRunning)
+    public void UpdateAnimatorValues(float horizontalMovement, float verticalMovement, bool isRunning, bool isBlocking)
     {
 
         float snappedHorizontal;

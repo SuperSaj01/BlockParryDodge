@@ -24,10 +24,6 @@ public class PlayerCombatManager : MonoBehaviour
     [SerializeField] private GameObject placeWeaponLH;
     private WeaponSO currentWeaponSO;
     private GameObject currentWeaponObject;
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
 
     [Header("Windows")]
     private float rollWindow;
@@ -36,11 +32,6 @@ public class PlayerCombatManager : MonoBehaviour
     private bool canParry = true;
     bool isInIFrames = false;
     bool wasBlocking = false;
->>>>>>> Stashed changes
-=======
->>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
-=======
->>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
     //private GameObject currentWeapon
 
 
@@ -61,10 +52,6 @@ public class PlayerCombatManager : MonoBehaviour
         // make current wep spawn from SO
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
     public void HandleBlocking(bool isBlocking)
     {
 
@@ -76,11 +63,6 @@ public class PlayerCombatManager : MonoBehaviour
         wasBlocking = isBlocking;
     }
 
->>>>>>> Stashed changes
-=======
->>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
-=======
->>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
     public void AttackBtnPressed()
     {
         if(!HasWeaponEquipped() && dealDamage.isActive) return;
@@ -96,16 +78,6 @@ public class PlayerCombatManager : MonoBehaviour
         StartCoroutine(SwingCooldown());
     }
 
-<<<<<<< Updated upstream
-
-    public void HandleIFrames()
-<<<<<<< HEAD
-<<<<<<< HEAD
-    {
-        //Check if player executed perfect dodge [OPTIONAL]
-        //Disable hitbox for a few seconds. Perhaps use a coroutine
-    }
-=======
     #region IFrames
     public void HandleIFrames(string action)
     {
@@ -133,7 +105,7 @@ public class PlayerCombatManager : MonoBehaviour
     }
 
     private IEnumerator ParryWindow()
-    {
+{
         isInIFrames = true;
         Debug.Log("is Parrying frames mashaAllah");
         yield return new WaitForSeconds(parryWindow);
@@ -145,24 +117,9 @@ public class PlayerCombatManager : MonoBehaviour
     public void InitiliaseStats(float rollWindow, float parryWindow)
     {
         this.rollWindow = rollWindow;
-        Debug.Log(this.rollWindow);
-        Debug.Log(rollWindow);
         this.parryWindow = parryWindow;
     }
     #endregion
->>>>>>> Stashed changes
-=======
-    {
-        //Check if player executed perfect dodge [OPTIONAL]
-        //Disable hitbox for a few seconds. Perhaps use a coroutine
-    }
->>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
-=======
-    {
-        //Check if player executed perfect dodge [OPTIONAL]
-        //Disable hitbox for a few seconds. Perhaps use a coroutine
-    }
->>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
 
     private IEnumerator SwingCooldown()
     {
@@ -170,10 +127,6 @@ public class PlayerCombatManager : MonoBehaviour
         dealDamage.isActive = false;
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
     #region Dealing damage and recieving damage
 
     public void DealDamageToTarget(PlayerManager target)
@@ -197,11 +150,6 @@ public class PlayerCombatManager : MonoBehaviour
 
     #endregion
 
->>>>>>> Stashed changes
-=======
->>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
-=======
->>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
     #region Equipping/Dequipping Weapons
     private bool HasWeaponEquipped()
     {
@@ -236,7 +184,6 @@ public class PlayerCombatManager : MonoBehaviour
         }
         currentWeaponSO = null;
     }
-    #endregion
 
     private void ChangeWeaponStats(WeaponSO currentWeaponSO)
     {
@@ -245,6 +192,7 @@ public class PlayerCombatManager : MonoBehaviour
 
     
 
+    #endregion
     
 
 }

@@ -8,19 +8,6 @@ public class CharacterNetworkManager : NetworkBehaviour
     
     PlayerManager player;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
-    [Header("Client")]
-    public NetworkVariable<ulong> netClientId = new NetworkVariable<ulong>(0,
-        NetworkVariableReadPermission.Everyone,
-        NetworkVariableWritePermission.Owner);
->>>>>>> Stashed changes
-=======
->>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
-=======
->>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
 
     [Header("Position")]
     public NetworkVariable<Vector3> netPosition = new NetworkVariable<Vector3>(Vector3.zero,
@@ -56,6 +43,9 @@ public class CharacterNetworkManager : NetworkBehaviour
     public NetworkVariable<bool> netIsRunning = new NetworkVariable<bool>(false,
      NetworkVariableReadPermission.Everyone,
      NetworkVariableWritePermission.Owner);
+     public NetworkVariable<bool> netIsBlocking = new NetworkVariable<bool>(false,
+     NetworkVariableReadPermission.Everyone,
+     NetworkVariableWritePermission.Owner);
     
     
     private void Awake()
@@ -76,16 +66,7 @@ public class CharacterNetworkManager : NetworkBehaviour
     [ClientRpc] //invoked by the server/host to be recieved to all clients
     private void NotifyClientsOfActionAnimationClientRpc(ulong clientID, string animationID, bool isInteracting)
     {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
-        
->>>>>>> Stashed changes
-=======
->>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
-=======
->>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
+
         if(clientID != NetworkManager.Singleton.LocalClientId)
         {
             PlayActionAnimation(animationID, isInteracting);
@@ -122,38 +103,30 @@ public class CharacterNetworkManager : NetworkBehaviour
     }
 
     [ServerRpc]
-    public void RequestDamageServerRpc(ulong targetId, ulong clientID, float damage)
-    {
-        Debug.Log($"Server received RequestDamageServerRpc from {clientID}");
-            if (!NetworkManager.Singleton.ConnectedClients.ContainsKey(targetId))
-            { 
-                Debug.Log("Target not found");
-                return;
-            }  // Validate target exists
-
-            PlayerManager targetPlayer = NetworkManager.Singleton.ConnectedClients[targetId].PlayerObject.GetComponent<PlayerManager>();
-            if (targetPlayer != null)
-            {
-                targetPlayer.TakeDamage(damage);
-            }
-        
-    }
-    [ClientRpc]
-    private void HandleDamageClientRpc()
-    {
-
-    }
-    [ClientRpc]
-    private void NotifyClientsOfPlayerNewHealthClientRpc(ulong clientID, float newHealth)
+    public void RequestDamageServerRpc(ulong targetId, float damage)
     {
         if(IsServer)
-        {
-            if(clientID != NetworkManager.Singleton.LocalClientId)
+        {  
+            if (NetworkManager.Singleton.ConnectedClients.TryGetValue(targetId, out var targetClient))
             {
-                player.SetNewHealthAmt(netCurrentHealth.Value, false);
+                PlayerManager targetPlayer = targetClient.PlayerObject.GetComponent<PlayerManager>();
+                if (targetPlayer != null)
+                {
+                    DealDamageClientRpc(targetId, damage);
+                }
             }
         }
-        
     }
+
+    [ClientRpc]
+    private void DealDamageClientRpc(ulong targetId, float damage)
+    {
     
+        if(player.clientId == targetId)
+        {
+                player.SetNewHealthAmt(netCurrentHealth.Value, false);
+            PlayerDatabase.GetPlayerByID(targetId).HandleDamage(damage);
+        }
+    }
+
 }

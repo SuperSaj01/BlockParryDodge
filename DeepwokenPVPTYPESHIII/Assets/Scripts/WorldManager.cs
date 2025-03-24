@@ -72,7 +72,6 @@ public class WorldManager : NetworkBehaviour
             Debug.LogWarning($"Player with ID {player} already exists in the dictionary.");
         }
 
-        Debug.Log(playerDict.Count + playerDict[player].ToString());
     }
 
     public ulong GetPlayerId(PlayerManager playerManager)

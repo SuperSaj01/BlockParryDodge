@@ -44,8 +44,6 @@ public class PlayerLocomotion : MonoBehaviour
     private float inAirSpeed = 2.5f;
     private float rayCastheighOffset = 0.25f;
 
-    float runningSpeed = 5f;
-    float walkSpeed = 2.5f;
 
     public float dashTime;
     public float dashSpeed;
@@ -68,16 +66,6 @@ public class PlayerLocomotion : MonoBehaviour
     private void HandleMovement()
     {  
         movementSpeed = HandleSpeed();
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
-=======
->>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
-=======
->>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
         Vector3 forward = CameraManager.instance.transform.forward;
         forward.y = 0;
         moveDirection = forward * vInput + CameraManager.instance.transform.right * hInput;
@@ -201,18 +189,6 @@ public class PlayerLocomotion : MonoBehaviour
         else
         {
             return walkingSpeed;
-        }
-    }
-
-    float HandleSpeed()
-    {
-        if(isRunning)
-        {
-            return runningSpeed;
-        }
-        else
-        {
-            return walkSpeed;
         }
     }
     

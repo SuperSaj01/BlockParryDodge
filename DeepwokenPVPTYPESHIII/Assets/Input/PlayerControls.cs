@@ -273,6 +273,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Blocking"",
+                    ""type"": ""Button"",
+                    ""id"": ""a8477e82-07fb-4ac1-9b8a-3dc5e4de84f9"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -385,6 +394,28 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""LockCamera"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3e260da6-e7ae-471f-ae1a-2a2a144473e8"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Blocking"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9b5d6c53-b7f6-4e4f-8922-9746a4b138e1"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Blocking"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -402,6 +433,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_PlayerActions_Rolling = m_PlayerActions.FindAction("Rolling", throwIfNotFound: true);
         m_PlayerActions_BasicAttack = m_PlayerActions.FindAction("Basic Attack", throwIfNotFound: true);
         m_PlayerActions_LockCamera = m_PlayerActions.FindAction("LockCamera", throwIfNotFound: true);
+        m_PlayerActions_Blocking = m_PlayerActions.FindAction("Blocking", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -522,6 +554,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerActions_Rolling;
     private readonly InputAction m_PlayerActions_BasicAttack;
     private readonly InputAction m_PlayerActions_LockCamera;
+    private readonly InputAction m_PlayerActions_Blocking;
     public struct PlayerActionsActions
     {
         private @PlayerControls m_Wrapper;
@@ -531,6 +564,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @Rolling => m_Wrapper.m_PlayerActions_Rolling;
         public InputAction @BasicAttack => m_Wrapper.m_PlayerActions_BasicAttack;
         public InputAction @LockCamera => m_Wrapper.m_PlayerActions_LockCamera;
+        public InputAction @Blocking => m_Wrapper.m_PlayerActions_Blocking;
         public InputActionMap Get() { return m_Wrapper.m_PlayerActions; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -555,6 +589,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @LockCamera.started += instance.OnLockCamera;
             @LockCamera.performed += instance.OnLockCamera;
             @LockCamera.canceled += instance.OnLockCamera;
+            @Blocking.started += instance.OnBlocking;
+            @Blocking.performed += instance.OnBlocking;
+            @Blocking.canceled += instance.OnBlocking;
         }
 
         private void UnregisterCallbacks(IPlayerActionsActions instance)
@@ -574,6 +611,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @LockCamera.started -= instance.OnLockCamera;
             @LockCamera.performed -= instance.OnLockCamera;
             @LockCamera.canceled -= instance.OnLockCamera;
+            @Blocking.started -= instance.OnBlocking;
+            @Blocking.performed -= instance.OnBlocking;
+            @Blocking.canceled -= instance.OnBlocking;
         }
 
         public void RemoveCallbacks(IPlayerActionsActions instance)
@@ -603,5 +643,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnRolling(InputAction.CallbackContext context);
         void OnBasicAttack(InputAction.CallbackContext context);
         void OnLockCamera(InputAction.CallbackContext context);
+        void OnBlocking(InputAction.CallbackContext context);
     }
 }

@@ -30,7 +30,8 @@ public class CharacterManager : NetworkBehaviour
 
     protected virtual void Update()
     {
-        
+        UpdatePlayers();
+        if(!IsOwner) return;
     }
     protected virtual void UpdatePlayers()
     {
