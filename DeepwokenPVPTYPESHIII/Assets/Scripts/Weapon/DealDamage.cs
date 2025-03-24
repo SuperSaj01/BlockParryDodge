@@ -51,6 +51,11 @@ public class DealDamage : NetworkBehaviour
 
             Debug.Log(target);
 
+            if(target != null ) Debug.Log("not null");
+            if(target == null) Debug.Log("null");
+
+            Debug.Log(target);
+
             if (target != null && target != ownPlayer) // Ignore self
             {
                 Debug.Log("Hit: " + target.name);
@@ -73,11 +78,15 @@ public class DealDamage : NetworkBehaviour
         }
     } */
     
+<<<<<<< HEAD
 <<<<<<< Updated upstream
     void DamageTarget(PlayerManager target)
 =======
     void ValidateTarget(CharacterManager target)
 >>>>>>> Stashed changes
+=======
+    void DamageTarget(PlayerManager target)
+>>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
     {
         if(listOfTargets.Contains(target.GetComponent<PlayerManager>())) return;
 
@@ -89,10 +98,13 @@ public class DealDamage : NetworkBehaviour
         Debug.Log(targetId);
         ulong ownId = ownPlayer.ClientID;
         
+<<<<<<< HEAD
 =======
         listOfTargets.Add(target.GetComponent<PlayerManager>());
         /*
 >>>>>>> Stashed changes
+=======
+>>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
         Debug.Log($"Is {gameObject.name} NetworkObject spawned? {NetworkObject.IsSpawned}");
         Debug.Log("My ClientId: " + ownId);
         Debug.Log($"Client {NetworkManager.Singleton.LocalClientId} is calling ServerRpc!");
@@ -100,6 +112,7 @@ public class DealDamage : NetworkBehaviour
 
         Debug.Log($"Calling ServerRpc on {ownId}");
         Debug.Log("Client is calling RequestDamageServerRpc");
+<<<<<<< HEAD
 <<<<<<< Updated upstream
         ownPlayer.characterNetworkManager.RequestDamageServerRpc(targetId, ownId, damage);
 
@@ -110,6 +123,11 @@ public class DealDamage : NetworkBehaviour
         playerCombatManager.DealDamageToTarget(target.GetComponent<PlayerManager>());
         listOfTargets.Remove(target.GetComponent<PlayerManager>());
 >>>>>>> Stashed changes
+=======
+        ownPlayer.characterNetworkManager.RequestDamageServerRpc(targetId, ownId, damage);
+
+        listOfTargets.Remove(target);
+>>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
     }
 
     

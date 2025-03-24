@@ -17,7 +17,6 @@ public class InputManager : MonoBehaviour
     public float cameraInputY;
 
     private bool isRunning;
-    private bool isBlocking;
 
     public Vector2 cameraInput;
 
@@ -30,12 +29,6 @@ public class InputManager : MonoBehaviour
     public event EventHandler OnRollBtnPressed;
     public event EventHandler OnAttackBtnPressed;
     public event EventHandler OnLockCameraPressed;
-    
-    public event EventHandler OnRunButtonPressed;
-    public event EventHandler OnRunButtonReleased;
-
-    public event EventHandler OnBlockButtonPressed;
-    public event EventHandler OnBlockButtonReleased;
 
     private void Awake() 
     { 
@@ -54,14 +47,8 @@ public class InputManager : MonoBehaviour
             playerControls.PlayerMovement.Movement.performed += i => movementInput = i.ReadValue<Vector2>();
             playerControls.PlayerMovement.Camera.performed += i => cameraInput = i.ReadValue<Vector2>();
 
-            playerControls.PlayerActions.Running.performed += i => 
-            {
-                OnRunButtonPressed?.Invoke(this, EventArgs.Empty);
-            };
-            playerControls.PlayerActions.Running.canceled += i => 
-            {
-                OnRunButtonReleased?.Invoke(this, EventArgs.Empty);
-            };
+            playerControls.PlayerActions.Running.performed += i => isRunning = true;
+            playerControls.PlayerActions.Running.canceled += i => isRunning = false;
 
             playerControls.PlayerActions.Jumping.performed += i => 
             {
@@ -79,14 +66,6 @@ public class InputManager : MonoBehaviour
             {
                 OnLockCameraPressed?.Invoke(this, EventArgs.Empty);
             };
-            playerControls.PlayerActions.Blocking.performed += i => 
-            {
-                OnBlockButtonPressed?.Invoke(this, EventArgs.Empty);
-            };
-            playerControls.PlayerActions.Blocking.canceled += i => 
-            {
-                OnBlockButtonReleased?.Invoke(this, EventArgs.Empty);
-            };
         }
 
         playerControls.Enable();
@@ -94,12 +73,7 @@ public class InputManager : MonoBehaviour
 
     private void OnDisable()
     {
-        playerControls.Disable();
-    }
-
-    void Update()
-    {
-        HandleAllInputs();    
+        
     }
 
     public void HandleAllInputs()
@@ -113,16 +87,12 @@ public class InputManager : MonoBehaviour
         vertical = movementInput.y;
         moveAmount = Mathf.Clamp01(Mathf.Abs(horizontal) + Mathf.Abs(vertical));
 
-        animManager.UpdateAnimatorValues(0, moveAmount, isRunning, isBlocking);
+        animManager.UpdateAnimatorValues(0, moveAmount, isRunning);
     }
     
     public bool GetRunningBool()
     {
         return isRunning;
-    }
-    public bool GetBlockingBool()
-    {
-        return isBlocking;
     }
 
 }

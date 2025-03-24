@@ -20,7 +20,6 @@ GameObject:
   - component: {fileID: 8538721765958991376}
   - component: {fileID: 8076210492580976670}
   - component: {fileID: 9099736365931057602}
-  - component: {fileID: 8464769495659276167}
   m_Layer: 7
   m_Name: Player
   m_TagString: HitBox
@@ -56,7 +55,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1831761105
+  GlobalObjectIdHash: 3760517430
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -169,8 +168,6 @@ MonoBehaviour:
   healthSO: {fileID: 11400000, guid: b2285b6e1a84bba4f888110d4ad08ea8, type: 2}
   currentHealth: 0
   currentPosture: 9
-  rollWindow: 1
-  parryWindow: 0.2
 --- !u!114 &8538721765958991389
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -251,8 +248,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38118c5f320c8d84da0a54e91565c308, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  netClientId:
-    m_InternalValue: 0
   netPosition:
     m_InternalValue: {x: 0, y: 0, z: 0}
   netPositionVel: {x: 0, y: 0, z: 0}
@@ -268,25 +263,6 @@ MonoBehaviour:
     m_InternalValue: 0
   netIsRunning:
     m_InternalValue: 0
-  netIsBlocking:
-    m_InternalValue: 0
---- !u!114 &8464769495659276167
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8538721765958991387}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd69957915bc76c42a6ef2e6fb65acfd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inputManager: {fileID: 0}
-  isJumping: 0
-  isRunning: 0
-  isBlocking: 0
-  isAttacking: 0
 --- !u!1001 &8216943973158160511
 PrefabInstance:
   m_ObjectHideFlags: 0

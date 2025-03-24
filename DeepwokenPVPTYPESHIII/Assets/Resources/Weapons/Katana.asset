@@ -16,7 +16,7 @@ MonoBehaviour:
   itemID: 1
   itemPrefab: {fileID: 214556882243777573, guid: 5276c1a826bbc414198bffb269eefeb6, type: 3}
   offset: {x: 0.01, y: 0, z: -0.1}
-  b_Damage: 12
+  b_Damage: 5
   b_LayerMask:
     serializedVersion: 2
     m_Bits: 128

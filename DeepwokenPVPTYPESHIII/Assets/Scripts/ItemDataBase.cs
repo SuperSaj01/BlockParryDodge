@@ -25,6 +25,8 @@ public static class ItemDatabse
             else
                 Debug.LogWarning($"Duplicate Weapon ID {weapon.itemID} found in {weapon.name}!");
         }
+
+        Debug.Log("WeaponDatabase initialized.");
     }
 
     public static WeaponSO GetWeaponByID(int id)

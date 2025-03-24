@@ -24,6 +24,7 @@ public class PlayerCombatManager : MonoBehaviour
     [SerializeField] private GameObject placeWeaponLH;
     private WeaponSO currentWeaponSO;
     private GameObject currentWeaponObject;
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
 
@@ -35,6 +36,8 @@ public class PlayerCombatManager : MonoBehaviour
     bool isInIFrames = false;
     bool wasBlocking = false;
 >>>>>>> Stashed changes
+=======
+>>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
     //private GameObject currentWeapon
 
 
@@ -55,6 +58,7 @@ public class PlayerCombatManager : MonoBehaviour
         // make current wep spawn from SO
     }
 
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
     public void HandleBlocking(bool isBlocking)
@@ -69,6 +73,8 @@ public class PlayerCombatManager : MonoBehaviour
     }
 
 >>>>>>> Stashed changes
+=======
+>>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
     public void AttackBtnPressed()
     {
         if(!HasWeaponEquipped() && dealDamage.isActive) return;
@@ -87,6 +93,7 @@ public class PlayerCombatManager : MonoBehaviour
 <<<<<<< Updated upstream
 
     public void HandleIFrames()
+<<<<<<< HEAD
     {
         //Check if player executed perfect dodge [OPTIONAL]
         //Disable hitbox for a few seconds. Perhaps use a coroutine
@@ -137,6 +144,12 @@ public class PlayerCombatManager : MonoBehaviour
     }
     #endregion
 >>>>>>> Stashed changes
+=======
+    {
+        //Check if player executed perfect dodge [OPTIONAL]
+        //Disable hitbox for a few seconds. Perhaps use a coroutine
+    }
+>>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
 
     private IEnumerator SwingCooldown()
     {
@@ -144,6 +157,7 @@ public class PlayerCombatManager : MonoBehaviour
         dealDamage.isActive = false;
     }
 
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
     #region Dealing damage and recieving damage
@@ -170,6 +184,8 @@ public class PlayerCombatManager : MonoBehaviour
     #endregion
 
 >>>>>>> Stashed changes
+=======
+>>>>>>> parent of 97aa660 (Added States/ fixed damadging yippee)
     #region Equipping/Dequipping Weapons
     private bool HasWeaponEquipped()
     {
