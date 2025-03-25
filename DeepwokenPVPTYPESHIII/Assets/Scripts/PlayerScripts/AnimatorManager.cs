@@ -73,6 +73,26 @@ public class AnimatorManager : MonoBehaviour
         {
             snappedVertical = 2;
         }
+        if(isBlocking)
+        {
+            if(horizontalMovement > 0)
+            {
+                snappedHorizontal = -1.5f;
+            }
+            else
+            {
+                snappedHorizontal = -2f;
+            }
+
+            if(verticalMovement > 0)
+            {
+                snappedVertical = 1f;
+            }
+            else
+            {
+                snappedVertical = 0f;
+            }
+        }
 
         anim.SetFloat(horizontal, snappedHorizontal, 0.1f, Time.deltaTime);
         anim.SetFloat(vertical, snappedVertical, 0.1f, Time.deltaTime);

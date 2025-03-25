@@ -51,8 +51,8 @@ public class InputManager : MonoBehaviour
             playerControls.PlayerActions.Running.performed += i => isRunning = true;
             playerControls.PlayerActions.Running.canceled += i => isRunning = false;
             
-            playerControls.PlayerActions.Blocking.performed += i => isRunning = true;
-            playerControls.PlayerActions.Blocking.canceled += i => isRunning = false;
+            playerControls.PlayerActions.Blocking.performed += i => isBlocking = true;
+            playerControls.PlayerActions.Blocking.canceled += i => isBlocking = false;
 
             playerControls.PlayerActions.Jumping.performed += i => 
             {

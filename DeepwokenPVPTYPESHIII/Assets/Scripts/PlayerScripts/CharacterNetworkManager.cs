@@ -124,7 +124,6 @@ public class CharacterNetworkManager : NetworkBehaviour
     
         if(player.clientId == targetId)
         {
-                player.SetNewHealthAmt(netCurrentHealth.Value, false);
             PlayerDatabase.GetPlayerByID(targetId).HandleDamage(damage);
         }
     }

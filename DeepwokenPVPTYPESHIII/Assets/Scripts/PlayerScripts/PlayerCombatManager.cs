@@ -30,6 +30,7 @@ public class PlayerCombatManager : MonoBehaviour
     private float parryWindow;
 
     private bool canParry = true;
+    bool isBlocking = false;
     bool isInIFrames = false;
     bool wasBlocking = false;
     //private GameObject currentWeapon
@@ -52,12 +53,19 @@ public class PlayerCombatManager : MonoBehaviour
         // make current wep spawn from SO
     }
 
+    void Update()
+    {
+        
+    }
+
     public void HandleBlocking(bool isBlocking)
     {
 
+        this.isBlocking = isBlocking;
+
         if(isBlocking && !wasBlocking && canParry)
         {
-            HandleIFrames("Blocking");
+            HandleIFrames("Parrying");
         }
 
         wasBlocking = isBlocking;
@@ -78,15 +86,16 @@ public class PlayerCombatManager : MonoBehaviour
         StartCoroutine(SwingCooldown());
     }
 
+
     #region IFrames
     public void HandleIFrames(string action)
-    {
+    {   
         //Check if player executed perfect dodge [OPTIONAL]
         if(action == "Rolling")
         {
             StartCoroutine(RollWindow());
         }
-        if(action == "Blocking")
+        if(action == "Parrying")
         {
             canParry = false;
             StartCoroutine(ParryWindow());
@@ -105,11 +114,9 @@ public class PlayerCombatManager : MonoBehaviour
     }
 
     private IEnumerator ParryWindow()
-{
-        isInIFrames = true;
+    {
         Debug.Log("is Parrying frames mashaAllah");
         yield return new WaitForSeconds(parryWindow);
-        isInIFrames = false;
         canParry = true;
         Debug.Log("Stopped iframes");
     }
@@ -138,14 +145,24 @@ public class PlayerCombatManager : MonoBehaviour
         playerManager.characterNetworkManager.RequestDamageServerRpc(targetId, damage);
     }
 
-    public bool ValidateDamage()
+    public string ValidateDamage()
     {
         Debug.Log(isInIFrames);
         if(isInIFrames)
         {
-            Debug.Log("No damage");
+            Debug.Log("invalid");
+            return "invalid";
         }
-        return !isInIFrames;
+        else if(isBlocking)
+        {
+            Debug.Log("blocked");
+            return "blocking";
+        }
+        else
+        {
+            return "";
+        }
+        
     }    
 
     #endregion

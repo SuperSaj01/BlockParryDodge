@@ -17,7 +17,7 @@ public class PlayerManager : CharacterManager
     public WeaponSO tempWempSO;
 
     bool isRunning;
-    bool isBlocking;
+    public bool isBlocking {get; private set;}
 
     public bool isInteracting;
 
@@ -52,7 +52,7 @@ public class PlayerManager : CharacterManager
         if(!IsOwner) return;
         //Handle states
         //Need to move and change
-       if(isBlocking) isRunning = false;
+        if(isBlocking) isRunning = false;
         isBlocking = inputManager.isBlocking;
         playerCombatManager.HandleBlocking(isBlocking);
        
@@ -202,13 +202,18 @@ public class PlayerManager : CharacterManager
 
     public void HandleDamage(float damage)
     {
-        if(playerCombatManager.ValidateDamage())
+        string checkIfPlayerIsViableForDamage = playerCombatManager.ValidateDamage();
+        if(checkIfPlayerIsViableForDamage == "")
         {
             characterStatHandler.TakeDamage(damage);
         }
-        else
+        else if(checkIfPlayerIsViableForDamage == "invalid")
         {
             Debug.Log("didnt do jack");
+        }
+        else if(checkIfPlayerIsViableForDamage == "blocked")
+        {
+            characterStatHandler.TakePostureDamage(damage);
         }
     }    
     
@@ -229,10 +234,6 @@ public class PlayerManager : CharacterManager
         characterStatHandler.TakeDamage(damage);
     }
 
-    public void SetNewHealthAmt(float newHealth, bool IsOwner)
-    {
-        characterStatHandler.NewHealthAmt(newHealth, IsOwner);
-    }
     #endregion
     private void ResetFlags()
     {

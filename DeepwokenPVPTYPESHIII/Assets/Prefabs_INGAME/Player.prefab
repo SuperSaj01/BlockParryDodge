@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7643839906087887099
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7041370269616071953}
+  m_Layer: 7
+  m_Name: SpawnCharacterHead
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7041370269616071953
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7643839906087887099}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6491205325518399104}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8538721765958991387
 GameObject:
   m_ObjectHideFlags: 0
@@ -168,6 +199,8 @@ MonoBehaviour:
   healthSO: {fileID: 11400000, guid: b2285b6e1a84bba4f888110d4ad08ea8, type: 2}
   currentHealth: 0
   currentPosture: 9
+  rollWindow: 5
+  parryWindow: 4
 --- !u!114 &8538721765958991389
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -208,8 +241,9 @@ MonoBehaviour:
   cameraInputX: 0
   cameraInputY: 0
   cameraInput: {x: 0, y: 0}
-  jumped: 0
-  rolled: 0
+  isJumping: 0
+  isRolling: 0
+  isBlocking: 0
   basicHit: 0
 --- !u!114 &8538721765958991376
 MonoBehaviour:
@@ -262,6 +296,8 @@ MonoBehaviour:
   netMoveAmount:
     m_InternalValue: 0
   netIsRunning:
+    m_InternalValue: 0
+  netIsBlocking:
     m_InternalValue: 0
 --- !u!1001 &8216943973158160511
 PrefabInstance:
@@ -438,7 +474,10 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 5866666021909216657, guid: 454733d145cd2474e9c08af3099d6da0, type: 3}
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 2890492752938987263, guid: 454733d145cd2474e9c08af3099d6da0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7041370269616071953}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: -1801228693699565784, guid: 454733d145cd2474e9c08af3099d6da0, type: 3}
       insertIndex: -1
@@ -732,6 +771,11 @@ CapsuleCollider:
   m_Height: 0.49681902
   m_Direction: 0
   m_Center: {x: 0.25, y: 0, z: 0}
+--- !u!4 &6491205325518399104 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2890492752938987263, guid: 454733d145cd2474e9c08af3099d6da0, type: 3}
+  m_PrefabInstance: {fileID: 8216943973158160511}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &7035781817492664308 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1417628151867795339, guid: 454733d145cd2474e9c08af3099d6da0, type: 3}

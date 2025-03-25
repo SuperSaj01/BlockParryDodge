@@ -45,13 +45,15 @@ public class CharacterStatHandler : MonoBehaviour
         }
         
         CheckIfAlive();
-        NewHealthAmt(currentHealth, true);
     }
 
-    public void NewHealthAmt(float newHealth, bool IsOwner)
+    public void TakePostureDamage(float postureDamage)
     {
-        currentHealth = newHealth;
-        CheckIfAlive();
+        if(currentPosture > 0)
+        {
+            currentPosture -= postureDamage;
+        }
+        CheckIfPostureBroken();
     }
 
     private void CheckIfAlive()
@@ -60,6 +62,14 @@ public class CharacterStatHandler : MonoBehaviour
         {
             Die();
             currentHealth = 0;
+        }
+    }
+
+    private void CheckIfPostureBroken()
+    {
+        if(currentPosture <= 0)
+        {
+            //break posture
         }
     }
 

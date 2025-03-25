@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Services.Authentication;
@@ -6,6 +7,7 @@ using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
 using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
+using Unity;
 using UnityEngine;
 using UnityEngine.UI;
 using Unity.Netcode;
@@ -13,8 +15,10 @@ using Unity.Netcode.Transports.UTP;
 using TMPro;
 using System.Threading.Tasks;
 
-public class TestLobby : MonoBehaviour
+public class LobbyManager : MonoBehaviour
 {
+
+    public static LobbyManager instance { get; private set; }
 
     private Lobby hostLobby;
     private Lobby joinedLobby;
@@ -31,9 +35,24 @@ public class TestLobby : MonoBehaviour
     public GameObject inputField;
     public GameObject codeText;
 
+    public event EventHandler<OnLobbyListChangedEventArgs> OnLobbyListChanged;
+    public class OnLobbyListChangedEventArgs : EventArgs {
+        public List<Lobby> lobbyList;
+    }
+
 
     private void Start()
     {
+
+        if(instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
         playerName = "User" + UnityEngine.Random.Range(0, 100);
         Authenticate(playerName);
     }
@@ -155,12 +174,11 @@ public class TestLobby : MonoBehaviour
                 }
             };
 
-            QueryResponse queryResponse = await LobbyService.Instance.QueryLobbiesAsync(queryLobbiesOptions);
-            Debug.Log("Lobbies found " + queryResponse.Results.Count);
-            foreach(Lobby lobby in queryResponse.Results)
-            {
-                Debug.Log(lobby.Name + " " + lobby.MaxPlayers);
-            }
+            QueryResponse lobbyListQueryResponse = await LobbyService.Instance.QueryLobbiesAsync(queryLobbiesOptions);
+         
+            OnLobbyListChanged?.Invoke(this, new OnLobbyListChangedEventArgs { lobbyList = lobbyListQueryResponse.Results });
+
+
         }
         catch(LobbyServiceException e)
         {
