@@ -8,7 +8,7 @@ public class CharacterNetworkManager : NetworkBehaviour
     
     PlayerManager player;
 
-
+    ///Creating all the specific network variables that need to be synced across the network
     [Header("Position")]
     public NetworkVariable<Vector3> netPosition = new NetworkVariable<Vector3>(Vector3.zero,
         NetworkVariableReadPermission.Everyone,
@@ -55,7 +55,7 @@ public class CharacterNetworkManager : NetworkBehaviour
     }
 
     [ServerRpc] //invoked by the client to be recieved by the server/host
-    public void NotifyServerOfActionAnimationServerRpc(ulong clientID, string animationID, bool isInteracting) // when root motion is added, add here and all other functions 
+    public void NotifyServerOfActionAnimationServerRpc(ulong clientID, string animationID, bool isInteracting) 
     {
         if(IsServer)
         {
@@ -67,9 +67,9 @@ public class CharacterNetworkManager : NetworkBehaviour
     private void NotifyClientsOfActionAnimationClientRpc(ulong clientID, string animationID, bool isInteracting)
     {
 
-        if(clientID != NetworkManager.Singleton.LocalClientId)
+        if(clientID != NetworkManager.Singleton.LocalClientId) //Checks if the current client is not the same as the one who called it
         {
-            PlayActionAnimation(animationID, isInteracting);
+            PlayActionAnimation(animationID, isInteracting); //plays the animation on every other client
         }
     }
      
@@ -124,7 +124,7 @@ public class CharacterNetworkManager : NetworkBehaviour
     
         if(player.clientId == targetId)
         {
-            PlayerDatabase.GetPlayerByID(targetId).HandleDamage(damage);
+            PlayerDatabase.GetPlayerByID(targetId).HandleDamage(damage); //Fetches the player from the dictionary via key and applies the damage
         }
     }
 

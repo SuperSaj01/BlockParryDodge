@@ -61,6 +61,8 @@ public class LobbyManager : MonoBehaviour
         Authenticate(playerName);
     }
 
+    ///Summary of the method
+    ///This method is used to authenticate the player and assign a unique name
     public async void Authenticate(string playerName)
     {
         this.playerName = playerName;
@@ -82,6 +84,8 @@ public class LobbyManager : MonoBehaviour
         HandleLobbyPollForUpdates();
     }
 
+    ///Summary of the method
+    ///This method is used to keep the lobby alive as no calls to the lobby will result in a shutdown of the lobby
     private async void HandleLobbyHeartbeat()
     {
         if(hostLobby != null)
@@ -96,6 +100,8 @@ public class LobbyManager : MonoBehaviour
             }
         }
     }
+    ///Summary of the method
+    ///This method is used to check the lobby for updates every second
     private async void HandleLobbyPollForUpdates()
     {
         if(joinedLobby != null)
@@ -118,25 +124,24 @@ public class LobbyManager : MonoBehaviour
     {
         try
         {
-            string lobbyname = "myLobby";
+            //Creates default options for the lobby
+            string lobbyName = "myLobby" + UnityEngine.Random.Range(0, 100); 
             int maxPlayers = 2;
 
             CreateLobbyOptions createLobbyOptions = new CreateLobbyOptions{
-                IsPrivate = false,
+                IsPrivate = false, //allows it to be found by anyone
                 Player = GetPlayer(),
-                //Can add a lobby data for different gamemodes. Might add in future
-                Data = new Dictionary<string, DataObject>{
+                Data = new Dictionary<string, DataObject>{ //Creates a new lobby with the data of the lobby code and relay code 
                     {RELAYCODE_KEY, new DataObject(DataObject.VisibilityOptions.Member, "0")},
                     {LOBBYCODE_KEY, new DataObject(DataObject.VisibilityOptions.Public, "0")}
                 }
             };
-            Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyname, maxPlayers, createLobbyOptions);
+            Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers, createLobbyOptions); //Creates the lobby with the options provided
 
             hostLobby = lobby;
             joinedLobby = hostLobby;
 
             lobbyCode = hostLobby.LobbyCode;
-            PrintPlayers(hostLobby);
             
 
             CreateLobbyBTN(hostLobby.LobbyCode);
@@ -168,22 +173,20 @@ public class LobbyManager : MonoBehaviour
         try
         {
             QueryLobbiesOptions queryLobbiesOptions = new QueryLobbiesOptions{
-                Count = 25,
+                Count = 5, //returns 5 lobbies
                 Filters = new List<QueryFilter>
                 {
-                    new QueryFilter(QueryFilter.FieldOptions.AvailableSlots, "0", QueryFilter.OpOptions.GT)
+                    new QueryFilter(QueryFilter.FieldOptions.AvailableSlots, "0", QueryFilter.OpOptions.GT) //returns lobbies with available slots greater than 0
                 },
                 Order = new List<QueryOrder>
                 { 
-                    new QueryOrder(false, QueryOrder.FieldOptions.Created)
+                    new QueryOrder(false, QueryOrder.FieldOptions.Created) //orders the lobbies by the time they were created
                 }
             };
 
-            QueryResponse lobbyListQueryResponse = await LobbyService.Instance.QueryLobbiesAsync(queryLobbiesOptions);
+            QueryResponse lobbyListQueryResponse = await LobbyService.Instance.QueryLobbiesAsync(queryLobbiesOptions); //queries the lobbies with the options provided
          
-            OnLobbyListChanged?.Invoke(this, new OnLobbyListChangedEventArgs { lobbyList = lobbyListQueryResponse.Results });
-            Debug.Log("Invoked");
-            Debug.Log(lobbyListQueryResponse.Results.Count);
+            OnLobbyListChanged?.Invoke(this, new OnLobbyListChangedEventArgs { lobbyList = lobbyListQueryResponse.Results }); 
         }
         catch(LobbyServiceException e)
         {
@@ -193,6 +196,8 @@ public class LobbyManager : MonoBehaviour
 
     #region Buttons
 
+    ///Summary of the method
+    ///This method is used to join a lobby by the code in input field for quick input
     public void JoinLobbyBtn()
     {
         string joinCode = inputField.GetComponent<TMP_InputField>().text;
@@ -204,9 +209,10 @@ public class LobbyManager : MonoBehaviour
         Player player = GetPlayer();
 
         joinedLobby = await LobbyService.Instance.JoinLobbyByIdAsync(lobby.Id, new JoinLobbyByIdOptions {
-            Player = player
+            Player = player //Creates a new player object in the lobby with the data of the clients player
         });
     }
+
 
     public void CreateLobbyBTN(string joinCode)
     {
@@ -214,16 +220,15 @@ public class LobbyManager : MonoBehaviour
     }
     #endregion 
     
-    #region  Lobby Functions -- Joining
+    #region Lobby Functions
     public async void JoinLobbyByCode(string lobbyCode)
     {
-        Debug.Log(lobbyCode);
         try{
             JoinLobbyByCodeOptions joinLobbyByCodeOptions  = new JoinLobbyByCodeOptions
             {
                 Player = GetPlayer()
             };
-            joinedLobby = await LobbyService.Instance.JoinLobbyByCodeAsync(lobbyCode, joinLobbyByCodeOptions);
+            joinedLobby = await LobbyService.Instance.JoinLobbyByCodeAsync(lobbyCode, joinLobbyByCodeOptions); //We join the lobby with the code and assign the player to the lobby
             
         }
         catch (LobbyServiceException e)
@@ -242,18 +247,7 @@ public class LobbyManager : MonoBehaviour
             Debug.Log(e);
         }
     }
-
     #endregion 
-
-
-    private void PrintPlayers(Lobby lobby)
-    {
-        Debug.Log("Players in lobby " + lobby.Name);
-        foreach(var player in lobby.Players)
-        {
-            
-        }
-    }
 
     public void LeaveLobby()
     {
@@ -266,6 +260,9 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
+    #region Player functions
+    ///Summary of the method
+    ///This method is used to grab the player object to be used in the lobby
     private Player GetPlayer()
     {
         return new Player
@@ -277,11 +274,15 @@ public class LobbyManager : MonoBehaviour
                 };
     }
 
+    #endregion
+
+    ///Summary of the method
+    ///This method is used to update the lobby code
     private async void UpdateLobbyCode()
     {
         try
         {
-            Lobby lobby = await LobbyService.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions
+            Lobby lobby = await LobbyService.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions //finds the lobby with the same id and assigns the new options
             {
                 Data = new Dictionary<string, DataObject>
                 {
@@ -296,12 +297,14 @@ public class LobbyManager : MonoBehaviour
     }
     
 
+    ///Summary of the method
+    ///This method is used to change the name of a player in the lobby
     private async void UpdatePlayerName(string newPlayerName)
     {
         try
         {
             playerName = newPlayerName;
-            await LobbyService.Instance.UpdatePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId,
+            await LobbyService.Instance.UpdatePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId, //finds the player with the same id in the same lobby id and assigns the new options
             new UpdatePlayerOptions 
             {
                 Data = new Dictionary<string, PlayerDataObject>
@@ -328,34 +331,32 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
+    ///Summary of the method
+    ///A getter for the bool to check if the client is the host of the lobby
     private bool IsLobbyHost()
     {
         if(AuthenticationService.Instance.PlayerId == joinedLobby.HostId) return true;
         else return false;
     }
 
-
-#region Temppossivble
-
-   
-
-#endregion
-
-//Starting Game ------------------------------------#endregion
-
+    ///Summary of the method
+    ///This method is used to start the game for the host
     public async void StartGameBTN()
     {
-        relayCode = await CreateRelay(); //we will not be sending the relay code ONLY lobby code // This makes the host spawn
+        relayCode = await CreateRelay(); //Will not be sending the relay code ONLY lobby code // This makes the host spawn
 
             hostLobby = await LobbyService.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions
             {
                 Data = new Dictionary<string, DataObject>
                 {
-                    {RELAYCODE_KEY, new DataObject(DataObject.VisibilityOptions.Member, relayCode)}
+                    //Update the lobby data with the new relay code
+                    //This will be used by the clients when they detect a change in the relay code indicating the start of the game
+                    //the relay code is used to start as a client on the same relay server as the host
+                    {RELAYCODE_KEY, new DataObject(DataObject.VisibilityOptions.Member, relayCode)} 
                 }
             });
 
-            joinedLobby = hostLobby;
+            joinedLobby = hostLobby; //Updates the joined lobby to the hosts lobby
     }
 
     private void StartRestofClients()
@@ -365,20 +366,23 @@ public class LobbyManager : MonoBehaviour
                 if(!IsLobbyHost())
                 {
                     JoinRelay(joinedLobby.Data[RELAYCODE_KEY].Value);
+                    //For player joined in lobby (not the host) if the relay code is not 0, join the relay server 
                 }
 
-                joinedLobby = null;
+                joinedLobby = null; //Resets the joined lobby (the player is no longer in a lobby and is now playing in the server)
             }
     }
 
 
-//RELAY --------------------------------------------#endregion
+    #region Relay
+    ///Summary of the method
+    ///This method is used to create a relay server
     private async Task<string> CreateRelay()
     {
         try{
             Allocation allocation = await RelayService.Instance.CreateAllocationAsync(1);
 
-            string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
+            string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId); //This gets the relay code to join the relay server
 
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetHostRelayData(
             allocation.RelayServer.IpV4,
@@ -388,9 +392,9 @@ public class LobbyManager : MonoBehaviour
             allocation.ConnectionData
             );
 
-            NetworkManager.Singleton.StartHost();
+            NetworkManager.Singleton.StartHost(); //The host of the lobby is now the host of the game
 
-            return joinCode;
+            return joinCode; //returns the relay code to be used by the clients to join the relay server
         }
         catch(RelayServiceException e)
         {
@@ -402,7 +406,7 @@ public class LobbyManager : MonoBehaviour
     async void JoinRelay(string joinCode)
     {
         try{
-            JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
+            JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode); //Joins the relay server with the relay code
 
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetClientRelayData(
             joinAllocation.RelayServer.IpV4,
@@ -413,13 +417,13 @@ public class LobbyManager : MonoBehaviour
             joinAllocation.HostConnectionData
             );
 
-            NetworkManager.Singleton.StartClient();
+            NetworkManager.Singleton.StartClient(); //The client is now connected to the relay server
         }
         catch(RelayServiceException e)
         {
             Debug.Log(e);
         }
     }
-    
+    #endregion
 
 }

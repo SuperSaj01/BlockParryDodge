@@ -16,9 +16,8 @@ public class CharacterStatHandler : MonoBehaviour
 
     public float rollWindow = 5f;
     public float parryWindow = 4f;
-
-
     private float resistance = 0f;
+
 
     private void Awake()
     {
@@ -32,7 +31,7 @@ public class CharacterStatHandler : MonoBehaviour
         currentHealth += healAmt;
         if(currentHealth  > healthSO.maxHealth)
         {
-            currentHealth = healthSO.maxHealth;
+            currentHealth = healthSO.maxHealth; //Stops the health from going beyond max
         }
     }
 
@@ -40,7 +39,7 @@ public class CharacterStatHandler : MonoBehaviour
     {
         if(currentHealth  > 0)
         {
-            currentHealth -= damage * (1 - resistance);
+            currentHealth -= damage * (1 - resistance); //resistance of character is applied to negate damage
             Debug.Log(currentHealth);
         }
         
@@ -51,7 +50,7 @@ public class CharacterStatHandler : MonoBehaviour
     {
         if(currentPosture > 0)
         {
-            currentPosture -= postureDamage;
+            currentPosture -= postureDamage; //damage is applied to posture
         }
         CheckIfPostureBroken();
     }

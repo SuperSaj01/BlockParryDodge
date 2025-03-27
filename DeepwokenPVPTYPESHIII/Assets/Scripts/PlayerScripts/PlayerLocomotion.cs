@@ -44,7 +44,7 @@ public class PlayerLocomotion : MonoBehaviour
     private float inAirSpeed = 2.5f;
     private float rayCastheighOffset = 0.25f;
 
-
+    [Header("Rolling")]
     public float dashTime;
     public float dashSpeed;
 
@@ -66,10 +66,10 @@ public class PlayerLocomotion : MonoBehaviour
     private void HandleMovement()
     {  
         movementSpeed = HandleSpeed();
-        Vector3 forward = CameraManager.instance.transform.forward;
-        forward.y = 0;
+        Vector3 forward = CameraManager.instance.transform.forward; //finds the vector of the camera's forward direction
+        forward.y = 0; //sets the y value to 0 so that the player does not move up or down
         moveDirection = forward * vInput + CameraManager.instance.transform.right * hInput;
-        moveDirection.Normalize();
+        moveDirection.Normalize(); //normalizes the vector so that the player does not move faster when moving diagonally
 
         if(moveDirection != Vector3.zero)
         {
@@ -83,12 +83,12 @@ public class PlayerLocomotion : MonoBehaviour
     {
         Vector3 targetDirection = Vector3.zero;
 
-        targetDirection = CameraManager.instance.transform.forward * vInput;
-        targetDirection += CameraManager.instance.transform.right * hInput;
+        targetDirection = CameraManager.instance.transform.forward * vInput; //If the player is moving in this direction then the target direction adds the camera's forward direction
+        targetDirection += CameraManager.instance.transform.right * hInput; //If the player is moving in this direction then the target direction adds the camera's right direction
         targetDirection.y = 0;
-        targetDirection.Normalize();
+        targetDirection.Normalize(); 
 
-        if(!fixedRotation)
+        if(!fixedRotation) //If the player is not fixed in rotation then the player will rotate towards the target direction
         {
             if(targetDirection == Vector3.zero) targetDirection = transform.forward;
 
@@ -103,20 +103,18 @@ public class PlayerLocomotion : MonoBehaviour
             cameraForward.Normalize();
 
             Quaternion targetRotation = Quaternion.LookRotation(cameraForward);
-            playerRotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+            playerRotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime); //Smooths the rotation of the player
         }
         
-
-        transform.rotation = playerRotation;
+        transform.rotation = playerRotation; //assigns rotation
     }
 
     private void HandleFallingAndLanding()
     {
-        
         RaycastHit hit;
         Vector3 rayCastOrigin = transform.position;
 
-        if(Physics.SphereCast(rayCastOrigin + new Vector3(0, rayCastheighOffset, 0), 0.2f, Vector3.down, out hit, maxDistance, groundLayer))
+        if(Physics.SphereCast(rayCastOrigin + new Vector3(0, rayCastheighOffset, 0), 0.2f, Vector3.down, out hit, maxDistance, groundLayer)) //Shoots a raycast and returns true if it hits an object with ground layer
         {
             inAirTimer = 0;
             isGrounded = true;
@@ -130,7 +128,7 @@ public class PlayerLocomotion : MonoBehaviour
         if(!isGrounded)
         {
             inAirTimer += Time.deltaTime;
-            velocity.y += gravityIntensity * inAirTimer * Time.deltaTime;
+            velocity.y += gravityIntensity * inAirTimer * Time.deltaTime; //Increases the velocity of the player as they fall
         }
         else
         {
@@ -142,13 +140,13 @@ public class PlayerLocomotion : MonoBehaviour
 
         playerController.Move(velocity * Time.deltaTime);
         
-    }// fix checking isGrounded
+    }
 
 
     //To be worked on the physics
     public void HandleJumping() 
     {
-        if(!isGrounded) return;
+        if(!isGrounded) return; //dont jump if in air
         isJumping = true;
         float jumpPos = Mathf.Sqrt(jumpHeight * -2f * gravityIntensity);
         velocity.y = jumpPos;
@@ -164,7 +162,7 @@ public class PlayerLocomotion : MonoBehaviour
     {
         float startTime = Time.time;
 
-        while(Time.time < startTime + dashTime)
+        while(Time.time < startTime + dashTime) //continues if current time is less than the time it started plus the dash time
         {
             playerController.Move(lastfacingDirection * dashSpeed * Time.deltaTime);
 
@@ -172,6 +170,8 @@ public class PlayerLocomotion : MonoBehaviour
         }
     }
     
+    ///Summary of the method
+    ///This method is used to handle the speed of the player based on the state of the player and returns accordingly
     private float HandleSpeed()
     {
         if(isGrounded && !isRunning)

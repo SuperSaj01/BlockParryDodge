@@ -101,10 +101,10 @@ public class PlayerManager : CharacterManager
     private void OnEnable()
     {
         //Input Events
-        inputManager.OnAttackBtnPressed += _OnAttackBtnPressed; // attack needs to be changed to interact
-        inputManager.OnJumpBtnPressed += _OnJumpBtnPressed; // jump
+        inputManager.OnAttackBtnPressed += _OnAttackBtnPressed;
+        inputManager.OnJumpBtnPressed += _OnJumpBtnPressed; 
         inputManager.OnRollBtnPressed += _OnRollBtnPressed;
-        inputManager.OnLockCameraPressed += _OnLockCameraPressed; // lock camera
+        inputManager.OnLockCameraPressed += _OnLockCameraPressed;
 
         //World Events
         WorldManager.instance.OnLoadSceneEvent += _OnSceneLoaded;
@@ -154,38 +154,49 @@ public class PlayerManager : CharacterManager
     }
 
     void HandleMovementLocomotion()
-    {
-            playerLocomotion.hInput = inputManager.movementInput.x;
-            playerLocomotion.vInput = inputManager.movementInput.y;
-            
-            playerLocomotion.isRunning = inputManager.GetRunningBool();
+    {       
+        //Assigns the input values to the player locomotion
+        playerLocomotion.hInput = inputManager.movementInput.x;
+        playerLocomotion.vInput = inputManager.movementInput.y;            
+        
+        //Assigns the running bool to the player locomotion based on the input 
+        playerLocomotion.isRunning = inputManager.GetRunningBool();
 
-            inputManager.HandleAllInputs();
-            playerLocomotion.HandleAllMovement();
+        //Controls the methods that need to be called each frame on other scripts
+        inputManager.HandleAllInputs();
+        playerLocomotion.HandleAllMovement();
     }
 
  
 
     void HandleCamera()
     {
-            camManager.camHInput = inputManager.cameraInput.x;
-            camManager.camVInput = inputManager.cameraInput.y;
+        //Assigns the input to the camera 
+        camManager.camHInput = inputManager.cameraInput.x;
+        camManager.camVInput = inputManager.cameraInput.y;
     }    
     
 
     #region Communicate with other scripts
         #region Event
 
+    /// Summary of the method
+    /// Event for when the lock camera button is pressed
     void _OnLockCameraPressed(object sender, EventArgs e)
     {
         playerLocomotion.fixedRotation = !playerLocomotion.fixedRotation;
     }
 
+    /// Summary of the method
+    /// Notifies other scripts that the jump button has been pressed
     private void _OnJumpBtnPressed(object sender, EventArgs e)
     {
         if(isInteracting) return;
         playerLocomotion.HandleJumping();
     }
+
+    /// Summary of the method
+    /// Notifies other scripts that the roll button has been pressed
     private void _OnRollBtnPressed(object sender, EventArgs e)
     {
         if(isInteracting) return;    
@@ -193,6 +204,8 @@ public class PlayerManager : CharacterManager
         PlayActionAnimation("Rolling", true, IsOwner);        
     }
 
+    /// Summary of the method
+    /// Notifies other scripts that the attack button has been pressed
     private void _OnAttackBtnPressed(object sender, EventArgs e)
     {
         if(isInteracting) return;
@@ -205,15 +218,15 @@ public class PlayerManager : CharacterManager
         string checkIfPlayerIsViableForDamage = playerCombatManager.ValidateDamage();
         if(checkIfPlayerIsViableForDamage == "")
         {
-            characterStatHandler.TakeDamage(damage);
+            characterStatHandler.TakeDamage(damage); //if the player doesnt roll or parry then damage is applied
         }
         else if(checkIfPlayerIsViableForDamage == "invalid")
         {
-            Debug.Log("didnt do jack");
+            Debug.Log("Invalid"); //does nothing
         }
         else if(checkIfPlayerIsViableForDamage == "blocked")
         {
-            characterStatHandler.TakePostureDamage(damage);
+            characterStatHandler.TakePostureDamage(damage); //if the player blocks then posture damage is applied
         }
     }    
     

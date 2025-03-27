@@ -42,6 +42,7 @@ public class UIManager : MonoBehaviour
 
     private void LobbyManager_OnLobbyListChanged(object sender, LobbyManager.OnLobbyListChangedEventArgs e)
     {
+        if(e.lobbyList == null) return; //Stops any null reference exceptions
         UpdateLobbyList(e.lobbyList);
         temporaryFoundLobbies = e.lobbyList;
     }
@@ -53,7 +54,7 @@ public class UIManager : MonoBehaviour
             Destroy(child);
         }
 
-        foreach (Lobby lobby in lobbyList) 
+        foreach (Lobby lobby in lobbyList) //For each lobby in the list it will create a UI element and place its position relative to its order 
         {
             Transform lobbySingleTransform = Instantiate(lobbySingleTemplate, parent);
             SingleLobbyUI lobbyListSingleUI = lobbySingleTransform.GetComponent<SingleLobbyUI>();

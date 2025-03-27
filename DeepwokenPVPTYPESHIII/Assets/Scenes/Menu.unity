@@ -2789,7 +2789,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lobbySingleTemplate: {fileID: 8425260758196134936, guid: e8b4932a8d42c60459b368ff240a16d7, type: 3}
-  parent: {fileID: 0}
+  parent: {fileID: 247879122}
 --- !u!1 &1604769407
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,12 +13,17 @@ public class AnimatorManager : MonoBehaviour
 
     private void Awake () 
     {
+        //Assign references to variables by grabbing the componenets 
         anim = GetComponent<Animator>();
         playerManager = GetComponent<PlayerManager>();
         horizontal = Animator.StringToHash("Horizontal");
         vertical = Animator.StringToHash("Vertical");   
     }
 
+    ///Summary of method
+    /// This method is responsible for updating the animator values for the player character
+    /// It takes in the horizontal and vertical movement values, and the isRunning and isBlocking bools
+    /// It then snaps the values to the nearest whole number to ensure the animations are smooth
     public void UpdateAnimatorValues(float horizontalMovement, float verticalMovement, bool isRunning, bool isBlocking)
     {
 
@@ -98,6 +103,8 @@ public class AnimatorManager : MonoBehaviour
         anim.SetFloat(vertical, snappedVertical, 0.1f, Time.deltaTime);
     }
 
+    ///Summary of method
+    /// This method is responsible for playing the action animations for the player character
     public void PlayActionAnimation(string animationID, bool isInteracting, bool IsOwner)
     {
         anim.SetBool("isInteracting", isInteracting);
@@ -108,8 +115,10 @@ public class AnimatorManager : MonoBehaviour
 
     }
 
+
     public bool GetBool()
     {
+        //Getter of isInteracting bool
         return anim.GetBool("isInteracting");
     }
 }

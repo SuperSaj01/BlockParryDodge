@@ -13,8 +13,8 @@ public class CharacterManager : NetworkBehaviour
     
     protected virtual void Awake() 
     {
+        //Assigns references by grabbing the components
         animatorManager = GetComponent<AnimatorManager>();
-        //playerLocomotion = GetComponent<PlayerLocomotion>();
         characterNetworkManager = GetComponent<CharacterNetworkManager>();
         characterStatHandler = GetComponent<CharacterStatHandler>();
         playerCombatManager = GetComponent<PlayerCombatManager>();
@@ -33,6 +33,9 @@ public class CharacterManager : NetworkBehaviour
         UpdatePlayers();
         if(!IsOwner) return;
     }
+
+    ///Summary of method
+    ///Updates the players position, rotation, and stats and other needed variables to the network variables
     protected virtual void UpdatePlayers()
     {
         if(IsOwner)
@@ -41,8 +44,6 @@ public class CharacterManager : NetworkBehaviour
             characterNetworkManager.netPosition.Value = transform.position;
             //rotation
             characterNetworkManager.netRotation.Value = transform.rotation;
-            //animation
-
             //Stats:
             //health
             characterNetworkManager.netCurrentHealth.Value = characterStatHandler.currentHealth;
@@ -63,9 +64,6 @@ public class CharacterManager : NetworkBehaviour
                 characterNetworkManager.netRotation.Value,
                 characterNetworkManager.rotationSpeed);
 
-            //animation
-
-
             //Stats:
             //health
             characterStatHandler.currentHealth = characterNetworkManager.netCurrentHealth.Value;
@@ -74,6 +72,9 @@ public class CharacterManager : NetworkBehaviour
             
         }
     }
+
+    ///Summary of method
+    ///Ignores the colliders of the character controller and the damageable colliders
     void IgnoreMyOwnColliders()
     {
         Collider characterControllerCollider = GetComponent<Collider>();
@@ -83,15 +84,15 @@ public class CharacterManager : NetworkBehaviour
 
         foreach(Collider col in damageableColliders)
         {
-            ignoredColliders.Add(col);
+            ignoredColliders.Add(col); //adds all the damageable colliders to the list of ignored colliders
         }
-        ignoredColliders.Add(characterControllerCollider);
-
+        ignoredColliders.Add(characterControllerCollider); //adds the character controller collider to the list of ignored colliders
+        
         foreach(Collider col in ignoredColliders)
         {
             foreach(Collider otherCol in ignoredColliders)
             {
-                Physics.IgnoreCollision(col, otherCol, true);
+                Physics.IgnoreCollision(col, otherCol, true); //ignores each collider to the collision between other colliders in the list
             }
         }
     }
