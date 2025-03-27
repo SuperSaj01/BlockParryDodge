@@ -9,8 +9,8 @@ public class SingleLobbyUI : MonoBehaviour
 {
     
     [SerializeField] private TextMeshProUGUI lobbyNameText;
-    [SerializeField] private TextMeshProUGUI playersText;
     [SerializeField] private TextMeshProUGUI lobbyCodeText;
+    string code;
 
 
     private Lobby lobby;
@@ -18,7 +18,7 @@ public class SingleLobbyUI : MonoBehaviour
 
     private void Awake() {
         GetComponent<Button>().onClick.AddListener(() => {
-            LobbyManager.instance.JoinLobbyByCode(lobbyCodeText);
+            LobbyManager.instance.JoinLobbyByCode(code);
         });
     }
 
@@ -26,6 +26,7 @@ public class SingleLobbyUI : MonoBehaviour
         this.lobby = lobby;
 
         lobbyNameText.text = lobby.Name;
-        lobbyCodeText.text = lobby.Data[LobbyManager.RELAYCODE_KEY].Value; //change to lobby
+        lobbyCodeText.text = lobby.Data[LobbyManager.instance.LOBBYCODE_KEY].Value;
+        code = lobby.Data[LobbyManager.instance.LOBBYCODE_KEY].Value;
     }
 }

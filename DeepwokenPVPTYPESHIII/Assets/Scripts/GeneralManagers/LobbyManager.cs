@@ -14,6 +14,7 @@ using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using TMPro;
 using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 
 public class LobbyManager : MonoBehaviour
 {
@@ -26,6 +27,8 @@ public class LobbyManager : MonoBehaviour
     private float lobbyUpdateTimer;
 
     private string RELAYCODE_KEY = "RELAYCODE_KEY";
+    public string LOBBYCODE_KEY {get; private set;} = "LOBBYCODE_KEY";
+    private string lobbyCode;
     private string relayCode;
 
 
@@ -40,10 +43,8 @@ public class LobbyManager : MonoBehaviour
         public List<Lobby> lobbyList;
     }
 
-
-    private void Start()
+    void Awake()
     {
-
         if(instance == null)
         {
             instance = this;
@@ -52,7 +53,10 @@ public class LobbyManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
 
+    private void Start()
+    {
         playerName = "User" + UnityEngine.Random.Range(0, 100);
         Authenticate(playerName);
     }
@@ -122,7 +126,8 @@ public class LobbyManager : MonoBehaviour
                 Player = GetPlayer(),
                 //Can add a lobby data for different gamemodes. Might add in future
                 Data = new Dictionary<string, DataObject>{
-                    {RELAYCODE_KEY, new DataObject(DataObject.VisibilityOptions.Member, "0")}
+                    {RELAYCODE_KEY, new DataObject(DataObject.VisibilityOptions.Member, "0")},
+                    {LOBBYCODE_KEY, new DataObject(DataObject.VisibilityOptions.Public, "0")}
                 }
             };
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyname, maxPlayers, createLobbyOptions);
@@ -130,9 +135,7 @@ public class LobbyManager : MonoBehaviour
             hostLobby = lobby;
             joinedLobby = hostLobby;
 
-            Debug.Log("We created: " + lobby.Name);
-            Debug.Log(hostLobby.LobbyCode); // how to access lobby code;
-            
+            lobbyCode = hostLobby.LobbyCode;
             PrintPlayers(hostLobby);
             
 
@@ -142,6 +145,8 @@ public class LobbyManager : MonoBehaviour
         {
             Debug.Log(e);
         }
+
+        UpdateLobbyCode();        
         
     }
 
@@ -177,8 +182,8 @@ public class LobbyManager : MonoBehaviour
             QueryResponse lobbyListQueryResponse = await LobbyService.Instance.QueryLobbiesAsync(queryLobbiesOptions);
          
             OnLobbyListChanged?.Invoke(this, new OnLobbyListChangedEventArgs { lobbyList = lobbyListQueryResponse.Results });
-
-
+            Debug.Log("Invoked");
+            Debug.Log(lobbyListQueryResponse.Results.Count);
         }
         catch(LobbyServiceException e)
         {
@@ -194,6 +199,15 @@ public class LobbyManager : MonoBehaviour
         Debug.Log("Joining lobby with code " + joinCode);
         JoinLobbyByCode(joinCode);
     }
+
+    public async void JoinLobby(Lobby lobby) {
+        Player player = GetPlayer();
+
+        joinedLobby = await LobbyService.Instance.JoinLobbyByIdAsync(lobby.Id, new JoinLobbyByIdOptions {
+            Player = player
+        });
+    }
+
     public void CreateLobbyBTN(string joinCode)
     {
         codeText.GetComponent<TMP_Text>().text = joinCode; 
@@ -203,7 +217,7 @@ public class LobbyManager : MonoBehaviour
     #region  Lobby Functions -- Joining
     public async void JoinLobbyByCode(string lobbyCode)
     {
-        Debug.Log("Joining lobby " + lobbyCode);
+        Debug.Log(lobbyCode);
         try{
             JoinLobbyByCodeOptions joinLobbyByCodeOptions  = new JoinLobbyByCodeOptions
             {
@@ -237,7 +251,7 @@ public class LobbyManager : MonoBehaviour
         Debug.Log("Players in lobby " + lobby.Name);
         foreach(var player in lobby.Players)
         {
-            Debug.Log(player.Id + " " + player.Data["PlayerName"].Value);
+            
         }
     }
 
@@ -262,6 +276,25 @@ public class LobbyManager : MonoBehaviour
                     }
                 };
     }
+
+    private async void UpdateLobbyCode()
+    {
+        try
+        {
+            Lobby lobby = await LobbyService.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions
+            {
+                Data = new Dictionary<string, DataObject>
+                {
+                    {LOBBYCODE_KEY, new DataObject(DataObject.VisibilityOptions.Public, lobbyCode)}
+                }
+            });
+        }
+        catch(LobbyServiceException e)
+        {
+            Debug.Log(e);
+        }
+    }
+    
 
     private async void UpdatePlayerName(string newPlayerName)
     {
@@ -300,6 +333,14 @@ public class LobbyManager : MonoBehaviour
         if(AuthenticationService.Instance.PlayerId == joinedLobby.HostId) return true;
         else return false;
     }
+
+
+#region Temppossivble
+
+   
+
+#endregion
+
 //Starting Game ------------------------------------#endregion
 
     public async void StartGameBTN()
