@@ -418,6 +418,45 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""User Input"",
+            ""id"": ""8081d446-f582-4ad5-bf68-bc64d2d7cd78"",
+            ""actions"": [
+                {
+                    ""name"": ""Toggle Menu"",
+                    ""type"": ""Button"",
+                    ""id"": ""9bd41b45-7b10-40aa-9867-20cb17262de7"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""a4aa8ef2-7087-4286-8ddf-c564de64aa07"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Toggle Menu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""48e3d697-b16a-4c1a-ad2e-fabf4c3dd838"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Toggle Menu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -434,6 +473,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_PlayerActions_BasicAttack = m_PlayerActions.FindAction("Basic Attack", throwIfNotFound: true);
         m_PlayerActions_LockCamera = m_PlayerActions.FindAction("LockCamera", throwIfNotFound: true);
         m_PlayerActions_Blocking = m_PlayerActions.FindAction("Blocking", throwIfNotFound: true);
+        // User Input
+        m_UserInput = asset.FindActionMap("User Input", throwIfNotFound: true);
+        m_UserInput_ToggleMenu = m_UserInput.FindAction("Toggle Menu", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -631,6 +673,52 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         }
     }
     public PlayerActionsActions @PlayerActions => new PlayerActionsActions(this);
+
+    // User Input
+    private readonly InputActionMap m_UserInput;
+    private List<IUserInputActions> m_UserInputActionsCallbackInterfaces = new List<IUserInputActions>();
+    private readonly InputAction m_UserInput_ToggleMenu;
+    public struct UserInputActions
+    {
+        private @PlayerControls m_Wrapper;
+        public UserInputActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @ToggleMenu => m_Wrapper.m_UserInput_ToggleMenu;
+        public InputActionMap Get() { return m_Wrapper.m_UserInput; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(UserInputActions set) { return set.Get(); }
+        public void AddCallbacks(IUserInputActions instance)
+        {
+            if (instance == null || m_Wrapper.m_UserInputActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_UserInputActionsCallbackInterfaces.Add(instance);
+            @ToggleMenu.started += instance.OnToggleMenu;
+            @ToggleMenu.performed += instance.OnToggleMenu;
+            @ToggleMenu.canceled += instance.OnToggleMenu;
+        }
+
+        private void UnregisterCallbacks(IUserInputActions instance)
+        {
+            @ToggleMenu.started -= instance.OnToggleMenu;
+            @ToggleMenu.performed -= instance.OnToggleMenu;
+            @ToggleMenu.canceled -= instance.OnToggleMenu;
+        }
+
+        public void RemoveCallbacks(IUserInputActions instance)
+        {
+            if (m_Wrapper.m_UserInputActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IUserInputActions instance)
+        {
+            foreach (var item in m_Wrapper.m_UserInputActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_UserInputActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public UserInputActions @UserInput => new UserInputActions(this);
     public interface IPlayerMovementActions
     {
         void OnMovement(InputAction.CallbackContext context);
@@ -644,5 +732,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnBasicAttack(InputAction.CallbackContext context);
         void OnLockCamera(InputAction.CallbackContext context);
         void OnBlocking(InputAction.CallbackContext context);
+    }
+    public interface IUserInputActions
+    {
+        void OnToggleMenu(InputAction.CallbackContext context);
     }
 }

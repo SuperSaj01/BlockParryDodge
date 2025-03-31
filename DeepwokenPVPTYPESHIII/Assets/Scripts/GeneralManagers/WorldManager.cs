@@ -10,10 +10,12 @@ public class WorldManager : NetworkBehaviour
     public static WorldManager instance { get; private set; }
 
     public event Action OnLoadSceneEvent;
+    
+    public event Action OnRespawnEvent;
 
     [SerializeField] private SpawnPointSO testingSpawnPoints; //to be changed to a list of spawn points
 
-    private static Dictionary<PlayerManager, ulong> playerDict = new Dictionary<PlayerManager, ulong>();
+    //private static Dictionary<PlayerManager, ulong> playerDict = new Dictionary<PlayerManager, ulong>();
     
     private void Awake() 
     {
@@ -34,7 +36,7 @@ public class WorldManager : NetworkBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    #region[Scenes]
+    #region Scenes
     public void StartCoroutineLoadNewGameBTN()
     {
         StartCoroutine(LoadNewGame());
@@ -49,18 +51,68 @@ public class WorldManager : NetworkBehaviour
         OnLoadSceneEvent?.Invoke();
         
 
-        if (playerDict.Count > 0)
+        /*if (playerDict.Count > 0)
         {
             foreach (var player in playerDict.Keys)
             {
                 player.transform.position = testingSpawnPoints.spawnPoints[0];
             }
-        }
+        } */
+        yield return null;   
+    }
+
+    public void LoadStartScene()
+    {
+        StartCoroutine(LoadStartSceneCoroutine());
+    }
+
+    private IEnumerator LoadStartSceneCoroutine()
+    {
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("Menu", LoadSceneMode.Single);
+        
+        Debug.Log("Scene Loaded");
+        
         yield return null;   
     }
     #endregion
 
-    #region[Player Management]
+    #region RPCs
+    [ServerRpc]
+    public void OpenDeathMenuServerRpc()
+    {
+        if(IsServer)
+        {
+            OpenMenuClientRpc();
+        }  
+    }
+
+    [ClientRpc]
+    void OpenMenuClientRpc()
+    {
+        if (IsOwner)
+        {
+            UIManager.instance.OpenGlobalMenu();
+        }
+    }
+    [ClientRpc]
+    void CloseMenuClientRpc()
+    {
+        if(IsOwner)
+        {
+            UIManager.instance.CloseMenu();
+        }
+    }
+    [ServerRpc]
+    void RespawnServerRpc()
+    {
+        //OnRespawnEvent?.Invoke(); // Custom function to reset health, posture, etc.
+        CloseMenuClientRpc();
+    }
+    #endregion
+
+
+
+   /* #region[Player Management]
     public void AddPlayer(PlayerManager player, ulong playerId)
     {
         if (!playerDict.ContainsKey(player))
@@ -75,12 +127,12 @@ public class WorldManager : NetworkBehaviour
     }
 
     public ulong GetPlayerId(PlayerManager playerManager)
-{
-    if (playerDict.TryGetValue(playerManager, out ulong playerId))
     {
-        return playerId;
+        if (playerDict.TryGetValue(playerManager, out ulong playerId))
+        {
+            return playerId;
+        }
+        return 0; // Return null if the player is not found
     }
-    return 0; // Return null if the player is not found
-}
-    #endregion
+    #endregion */
 }

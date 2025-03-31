@@ -18,6 +18,7 @@ public class PlayerManager : CharacterManager
 
     bool isRunning;
     public bool isBlocking {get; private set;}
+    bool isInMenu;
 
     public bool isInteracting;
 
@@ -48,10 +49,12 @@ public class PlayerManager : CharacterManager
     {
         base.Update();
 
+        if(isInMenu) return;
         UpdatePlayers();
         if(!IsOwner) return;
         //Handle states
         //Need to move and change
+
         if(isBlocking) isRunning = false;
         isBlocking = inputManager.isBlocking;
         playerCombatManager.HandleBlocking(isBlocking);
@@ -88,8 +91,6 @@ public class PlayerManager : CharacterManager
         {
             CameraManager.instance.player = this;
         }
-
-        WorldManager.instance.AddPlayer(this, NetworkManager.Singleton.LocalClientId);
     } 
     
     void OnCharacterChange()
@@ -105,6 +106,8 @@ public class PlayerManager : CharacterManager
         inputManager.OnJumpBtnPressed += _OnJumpBtnPressed; 
         inputManager.OnRollBtnPressed += _OnRollBtnPressed;
         inputManager.OnLockCameraPressed += _OnLockCameraPressed;
+        //UI events
+        inputManager.OnMenuTogglePressed += _OnMenuTogglePressed;
 
         //World Events
         WorldManager.instance.OnLoadSceneEvent += _OnSceneLoaded;
@@ -117,6 +120,7 @@ public class PlayerManager : CharacterManager
         inputManager.OnJumpBtnPressed -= _OnJumpBtnPressed;
         inputManager.OnRollBtnPressed -= _OnRollBtnPressed;
         inputManager.OnLockCameraPressed -= _OnLockCameraPressed;
+        inputManager.OnMenuTogglePressed -= _OnMenuTogglePressed;
         WorldManager.instance.OnLoadSceneEvent -= _OnSceneLoaded;
     }
     #endregion
@@ -191,7 +195,7 @@ public class PlayerManager : CharacterManager
     /// Notifies other scripts that the jump button has been pressed
     private void _OnJumpBtnPressed(object sender, EventArgs e)
     {
-        if(isInteracting) return;
+        if(isInteracting || isInMenu) return;
         playerLocomotion.HandleJumping();
     }
 
@@ -199,7 +203,7 @@ public class PlayerManager : CharacterManager
     /// Notifies other scripts that the roll button has been pressed
     private void _OnRollBtnPressed(object sender, EventArgs e)
     {
-        if(isInteracting) return;    
+        if(isInteracting || isInMenu) return;    
         playerLocomotion.HandleRolling();
         PlayActionAnimation("Rolling", true, IsOwner);        
     }
@@ -208,7 +212,7 @@ public class PlayerManager : CharacterManager
     /// Notifies other scripts that the attack button has been pressed
     private void _OnAttackBtnPressed(object sender, EventArgs e)
     {
-        if(isInteracting) return;
+        if(isInteracting || isInMenu) return;
         playerCombatManager.AttackBtnPressed();
     } 
         #endregion
@@ -260,6 +264,15 @@ public class PlayerManager : CharacterManager
 
     private void _OnSceneLoaded()
     {
-        WorldManager.instance.AddPlayer(this, NetworkManager.Singleton.LocalClientId);
+        //WorldManager.instance.AddPlayer(this, NetworkManager.Singleton.LocalClientId);
+    }
+
+    private void _OnMenuTogglePressed(object sender, EventArgs e)
+    {
+        if(IsOwner)
+        {
+            isInMenu = !isInMenu;
+            UIManager.instance.ToggleLocalMenu();
+        }
     }
 }

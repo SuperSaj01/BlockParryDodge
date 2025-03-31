@@ -30,6 +30,7 @@ public class InputManager : MonoBehaviour
     public event EventHandler OnRollBtnPressed;
     public event EventHandler OnAttackBtnPressed;
     public event EventHandler OnLockCameraPressed;
+    public event EventHandler OnMenuTogglePressed;
 
     private void Awake() 
     { 
@@ -69,6 +70,10 @@ public class InputManager : MonoBehaviour
             playerControls.PlayerActions.LockCamera.performed += i => 
             {
                 OnLockCameraPressed?.Invoke(this, EventArgs.Empty);
+            };
+            playerControls.UserInput.ToggleMenu.performed += i => 
+            {
+                OnMenuTogglePressed?.Invoke(this, EventArgs.Empty);
             };
         }
 

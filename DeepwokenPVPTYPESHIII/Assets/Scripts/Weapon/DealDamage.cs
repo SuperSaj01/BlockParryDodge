@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 using Unity.Netcode;
 using UnityEngine;
 
-public class DealDamage : NetworkBehaviour
+public class DealDamage : MonoBehaviour
 {
 
     public PlayerManager? ownPlayer;

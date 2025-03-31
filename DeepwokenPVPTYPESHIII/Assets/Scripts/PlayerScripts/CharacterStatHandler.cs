@@ -11,27 +11,30 @@ public class CharacterStatHandler : MonoBehaviour
     [SerializeField] private HealthSO healthSO;
 
     [SerializeField] private GameObject healthSlider;
-    private ISliderHandler healthHandler;
     [SerializeField] private GameObject postureSlider;
-     private ISliderHandler postureHandler;
+     
 
     [Header("Health")]
     private float maxHealth;
     public float currentHealth; 
     private float resistance = 0f;
-    private int regenAmount = 2;
-    private int timeUntilRegen = 10;
+    private int regenAmount = 5;
+    private int timeUntilRegen = 2;
     private int lastTimeSinceDamage;
 
 
     [Header("Posture")]
-    private float maxPosture; 
+    private float maxPosture = 25f;
     public float currentPosture; 
 
     [Header("Windows")]
     public float rollWindow = 5f;
     public float parryWindow = 4f;
 
+    [Header("Sliders")]
+    private ISliderHandler healthHandler;
+    private ISliderHandler postureHandler;
+    private List<ISliderHandler> sliderHandlers = new List<ISliderHandler>();
 
     private void Awake()
     {
@@ -51,6 +54,10 @@ public class CharacterStatHandler : MonoBehaviour
         {
             TakeDamage(5);
         }
+        if(Input.GetKeyDown(KeyCode.J))
+        {
+            HealHealth(5);
+        }
 
         if(Time.time - lastTimeSinceDamage >= timeUntilRegen)
         {
@@ -65,8 +72,11 @@ public class CharacterStatHandler : MonoBehaviour
         healthHandler = healthSlider.GetComponent<ISliderHandler>();
         postureHandler = postureSlider.GetComponent<ISliderHandler>();
 
-        Instantiate(healthSlider);
-        Instantiate(postureSlider);
+        sliderHandlers.Add(healthHandler);
+        sliderHandlers.Add(postureHandler);
+
+        healthHandler.SetMaxValue(healthSO.maxHealth);
+        postureHandler.SetMaxValue(maxPosture);
     }
 
     public void HealHealth(int healAmt)
@@ -76,7 +86,7 @@ public class CharacterStatHandler : MonoBehaviour
         {
             currentHealth = healthSO.maxHealth; //Stops the health from going beyond max
         }
-        healthHandler.IncreaseValue(healAmt);
+        healthHandler.ChangeValue(currentHealth);
     }
 
     public void TakeDamage(float damage)
@@ -85,7 +95,7 @@ public class CharacterStatHandler : MonoBehaviour
         {
             float appliedDamage = damage * (1 - resistance); //resistance of character is applied to negate damage
             currentHealth -= appliedDamage;
-            healthHandler.ReduceValue(appliedDamage);
+            healthHandler.ChangeValue(currentHealth);
             lastTimeSinceDamage = (int)Time.time;
         }
         
@@ -97,7 +107,7 @@ public class CharacterStatHandler : MonoBehaviour
         if(currentPosture > 0)
         {
             currentPosture -= postureDamage; //damage is applied to posture
-            postureHandler.ReduceValue(postureDamage);
+            postureHandler.ChangeValue(currentPosture);
         }
         CheckIfPostureBroken();
     }
@@ -115,7 +125,7 @@ public class CharacterStatHandler : MonoBehaviour
     {
         if(currentPosture <= 0)
         {
-            postureHandler.ReduceValue(100f);
+            postureHandler.ChangeValue(0);
         }
     }
 

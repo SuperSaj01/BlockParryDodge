@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class HealthSlider : MonoBehaviour, ISliderHandler
 {
-    [SerializeField] Slider healthSlider;
+    [SerializeField] private Slider healthSlider;
+    [SerializeField] private TMP_Text text; // Declare a TMP_Text variable for TextMesh Pro
     private float smoothSpeed = 0.5f;
 
     private Coroutine changeCoroutine;
@@ -15,23 +17,27 @@ public class HealthSlider : MonoBehaviour, ISliderHandler
         healthSlider = GetComponent<Slider>();
     }
 
-    public void IncreaseValue(float amount)
+    public void ChangeValue(float currentAmount)
     {
-        ChangeValue(amount);
-    }
-    public void ReduceValue(float amount)
-    {
-        ChangeValue(-amount);
-    }
-    public void ChangeValue(float amount)
-    {
-        float targetValue = Mathf.Clamp(healthSlider.value + amount, 0, healthSlider.maxValue);
+        float targetValue = Mathf.Clamp(currentAmount, 0, healthSlider.maxValue);
 
         //Stop current coroutine if running
         if (changeCoroutine != null) StopCoroutine(changeCoroutine);
 
         // Start new coroutine
         changeCoroutine = StartCoroutine(SmoothChange(targetValue));
+    }
+
+    public void SetMaxValue(float maxValue)
+    {
+        healthSlider.maxValue = maxValue;
+        healthSlider.value = maxValue; // Set the current value to max as well
+    }
+    
+
+    public void SetValueToMax() 
+    {
+        healthSlider.value = healthSlider.maxValue;
     }
 
     private IEnumerator SmoothChange(float targetValue)
@@ -48,5 +54,11 @@ public class HealthSlider : MonoBehaviour, ISliderHandler
 
         // Ensure final value is set
         healthSlider.value = targetValue;
+    }
+
+    private void Update()
+    {
+        // Update the text to show the current value of the slider
+        text.text = Mathf.RoundToInt(healthSlider.value) + "/" + Mathf.RoundToInt(healthSlider.maxValue);
     }
 }

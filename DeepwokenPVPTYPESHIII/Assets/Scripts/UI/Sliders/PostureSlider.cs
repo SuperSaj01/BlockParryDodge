@@ -11,17 +11,19 @@ public class PostureSlider : MonoBehaviour, ISliderHandler
     {
         postureSlider = GetComponent<Slider>();
     }
+    public void ChangeValue(float currentAmount)
+    {
+        postureSlider.value = Mathf.Clamp(currentAmount, 0, postureSlider.maxValue);
+    }
 
-    public void IncreaseValue(float amount)
+    public void SetMaxValue(float maxValue)
     {
-        ChangeValue(amount);
+        postureSlider.maxValue = maxValue;
+        postureSlider.value = maxValue; // Set the current value to max as well
     }
-    public void ReduceValue(float amount)
+    
+    public void SetValueToMax()
     {
-        ChangeValue(-amount);
-    }
-    public void ChangeValue(float amount)
-    {
-        postureSlider.value = Mathf.Clamp(postureSlider.value + amount, 0, postureSlider.maxValue);
+        postureSlider.value = postureSlider.maxValue;
     }
 }
