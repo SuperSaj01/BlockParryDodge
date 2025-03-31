@@ -77,7 +77,7 @@ PrefabInstance:
       addedObject: {fileID: 5333426535610456184}
     - targetCorrespondingSourceObject: {fileID: -927199367670048503, guid: 43cf19174db63f549b650fd48a60e071, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 8268146649601875956}
+      addedObject: {fileID: 8278169385011783920}
     - targetCorrespondingSourceObject: {fileID: -927199367670048503, guid: 43cf19174db63f549b650fd48a60e071, type: 3}
       insertIndex: -1
       addedObject: {fileID: -4461746308466423179}
@@ -108,7 +108,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.03, y: 0.06, z: 1}
   m_Center: {x: 0.03, y: -0.02, z: -0.54}
---- !u!114 &8268146649601875956
+--- !u!114 &8278169385011783920
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -120,7 +120,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1625067391
+  GlobalObjectIdHash: 944966799
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1

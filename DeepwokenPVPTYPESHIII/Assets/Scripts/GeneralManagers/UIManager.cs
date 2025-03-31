@@ -27,7 +27,7 @@ public class UIManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        
+        if(LobbyManager.instance == null) return;
         LobbyManager.instance.OnLobbyListChanged += LobbyManager_OnLobbyListChanged;
     }
 
