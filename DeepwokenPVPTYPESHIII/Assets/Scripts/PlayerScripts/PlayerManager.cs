@@ -70,6 +70,10 @@ public class PlayerManager : CharacterManager
         {
             playerCombatManager.EquipWeapon(1, IsOwner);
         }
+        if(Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            playerCombatManager.EquipWeapon(2, IsOwner);
+        }
     }
     
     private void FixedUpdate()
@@ -95,7 +99,7 @@ public class PlayerManager : CharacterManager
     } 
     
     void OnCharacterChange()
-    {
+    {   
         playerCombatManager.InitiliaseStats(characterStatHandler.rollWindow, characterStatHandler.parryWindow);
     }
 
@@ -218,22 +222,7 @@ public class PlayerManager : CharacterManager
     } 
         #endregion
 
-    public void HandleDamage(float damage)
-    {
-        string checkIfPlayerIsViableForDamage = playerCombatManager.ValidateDamage();
-        if(checkIfPlayerIsViableForDamage == "")
-        {
-            characterStatHandler.TakeDamage(damage); //if the player doesnt roll or parry then damage is applied
-        }
-        else if(checkIfPlayerIsViableForDamage == "invalid")
-        {
-            Debug.Log("Invalid"); //does nothing
-        }
-        else if(checkIfPlayerIsViableForDamage == "blocked")
-        {
-            characterStatHandler.TakePostureDamage(damage); //if the player blocks then posture damage is applied
-        }
-    }    
+    
     
     public void PlayActionAnimation(string animationID, bool isInteracting, bool IsOwner)
     {

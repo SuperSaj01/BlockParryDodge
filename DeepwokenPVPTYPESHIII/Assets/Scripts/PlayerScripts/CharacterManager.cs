@@ -96,4 +96,21 @@ public class CharacterManager : NetworkBehaviour
             }
         }
     }
+
+    public void HandleDamage(float damage)
+    {
+        string checkIfPlayerIsViableForDamage = playerCombatManager.ValidateDamage();
+        if(checkIfPlayerIsViableForDamage == "")
+        {
+            characterStatHandler.TakeDamage(damage); //if the player doesnt roll or parry then damage is applied
+        }
+        else if(checkIfPlayerIsViableForDamage == "invalid")
+        {
+            Debug.Log("Invalid"); //does nothing
+        }
+        else if(checkIfPlayerIsViableForDamage == "blocked")
+        {
+            characterStatHandler.TakePostureDamage(damage); //if the player blocks then posture damage is applied
+        }
+    }    
 }

@@ -91,6 +91,7 @@ public class GameMenu : MonoBehaviour
     public void QuitToMainMenu()
     {  
         CloseMenu();
+        Cursor.visible = true;
         QuitGame();   
     }
 

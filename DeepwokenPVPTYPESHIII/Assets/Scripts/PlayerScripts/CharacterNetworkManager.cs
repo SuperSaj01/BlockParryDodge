@@ -52,6 +52,7 @@ public class CharacterNetworkManager : NetworkBehaviour
     {
         player = GetComponent<PlayerManager>();
         var _ = ItemDatabse.GetWeaponByID(-1); //dummy call to initialise the database
+        var __ = CharacterDatabase.GetCharacterTypeByID(-1); //dummy call to initialise the database
     }
 
     [ServerRpc] //invoked by the client to be recieved by the server/host
@@ -109,7 +110,7 @@ public class CharacterNetworkManager : NetworkBehaviour
         {  
             if (NetworkManager.Singleton.ConnectedClients.TryGetValue(targetId, out var targetClient))
             {
-                PlayerManager targetPlayer = targetClient.PlayerObject.GetComponent<PlayerManager>();
+                CharacterManager targetPlayer = targetClient.PlayerObject.GetComponent<CharacterManager>();
                 if (targetPlayer != null)
                 {
                     DealDamageClientRpc(targetId, damage);

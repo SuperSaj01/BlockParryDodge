@@ -5,6 +5,9 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "ScriptableObjects/CharacterType")]
 public class CharacterSO : ScriptableObject
 {
+
+    [SerializeField] public int characterTypeID;
+
     public string characterName;
     public float health;
     public float posture;

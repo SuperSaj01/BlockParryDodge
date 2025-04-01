@@ -82,16 +82,16 @@ public class AnimatorManager : MonoBehaviour
         {
             if(horizontalMovement > 0)
             {
-                snappedHorizontal = -1.5f;
+                snappedHorizontal = -1f;
             }
             else
             {
-                snappedHorizontal = -2f;
+                snappedHorizontal = -1.1f;
             }
 
             if(verticalMovement > 0)
             {
-                snappedVertical = 1f;
+                snappedVertical = 0.5f;
             }
             else
             {

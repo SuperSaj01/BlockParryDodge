@@ -7,7 +7,6 @@ using UnityEngine.InputSystem;
 public class CharacterStatHandler : MonoBehaviour
 {   
     [Header("References")]
-    [SerializeField] private PlayerManager playerManager;
     [SerializeField] private HealthSO healthSO;
 
     [SerializeField] private GameObject healthSlider;
@@ -16,7 +15,7 @@ public class CharacterStatHandler : MonoBehaviour
 
     [Header("Health")]
     private float maxHealth;
-    public float currentHealth; 
+    public float currentHealth = 100f;
     private float resistance = 0f;
     private int regenAmount = 5;
     private int timeUntilRegen = 2;
@@ -38,9 +37,8 @@ public class CharacterStatHandler : MonoBehaviour
 
     private void Awake()
     {
-        playerManager = GetComponent<PlayerManager>();
         currentPosture = maxPosture;
-        currentHealth = healthSO.maxHealth;
+        //currentHealth = healthSO.maxHealth;
     }
 
     void Start()

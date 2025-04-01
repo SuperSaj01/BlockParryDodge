@@ -4,17 +4,19 @@ using UnityEngine;
 
 public static class PlayerDatabase
 {
-    private static Dictionary<ulong, PlayerManager> playerLookup = new Dictionary<ulong, PlayerManager>();
+    private static Dictionary<ulong, CharacterManager> playerLookup = new Dictionary<ulong, CharacterManager>();
 
-    public static void AddPlayer(ulong clientID, PlayerManager player)
+    public static void AddPlayer(ulong clientID, CharacterManager player)
     {
          if (!playerLookup.ContainsKey(clientID))
                 playerLookup.Add(clientID, player);
             else
                 Debug.LogWarning($"Duplicate Player ID {clientID} found in {player.name}!");
+
+        Debug.Log("Player added to database: " + player.name + " with ID: " + clientID);
     }
 
-    public static PlayerManager GetPlayerByID(ulong id)
+    public static CharacterManager GetPlayerByID(ulong id)
     {
         return playerLookup.TryGetValue(id, out var player) ? player : null;
     }

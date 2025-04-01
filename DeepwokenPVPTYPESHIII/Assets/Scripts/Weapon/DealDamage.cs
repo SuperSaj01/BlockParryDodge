@@ -14,7 +14,7 @@ public class DealDamage : MonoBehaviour
     private float range;
     private Vector3 boxColliderSize;
     [SerializeField] private LayerMask layerMask;
-    List<PlayerManager> listOfTargets = new List<PlayerManager>();
+    List<CharacterManager> listOfTargets = new List<CharacterManager>();
 
     int offset = 1; //offset box collider (the detection) up from floor as it spawns on floor 
 
@@ -44,7 +44,7 @@ public class DealDamage : MonoBehaviour
         Debug.Log("Hit: " + playerColliders.Length + " targets");
         foreach (Collider col in playerColliders) // Loop through all detected colliders
         {
-            PlayerManager target = col.GetComponent<PlayerManager>();
+            CharacterManager target = col.GetComponent<CharacterManager>();
 
             if (target != null && target != ownPlayer) // Ignore self
             {
@@ -57,10 +57,10 @@ public class DealDamage : MonoBehaviour
 
 
 
-    void ValidateTarget(PlayerManager target)
+    void ValidateTarget(CharacterManager target)
 
     {
-        if(listOfTargets.Contains(target.GetComponent<PlayerManager>())) return;
+        if(listOfTargets.Contains(target)) return;
 
         listOfTargets.Add(target);
 

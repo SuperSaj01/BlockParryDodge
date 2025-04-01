@@ -136,7 +136,7 @@ public class PlayerCombatManager : MonoBehaviour
 
     #region Dealing damage and recieving damage
 
-    public void DealDamageToTarget(PlayerManager target)
+    public void DealDamageToTarget(CharacterManager target)
     {
         //handle whatever client sided logic here
         
