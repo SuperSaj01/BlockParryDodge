@@ -45,6 +45,7 @@ public class WorldManager : NetworkBehaviour
     public IEnumerator LoadNewGame()
     {
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("Testing", LoadSceneMode.Single);
+
            
         Debug.Log("Scene Loaded");
         
@@ -70,6 +71,7 @@ public class WorldManager : NetworkBehaviour
     {
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("Menu", LoadSceneMode.Single);
         
+
         Debug.Log("Scene Loaded");
         
         yield return null;   
@@ -91,7 +93,7 @@ public class WorldManager : NetworkBehaviour
     {
         if (IsOwner)
         {
-            UIManager.instance.OpenGlobalMenu();
+            GameMenu.instance.OpenGlobalMenu();
         }
     }
     [ClientRpc]
@@ -99,11 +101,11 @@ public class WorldManager : NetworkBehaviour
     {
         if(IsOwner)
         {
-            UIManager.instance.CloseMenu();
+            GameMenu.instance.CloseMenu();
         }
     }
     [ServerRpc]
-    void RespawnServerRpc()
+    public void RespawnServerRpc()
     {
         //OnRespawnEvent?.Invoke(); // Custom function to reset health, posture, etc.
         CloseMenuClientRpc();

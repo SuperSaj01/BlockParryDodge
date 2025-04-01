@@ -57,11 +57,7 @@ public class CharacterStatHandler : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.J))
         {
             HealHealth(5);
-        }
-
-        if(Time.time - lastTimeSinceDamage >= timeUntilRegen)
-        {
-            HealHealth(regenAmount);
+            Debug.Log("Hey");
         }
 
     }
@@ -81,7 +77,7 @@ public class CharacterStatHandler : MonoBehaviour
 
     public void HealHealth(int healAmt)
     {
-        currentHealth += healAmt * Time.deltaTime;
+        currentHealth += healAmt;
         if(currentHealth  > healthSO.maxHealth)
         {
             currentHealth = healthSO.maxHealth; //Stops the health from going beyond max
@@ -131,7 +127,7 @@ public class CharacterStatHandler : MonoBehaviour
 
     private void Die()
     {
-        Debug.Log("Peak. U ded");
+        WorldManager.instance.OpenDeathMenuServerRpc();
     }
 
 }

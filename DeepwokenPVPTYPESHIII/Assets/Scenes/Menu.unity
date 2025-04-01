@@ -1288,7 +1288,7 @@ GameObject:
   - component: {fileID: 509341446}
   m_Layer: 5
   m_Name: MenuScreen Canvas
-  m_TagString: Untagged
+  m_TagString: LobbyUI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1329,6 +1329,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27045c5a6c1fbde498a4eff42aec1942, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lobbySingleTemplate: {fileID: 8425260758196134936, guid: e8b4932a8d42c60459b368ff240a16d7, type: 3}
+  parent: {fileID: 247879122}
 --- !u!114 &509341447
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2000,7 +2002,7 @@ GameObject:
   - component: {fileID: 1088170946}
   - component: {fileID: 1088170945}
   m_Layer: 0
-  m_Name: TestLobby
+  m_Name: Lobby Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2719,9 +2721,8 @@ GameObject:
   - component: {fileID: 1598537285}
   - component: {fileID: 1598537286}
   - component: {fileID: 1598537284}
-  - component: {fileID: 1598537287}
   m_Layer: 0
-  m_Name: WorldManager
+  m_Name: World Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2776,20 +2777,6 @@ MonoBehaviour:
   SpawnWithObservers: 1
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
---- !u!114 &1598537287
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1598537283}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 572f9f7c4cc1aa347aae0cfce28e8382, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  lobbySingleTemplate: {fileID: 8425260758196134936, guid: e8b4932a8d42c60459b368ff240a16d7, type: 3}
-  parent: {fileID: 247879122}
 --- !u!1 &1604769407
 GameObject:
   m_ObjectHideFlags: 0
@@ -3527,6 +3514,52 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3087967619869800044, guid: fc256255edac3cc40b511587087d8d61, type: 3}
   m_PrefabInstance: {fileID: 1488610220}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1922600511
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1922600512}
+  - component: {fileID: 1922600513}
+  m_Layer: 0
+  m_Name: UI Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1922600512
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1922600511}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 7.046862, y: 0.3349978, z: -11.668526}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1922600513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1922600511}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 572f9f7c4cc1aa347aae0cfce28e8382, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isInMenu: 0
+  lobbyMenu: {fileID: 509341446}
 --- !u!1 &2094588866
 GameObject:
   m_ObjectHideFlags: 0
@@ -3952,3 +3985,4 @@ SceneRoots:
   - {fileID: 1598537285}
   - {fileID: 1088170946}
   - {fileID: 1072374134}
+  - {fileID: 1922600512}

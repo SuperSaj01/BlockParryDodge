@@ -18,9 +18,9 @@ public class PlayerManager : CharacterManager
 
     bool isRunning;
     public bool isBlocking {get; private set;}
-    bool isInMenu;
 
     public bool isInteracting;
+    bool isInMenu;
 
     private void Awake() 
     {
@@ -38,7 +38,7 @@ public class PlayerManager : CharacterManager
         clientId = NetworkManager.Singleton.LocalClientId;
     }
 
-    private void Start()
+    protected override void Start()
     {
         base.Start();
         
@@ -48,6 +48,7 @@ public class PlayerManager : CharacterManager
     protected override void Update()
     {
         base.Update();
+        isInMenu = GameMenu.instance.isInMenu;
 
         if(isInMenu) return;
         UpdatePlayers();
@@ -271,8 +272,12 @@ public class PlayerManager : CharacterManager
     {
         if(IsOwner)
         {
-            isInMenu = !isInMenu;
-            UIManager.instance.ToggleLocalMenu();
+            GameMenu.instance.ToggleLocalMenu();
         }
+    }
+
+    public void Died()
+    {
+
     }
 }
