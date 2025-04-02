@@ -29,6 +29,7 @@ public class InputManager : MonoBehaviour
     public event EventHandler OnJumpBtnPressed;
     public event EventHandler OnRollBtnPressed;
     public event EventHandler OnAttackBtnPressed;
+    public event EventHandler OnCriticalBtnPressed;
     public event EventHandler OnLockCameraPressed;
     public event EventHandler OnMenuTogglePressed;
 
@@ -67,6 +68,11 @@ public class InputManager : MonoBehaviour
             {
                 OnAttackBtnPressed?.Invoke(this, EventArgs.Empty);
             };
+            playerControls.PlayerActions.Critical.performed += i => 
+            {
+                OnCriticalBtnPressed?.Invoke(this, EventArgs.Empty);
+            };
+            
             playerControls.PlayerActions.LockCamera.performed += i => 
             {
                 OnLockCameraPressed?.Invoke(this, EventArgs.Empty);

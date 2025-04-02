@@ -15,6 +15,7 @@ public class PlayerManager : CharacterManager
 
     //temp
     public WeaponSO tempWempSO;
+    public CharacterSO characterType;
 
     bool isRunning;
     public bool isBlocking {get; private set;}
@@ -43,6 +44,7 @@ public class PlayerManager : CharacterManager
         base.Start();
         
         OnCharacterChange();
+
     }
 
     protected override void Update()
@@ -74,6 +76,14 @@ public class PlayerManager : CharacterManager
         {
             playerCombatManager.EquipWeapon(2, IsOwner);
         }
+        if(Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            characterType = CharacterDatabase.GetCharacterTypeByID(1);
+        }
+        if(Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            characterType = CharacterDatabase.GetCharacterTypeByID(2);
+        }
     }
     
     private void FixedUpdate()
@@ -94,6 +104,7 @@ public class PlayerManager : CharacterManager
 
         if(IsOwner)
         {
+            PlayerDatabase.AddPlayer(clientId, this);
             CameraManager.instance.player = this;
         }
     } 

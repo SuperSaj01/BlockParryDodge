@@ -10,6 +10,8 @@ public class CharacterManager : NetworkBehaviour
     protected AnimatorManager animatorManager;
     public CharacterNetworkManager characterNetworkManager {get; private set;}
     protected PlayerCombatManager playerCombatManager;
+
+    
     
     protected virtual void Awake() 
     {
@@ -33,6 +35,8 @@ public class CharacterManager : NetworkBehaviour
         UpdatePlayers();
         if(!IsOwner) return;
     }
+    
+ 
 
     ///Summary of method
     ///Updates the players position, rotation, and stats and other needed variables to the network variables
