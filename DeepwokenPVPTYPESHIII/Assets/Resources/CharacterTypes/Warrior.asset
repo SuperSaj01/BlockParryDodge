@@ -19,5 +19,5 @@ MonoBehaviour:
   stamina: 0
   resistance: 0
   parryWindow: 0
-  rollWindow: 0
-  characterHead: {fileID: 0}
+  rollWindow: 1.1
+  characterHead: {fileID: 8941303135301072139, guid: 8c3b1f5e794c93d49befb32b7994d79a, type: 3}
