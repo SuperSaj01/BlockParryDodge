@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7d5b2d9e8c44e94f9223d0d42ac92d8, type: 3}
   m_Name: Warrior
   m_EditorClassIdentifier: 
-  characterTypeID: 0
-  characterName: 
-  health: 0
-  posture: 0
-  stamina: 0
-  resistance: 0
-  parryWindow: 0
-  rollWindow: 1.1
+  characterTypeID: 2
+  characterName: Warrior
+  health: 100
+  posture: 5
+  stamina: 3
+  resistance: 0.08
+  parryWindow: 4
+  rollWindow: 5
   characterHead: {fileID: 8941303135301072139, guid: 8c3b1f5e794c93d49befb32b7994d79a, type: 3}

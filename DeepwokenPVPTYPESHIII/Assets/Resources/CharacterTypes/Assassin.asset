@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterTypeID: 1
   characterName: Assassin
-  health: 80
+  health: 85
   posture: 3
   stamina: 5
   resistance: 0.05
-  parryWindow: 2
-  rollWindow: 2
+  parryWindow: 4
+  rollWindow: 5
   characterHead: {fileID: 8941303135301072139, guid: f3364581a385f1947967bdfae9e051c1, type: 3}

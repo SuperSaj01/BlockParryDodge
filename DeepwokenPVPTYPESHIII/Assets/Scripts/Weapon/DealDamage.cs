@@ -25,6 +25,7 @@ public class DealDamage : MonoBehaviour
     public void SetWeaponStats(PlayerManager self, PlayerCombatManager playerCombatManager, float damage, float range, Vector3 boxColliderSize, LayerMask layerMask)
     {
         ownPlayer = self;
+        this.playerCombatManager = playerCombatManager;
         this.damage = damage;
         this.range = range;
         this.boxColliderSize = boxColliderSize;
@@ -41,14 +42,12 @@ public class DealDamage : MonoBehaviour
         Collider[] playerColliders = Physics.OverlapBox(center, boxColliderSize / 2, ownPlayer.transform.rotation, layerMask);
         if (playerColliders.Length == 0) return;
 
-        Debug.Log("Hit: " + playerColliders.Length + " targets");
         foreach (Collider col in playerColliders) // Loop through all detected colliders
         {
-            CharacterManager target = col.GetComponent<CharacterManager>();
+            PlayerManager target = col.GetComponent<PlayerManager>();
 
             if (target != null && target != ownPlayer) // Ignore self
             {
-                Debug.Log("Hit: " + target.name);
                 ValidateTarget(target);
                 return; // Stop after hitting the first valid target
             }
@@ -57,15 +56,14 @@ public class DealDamage : MonoBehaviour
 
 
 
-    void ValidateTarget(CharacterManager target)
-
+    void ValidateTarget(PlayerManager target)
     {
         if(listOfTargets.Contains(target)) return;
 
         listOfTargets.Add(target);
 
-        playerCombatManager.DealDamageToTarget(target);
-    
+        playerCombatManager.DealDamageToTarget(target, damage);
+
         listOfTargets.Remove(target);
     }
 

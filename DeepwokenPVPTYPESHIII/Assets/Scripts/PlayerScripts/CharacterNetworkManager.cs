@@ -110,7 +110,7 @@ public class CharacterNetworkManager : NetworkBehaviour
         {  
             if (NetworkManager.Singleton.ConnectedClients.TryGetValue(targetId, out var targetClient))
             {
-                CharacterManager targetPlayer = targetClient.PlayerObject.GetComponent<CharacterManager>();
+                PlayerManager targetPlayer = targetClient.PlayerObject.GetComponent<PlayerManager>();
                 if (targetPlayer != null)
                 {
                     DealDamageClientRpc(targetId, damage);
@@ -122,7 +122,6 @@ public class CharacterNetworkManager : NetworkBehaviour
     [ClientRpc]
     private void DealDamageClientRpc(ulong targetId, float damage)
     {
-    
         if(player.clientId == targetId)
         {
             PlayerDatabase.GetPlayerByID(targetId).HandleDamage(damage); //Fetches the player from the dictionary via key and applies the damage

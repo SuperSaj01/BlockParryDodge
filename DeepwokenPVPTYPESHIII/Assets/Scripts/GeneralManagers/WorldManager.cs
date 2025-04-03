@@ -13,6 +13,9 @@ public class WorldManager : NetworkBehaviour
     
     public event Action OnRespawnEvent;
 
+    public event Action OnOpenGlobalMenuCalled;
+    public event Action OnCloseGlobalMenuCalled;
+
     [SerializeField] private SpawnPointSO testingSpawnPoints; //to be changed to a list of spawn points
 
     //private static Dictionary<PlayerManager, ulong> playerDict = new Dictionary<PlayerManager, ulong>();
@@ -93,7 +96,8 @@ public class WorldManager : NetworkBehaviour
     {
         if (IsOwner)
         {
-            GameMenu.instance.OpenGlobalMenu();
+            OnOpenGlobalMenuCalled?.Invoke();
+            //GameMenu.instance.OpenGlobalMenu();
         }
     }
     [ClientRpc]
@@ -101,7 +105,8 @@ public class WorldManager : NetworkBehaviour
     {
         if(IsOwner)
         {
-            GameMenu.instance.CloseMenu();
+            OnCloseGlobalMenuCalled?.Invoke();
+            //GameMenu.instance.CloseMenu();
         }
     }
     [ServerRpc]

@@ -59,6 +59,7 @@ public class HealthSlider : MonoBehaviour, ISliderHandler
     private void Update()
     {
         // Update the text to show the current value of the slider
-        text.text = Mathf.RoundToInt(healthSlider.value) + "/" + Mathf.RoundToInt(healthSlider.maxValue);
+        //text.text = Mathf.RoundToInt(healthSlider.value) + "/" + Mathf.RoundToInt(healthSlider.maxValue);
+        text.text = Mathf.RoundToInt((float)(healthSlider.value / healthSlider.maxValue * 100)) + "%";
     }
 }

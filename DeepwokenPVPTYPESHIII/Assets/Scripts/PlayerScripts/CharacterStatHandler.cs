@@ -7,8 +7,6 @@ using UnityEngine.InputSystem;
 public class CharacterStatHandler : MonoBehaviour
 {   
     [Header("References")]
-    [SerializeField] private HealthSO healthSO;
-
     [SerializeField] private GameObject healthSlider;
     [SerializeField] private GameObject postureSlider;
      
@@ -26,6 +24,10 @@ public class CharacterStatHandler : MonoBehaviour
     private float maxPosture = 25f;
     public float currentPosture; 
 
+    [Header("Stamina")]
+    private float maxStamina;
+    public float stamina;
+
     [Header("Windows")]
     public float rollWindow = 5f;
     public float parryWindow = 4f;
@@ -35,56 +37,85 @@ public class CharacterStatHandler : MonoBehaviour
     private ISliderHandler postureHandler;
     private List<ISliderHandler> sliderHandlers = new List<ISliderHandler>();
 
-    private void Awake()
+    void Awake()
     {
-        currentPosture = maxPosture;
-        //currentHealth = healthSO.maxHealth;
+
     }
 
     void Start()
     {
+        AssignStats(CharacterDatabase.GetCharacterTypeByID(1)); // setting default value
+        
         AssignSliders();
     }
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.H))
-        {
-            TakeDamage(5);
-        }
-        if(Input.GetKeyDown(KeyCode.J))
-        {
-            HealHealth(5);
-            Debug.Log("Hey");
-        }
+        
 
+    }
+
+    public void AssignStats(CharacterSO characterType)
+    {
+        maxHealth = characterType.health;
+        maxPosture = characterType.posture;
+        resistance = characterType.resistance;
+        rollWindow = characterType.rollWindow;
+        parryWindow = characterType.parryWindow;
+        maxStamina = characterType.stamina;
+ 
+        InitialiseStats();
+    }
+
+    private void InitialiseStats()
+    {
+        
+
+        try
+        {
+            if (maxHealth <= 0)
+            {
+                throw new System.Exception("Default character was not assigned");
+            }
+            
+            currentHealth = maxHealth;
+            currentPosture = maxPosture;
+
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"Error Initializing Stats: {ex.Message}");
+            currentHealth = 90f; // Default value
+            currentPosture = 4f; // Default value
+        }
     }
 
 
     void AssignSliders()
     {
-        healthHandler = healthSlider.GetComponent<ISliderHandler>();
-        postureHandler = postureSlider.GetComponent<ISliderHandler>();
+        healthHandler = GameUIManager.instance.healthSlider.GetComponent<ISliderHandler>();
+        postureHandler = GameUIManager.instance.postureSlider.GetComponent<ISliderHandler>();
 
         sliderHandlers.Add(healthHandler);
         sliderHandlers.Add(postureHandler);
 
-        healthHandler.SetMaxValue(healthSO.maxHealth);
+        healthHandler.SetMaxValue(maxHealth);
         postureHandler.SetMaxValue(maxPosture);
     }
 
     public void HealHealth(int healAmt)
     {
         currentHealth += healAmt;
-        if(currentHealth  > healthSO.maxHealth)
+        if(currentHealth  > maxHealth)
         {
-            currentHealth = healthSO.maxHealth; //Stops the health from going beyond max
+            currentHealth = maxHealth; //Stops the health from going beyond max
         }
         healthHandler.ChangeValue(currentHealth);
     }
 
     public void TakeDamage(float damage)
     {
+        Debug.Log(this.name + damage + "yess");
         if(currentHealth  > 0)
         {
             float appliedDamage = damage * (1 - resistance); //resistance of character is applied to negate damage

@@ -6,7 +6,6 @@ using Unity.Netcode;
 
 public class GameMenu : MonoBehaviour
 {
-    public static GameMenu instance {get; private set;}
     
     [Header("Menu")]
     [SerializeField] private GameObject menuPanel;
@@ -20,14 +19,6 @@ public class GameMenu : MonoBehaviour
     private void Awake() 
     {
 
-        if(instance == null)
-        {
-            instance = this;
-        }    
-        else
-        {
-            Destroy(gameObject);
-        }
     }
 
     void Start()
@@ -35,6 +26,9 @@ public class GameMenu : MonoBehaviour
         menuPanel.SetActive(false);
         sliders.SetActive(true);
         respawnButton.gameObject.SetActive(false);
+
+        WorldManager.instance.OnOpenGlobalMenuCalled += OpenGlobalMenu;
+        WorldManager.instance.OnCloseGlobalMenuCalled += CloseMenu;
     }
 
      #region Menu

@@ -33,6 +33,8 @@ public class PlayerCombatManager : MonoBehaviour
     bool isBlocking = false;
     bool isInIFrames = false;
     bool wasBlocking = false;
+
+    float attackDelay = 2f;
     //private GameObject currentWeapon
 
 
@@ -43,8 +45,6 @@ public class PlayerCombatManager : MonoBehaviour
     private int i = 0;
 
 
-    [Header("Weapons Stats")]
-    private float damage;
 
     void Awake()
     {
@@ -53,14 +53,8 @@ public class PlayerCombatManager : MonoBehaviour
         // make current wep spawn from SO
     }
 
-    void Update()
-    {
-        
-    }
-
     public void HandleBlocking(bool isBlocking)
     {
-
         this.isBlocking = isBlocking;
 
         if(isBlocking && !wasBlocking && canParry)
@@ -136,11 +130,18 @@ public class PlayerCombatManager : MonoBehaviour
 
     #region Dealing damage and recieving damage
 
-    public void DealDamageToTarget(CharacterManager target)
+    public void DealDamageToTarget(PlayerManager target, float damage)
     {
         //handle whatever client sided logic here
         
         //tell server to handle the damage
+        StartCoroutine(InitiateAttack(target, attackDelay, damage));
+    }
+
+    private IEnumerator InitiateAttack(PlayerManager target, float attackDelay, float damage)
+    {
+    
+        yield return new WaitForSeconds(attackDelay);
         ulong targetId = target.OwnerClientId;
         playerManager.characterNetworkManager.RequestDamageServerRpc(targetId, damage);
     }

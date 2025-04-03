@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -10,12 +11,11 @@ public class PlayerManager : CharacterManager
     InputManager inputManager;
     PlayerLocomotion playerLocomotion;
     CameraManager camManager;
+    [SerializeField] GameMenu gameMenu;
 
     public ulong clientId {get; private set;}
-
-    //temp
-    public WeaponSO tempWempSO;
-    public CharacterSO characterType;
+    [SerializeField] Transform headPosition;
+    private GameObject headObject;
 
     bool isRunning;
     public bool isBlocking {get; private set;}
@@ -42,15 +42,12 @@ public class PlayerManager : CharacterManager
     protected override void Start()
     {
         base.Start();
-        
-        OnCharacterChange();
-
     }
 
     protected override void Update()
     {
         base.Update();
-        isInMenu = GameMenu.instance.isInMenu;
+        isInMenu = GameUIManager.instance.gameMenu.isInMenu;
 
         if(isInMenu) return;
         UpdatePlayers();
@@ -61,6 +58,11 @@ public class PlayerManager : CharacterManager
         if(isBlocking) isRunning = false;
         isBlocking = inputManager.isBlocking;
         playerCombatManager.HandleBlocking(isBlocking);
+
+        if(Input.GetKeyDown(KeyCode.H))
+        {
+            TakeDamage(5);
+        }
        
 
 
@@ -78,11 +80,14 @@ public class PlayerManager : CharacterManager
         }
         if(Input.GetKeyDown(KeyCode.Alpha3))
         {
-            characterType = CharacterDatabase.GetCharacterTypeByID(1);
+            CharacterSO characterType = CharacterDatabase.GetCharacterTypeByID(1);
+            OnCharacterChange(characterType);
         }
         if(Input.GetKeyDown(KeyCode.Alpha4))
-        {
-            characterType = CharacterDatabase.GetCharacterTypeByID(2);
+        {   
+            
+            CharacterSO characterType = CharacterDatabase.GetCharacterTypeByID(2);
+            OnCharacterChange(characterType);
         }
     }
     
@@ -109,8 +114,12 @@ public class PlayerManager : CharacterManager
         }
     } 
     
-    void OnCharacterChange()
+    void OnCharacterChange(CharacterSO characterType)
     {   
+        if(headObject != null) Destroy(headObject);
+        headObject = Instantiate(characterType.characterHead, headPosition.position, Quaternion.identity);
+        headObject.transform.SetParent(headPosition);
+        characterStatHandler.AssignStats(characterType);
         playerCombatManager.InitiliaseStats(characterStatHandler.rollWindow, characterStatHandler.parryWindow);
     }
 
@@ -143,12 +152,14 @@ public class PlayerManager : CharacterManager
 
     protected override void UpdatePlayers()
     {
+        base.UpdatePlayers();
+        
         if(IsOwner)
         {
             //position
-            characterNetworkManager.netPosition.Value = transform.position;
+            //characterNetworkManager.netPosition.Value = transform.position;
             //rotation
-            characterNetworkManager.netRotation.Value = transform.rotation;
+            //characterNetworkManager.netRotation.Value = transform.rotation;
             //animation
             characterNetworkManager.netMoveAmount.Value = inputManager.moveAmount;
             //characterNetworkManager.netIsRunning.Value = inputManager.GetBlockingBool();
@@ -156,15 +167,15 @@ public class PlayerManager : CharacterManager
         else
         {
             //movement
-            transform.position = Vector3.SmoothDamp(transform.position,
-            characterNetworkManager.netPosition.Value,
-            ref characterNetworkManager.netPositionVel,
-            characterNetworkManager.netPositionSmoothTime);
+           // transform.position = Vector3.SmoothDamp(transform.position,
+            //characterNetworkManager.netPosition.Value,
+            //ref characterNetworkManager.netPositionVel,
+            // characterNetworkManager.netPositionSmoothTime);
             
             //rotation
-            transform.rotation = Quaternion.Slerp(transform.rotation,
-                characterNetworkManager.netRotation.Value,
-                characterNetworkManager.rotationSpeed);
+            //transform.rotation = Quaternion.Slerp(transform.rotation,
+              //  characterNetworkManager.netRotation.Value,
+                //characterNetworkManager.rotationSpeed);
 
             //animation
             inputManager.moveAmount = characterNetworkManager.netMoveAmount.Value;
@@ -272,7 +283,7 @@ public class PlayerManager : CharacterManager
     {
         if(IsOwner)
         {
-            GameMenu.instance.ToggleLocalMenu();
+            GameUIManager.instance.gameMenu.ToggleLocalMenu();
         }
     }
 
