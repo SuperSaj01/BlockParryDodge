@@ -42,6 +42,8 @@ public class PlayerManager : CharacterManager
     protected override void Start()
     {
         base.Start();
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     protected override void Update()

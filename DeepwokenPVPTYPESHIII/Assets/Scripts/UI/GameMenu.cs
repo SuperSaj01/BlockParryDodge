@@ -61,6 +61,7 @@ public class GameMenu : MonoBehaviour
         isInMenu = false;
         menuPanel.SetActive(false);
         sliders.SetActive(true);
+        Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
     }

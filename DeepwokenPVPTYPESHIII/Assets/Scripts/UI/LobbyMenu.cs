@@ -44,6 +44,12 @@ public class LobbyMenu : MonoBehaviour
             Debug.Log(lobby.Data[LobbyManager.instance.LOBBYCODE_KEY].Value);
         }
     }
+
+    public void ExitApplication()
+    {
+        Application.Quit();
+        Debug.Log("Application has been quit.");
+    }
     #endregion
      
 }
