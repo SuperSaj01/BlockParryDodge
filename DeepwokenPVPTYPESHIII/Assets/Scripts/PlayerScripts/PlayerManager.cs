@@ -245,6 +245,7 @@ public class PlayerManager : CharacterManager
         playerLocomotion.HandleRolling();
         canAttack = false;
         PlayActionAnimation("Rolling", true, IsOwner);    
+        playerCombatManager.HandleIFrames("Rolling");
         characterStatHandler.UseStamina();    
     }
 
