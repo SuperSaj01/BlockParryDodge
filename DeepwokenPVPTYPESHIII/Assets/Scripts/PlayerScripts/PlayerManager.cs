@@ -63,7 +63,7 @@ public class PlayerManager : CharacterManager
         isBlocking = inputManager.isBlocking;
         isInteracting = inputManager.isBlocking;
         playerCombatManager.HandleBlocking(isBlocking);
-
+        characterStatHandler.UpdateSliders();
         if(Input.GetKeyDown(KeyCode.H))
         {
             TakeDamage(5);

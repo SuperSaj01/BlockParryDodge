@@ -4,6 +4,7 @@ using UnityEngine;
 using Unity.Netcode;
 using UnityEngine.InputSystem;
 using UnityEngine.AI;
+using Unity.Services.Lobbies.Models;
 
 public class CharacterStatHandler : MonoBehaviour
 {   
@@ -49,7 +50,7 @@ public class CharacterStatHandler : MonoBehaviour
         InitialiseStats();
     }
 
-    private void Update()
+    public void UpdateSliders()
     {
         RegenStamina();
         RegenPosture();
