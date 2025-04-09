@@ -11,7 +11,7 @@ public class CharacterManager : NetworkBehaviour
     public CharacterNetworkManager characterNetworkManager {get; private set;}
     protected PlayerCombatManager playerCombatManager;
 
-    
+    [SerializeField] private GameObject damageParticlePrefab;
     
     protected virtual void Awake() 
     {
@@ -107,14 +107,35 @@ public class CharacterManager : NetworkBehaviour
         if(checkIfPlayerIsViableForDamage == "")
         {
             characterStatHandler.TakeDamage(damage); //if the player doesnt roll or parry then damage is applied
+            SpawnParticle(Color.red); // Took actual damage
         }
         else if(checkIfPlayerIsViableForDamage == "invalid")
         {
             Debug.Log("Invalid"); //does nothing
+            SpawnParticle(Color.yellow); // Was in iFrames
         }
-        else if(checkIfPlayerIsViableForDamage == "blocked")
+        else if(checkIfPlayerIsViableForDamage == "blocking")
         {
-            characterStatHandler.TakePostureDamage(damage); //if the player blocks then posture damage is applied
+            Debug.Log("blocked");
+            characterStatHandler.TakePostureDamage(); //if the player blocks then posture damage is applied
+            SpawnParticle(new Color(0.4f, 0.26f, 0.13f)); // Brown color
         }
     }    
+    private void SpawnParticle(Color color)
+    {
+        if (damageParticlePrefab == null) return;
+
+          Quaternion upwardRotation = Quaternion.LookRotation(Vector3.up);
+
+        GameObject particleObj = Instantiate(damageParticlePrefab, transform.position, upwardRotation);
+        ParticleSystem particleSystem = particleObj.GetComponent<ParticleSystem>();
+
+        if (particleSystem != null)
+        {
+            var main = particleSystem.main;
+            main.startColor = color;
+        }
+
+        Destroy(particleObj, 2f); // Optional cleanup
+    }
 }

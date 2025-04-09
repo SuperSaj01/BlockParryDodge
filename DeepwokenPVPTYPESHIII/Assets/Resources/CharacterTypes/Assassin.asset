@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Assassin
   m_EditorClassIdentifier: 
   characterTypeID: 1
-  characterName: Assassin
+  characterName: SamuraiAssasin
   health: 85
   posture: 3
   stamina: 5
   resistance: 0.05
-  parryWindow: 4
+  parryWindow: 1
   rollWindow: 5
-  characterHead: {fileID: 8941303135301072139, guid: f3364581a385f1947967bdfae9e051c1, type: 3}
+  characterHead: {fileID: 1891730218216485448, guid: c2eca2daf167f67459a1050dd43bec48, type: 3}

@@ -12,6 +12,7 @@ public class GameUIManager : MonoBehaviour
     public GameMenu gameMenu;
     public GameObject healthSlider;
     public GameObject postureSlider;
+    public GameObject staminaSlider;
     
     [SerializeField] private Button hostBtn;
     [SerializeField] private Button clientBtn;

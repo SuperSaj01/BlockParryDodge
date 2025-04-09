@@ -20,4 +20,4 @@ MonoBehaviour:
   resistance: 0.08
   parryWindow: 4
   rollWindow: 5
-  characterHead: {fileID: 8941303135301072139, guid: 8c3b1f5e794c93d49befb32b7994d79a, type: 3}
+  characterHead: {fileID: 6969350107105127437, guid: 74c8e185a1b583d419ab2609907788f1, type: 3}

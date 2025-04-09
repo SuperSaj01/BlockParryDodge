@@ -44,7 +44,6 @@ public class HealthSlider : MonoBehaviour, ISliderHandler
     {
         float startValue = healthSlider.value;
         float elapsedTime = 0f;
-
         while (elapsedTime < smoothSpeed)
         {
             healthSlider.value = Mathf.Lerp(startValue, targetValue, elapsedTime / smoothSpeed);

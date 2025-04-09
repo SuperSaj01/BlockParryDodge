@@ -73,7 +73,7 @@ public class CharacterNetworkManager : NetworkBehaviour
             PlayActionAnimation(animationID, isInteracting); //plays the animation on every other client
         }
     }
-     
+        
     private void PlayActionAnimation(string animationID, bool isInteracting)
     {
         player.PlayActionAnimation(animationID, isInteracting, false);

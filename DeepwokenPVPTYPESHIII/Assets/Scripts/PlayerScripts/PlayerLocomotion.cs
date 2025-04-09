@@ -26,12 +26,12 @@ public class PlayerLocomotion : MonoBehaviour
     
     [Header("Gravity")]
     private bool isGrounded;
-    private float gravityIntensity = -90f;        
+    private const float GRAVITYINTENSITY = -90f;        
     public LayerMask groundLayer;
 
     [Header("Camera")]
     Transform cam;
-    private float rotationSpeed = 15f;
+    private const float ROTATIONSPEED = 15f;
 
     [Header("Rotation")]
     Quaternion playerRotation = Quaternion.identity;
@@ -93,7 +93,7 @@ public class PlayerLocomotion : MonoBehaviour
             if(targetDirection == Vector3.zero) targetDirection = transform.forward;
 
             Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
-            playerRotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+            playerRotation = Quaternion.Slerp(transform.rotation, targetRotation, ROTATIONSPEED * Time.deltaTime);
         }
         else
         {
@@ -103,7 +103,7 @@ public class PlayerLocomotion : MonoBehaviour
             cameraForward.Normalize();
 
             Quaternion targetRotation = Quaternion.LookRotation(cameraForward);
-            playerRotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime); //Smooths the rotation of the player
+            playerRotation = Quaternion.Slerp(transform.rotation, targetRotation, ROTATIONSPEED * Time.deltaTime); //Smooths the rotation of the player
         }
         
         transform.rotation = playerRotation; //assigns rotation
@@ -128,7 +128,7 @@ public class PlayerLocomotion : MonoBehaviour
         if(!isGrounded)
         {
             inAirTimer += Time.deltaTime;
-            velocity.y += gravityIntensity * inAirTimer * Time.deltaTime; //Increases the velocity of the player as they fall
+            velocity.y += GRAVITYINTENSITY * inAirTimer * Time.deltaTime; //Increases the velocity of the player as they fall
         }
         else
         {
@@ -139,7 +139,6 @@ public class PlayerLocomotion : MonoBehaviour
         }
 
         playerController.Move(velocity * Time.deltaTime);
-        
     }
 
 
@@ -148,7 +147,7 @@ public class PlayerLocomotion : MonoBehaviour
     {
         if(!isGrounded) return; //dont jump if in air
         isJumping = true;
-        float jumpPos = Mathf.Sqrt(jumpHeight * -2f * gravityIntensity);
+        float jumpPos = Mathf.Sqrt(jumpHeight * -2f * GRAVITYINTENSITY);
         velocity.y = jumpPos;
     }
 

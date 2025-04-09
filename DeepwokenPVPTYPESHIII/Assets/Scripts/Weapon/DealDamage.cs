@@ -9,7 +9,6 @@ public class DealDamage : MonoBehaviour
 
     public PlayerManager? ownPlayer;
     private PlayerCombatManager playerCombatManager;
-    public bool isActive = true;//Instead of bool needs to be changed into coroutine by logic so syncing does not matter
     private float damage = 4;
     private float range;
     private Vector3 boxColliderSize;
@@ -22,11 +21,10 @@ public class DealDamage : MonoBehaviour
     {
 
     }
-    public void SetWeaponStats(PlayerManager self, PlayerCombatManager playerCombatManager, float damage, float range, Vector3 boxColliderSize, LayerMask layerMask)
+    public void SetWeaponStats(PlayerManager self, PlayerCombatManager playerCombatManager, float range, Vector3 boxColliderSize, LayerMask layerMask)
     {
         ownPlayer = self;
         this.playerCombatManager = playerCombatManager;
-        this.damage = damage;
         this.range = range;
         this.boxColliderSize = boxColliderSize;
         this.layerMask = layerMask;
@@ -62,7 +60,7 @@ public class DealDamage : MonoBehaviour
 
         listOfTargets.Add(target);
 
-        playerCombatManager.DealDamageToTarget(target, damage);
+        playerCombatManager.DealDamageToTarget(target);
 
         listOfTargets.Remove(target);
     }

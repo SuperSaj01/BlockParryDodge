@@ -262,9 +262,18 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Critical",
+                    "name": "Ability",
                     "type": "Button",
                     "id": "9acea79e-2359-4187-bddf-c29cdfa13aff",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Critical",
+                    "type": "Button",
+                    "id": "1f443e85-cae9-4cc7-b939-d1ca312bbe6f",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -407,11 +416,11 @@
                 {
                     "name": "",
                     "id": "3615ba5f-0458-48cb-8ce0-61e4c073f947",
-                    "path": "<Keyboard>/r",
+                    "path": "<Keyboard>/x",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Critical",
+                    "action": "Ability",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -419,6 +428,17 @@
                     "name": "",
                     "id": "a9ad729c-0d48-4feb-92eb-9a4fb0da13e0",
                     "path": "<Gamepad>/rightStick/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Ability",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a65667c4-eb6f-4079-a64e-eae338206ec1",
+                    "path": "<Keyboard>/r",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

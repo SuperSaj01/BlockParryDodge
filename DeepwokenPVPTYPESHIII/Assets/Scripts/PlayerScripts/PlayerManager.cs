@@ -16,9 +16,10 @@ public class PlayerManager : CharacterManager
     public ulong clientId {get; private set;}
     [SerializeField] Transform headPosition;
     private GameObject headObject;
+    private CharacterType characterType;
 
     bool isRunning;
-    public bool isBlocking {get; private set;}
+    public bool isBlocking;
 
     public bool isInteracting;
     bool isInMenu;
@@ -59,6 +60,7 @@ public class PlayerManager : CharacterManager
 
         if(isBlocking) isRunning = false;
         isBlocking = inputManager.isBlocking;
+        isInteracting = inputManager.isBlocking;
         playerCombatManager.HandleBlocking(isBlocking);
 
         if(Input.GetKeyDown(KeyCode.H))
@@ -116,13 +118,14 @@ public class PlayerManager : CharacterManager
         }
     } 
     
-    void OnCharacterChange(CharacterSO characterType)
+    void OnCharacterChange(CharacterSO characterTypeSO)
     {   
         if(headObject != null) Destroy(headObject);
-        headObject = Instantiate(characterType.characterHead, headPosition.position, Quaternion.identity);
+        headObject = Instantiate(characterTypeSO.characterHead, headPosition.position, headPosition.rotation);
         headObject.transform.SetParent(headPosition);
-        characterStatHandler.AssignStats(characterType);
+        characterStatHandler.AssignStats(characterTypeSO);
         playerCombatManager.InitiliaseStats(characterStatHandler.rollWindow, characterStatHandler.parryWindow);
+        characterType = headObject.GetComponent<CharacterType>();
     }
 
     #region enabling and disabling
@@ -133,6 +136,8 @@ public class PlayerManager : CharacterManager
         inputManager.OnJumpBtnPressed += _OnJumpBtnPressed; 
         inputManager.OnRollBtnPressed += _OnRollBtnPressed;
         inputManager.OnLockCameraPressed += _OnLockCameraPressed;
+        inputManager.OnAbilityBtnPressed += _OnAbilityBtnPressed;
+        inputManager.OnCriticalBtnPressed += _OnCriticalBtnPressed;
         //UI events
         inputManager.OnMenuTogglePressed += _OnMenuTogglePressed;
 
@@ -148,6 +153,8 @@ public class PlayerManager : CharacterManager
         inputManager.OnRollBtnPressed -= _OnRollBtnPressed;
         inputManager.OnLockCameraPressed -= _OnLockCameraPressed;
         inputManager.OnMenuTogglePressed -= _OnMenuTogglePressed;
+        inputManager.OnAbilityBtnPressed -= _OnAbilityBtnPressed;
+        inputManager.OnCriticalBtnPressed -= _OnCriticalBtnPressed;
         WorldManager.instance.OnLoadSceneEvent -= _OnSceneLoaded;
     }
     #endregion
@@ -233,20 +240,57 @@ public class PlayerManager : CharacterManager
     private void _OnRollBtnPressed(object sender, EventArgs e)
     {
         if(isInteracting || isInMenu) return;    
+        if(characterStatHandler.currentStamina <= 1) return;
         playerLocomotion.HandleRolling();
-        PlayActionAnimation("Rolling", true, IsOwner);        
+        PlayActionAnimation("Rolling", true, IsOwner);    
+        characterStatHandler.UseStamina();    
     }
 
     /// Summary of the method
     /// Notifies other scripts that the attack button has been pressed
     private void _OnAttackBtnPressed(object sender, EventArgs e)
     {
-        if(isInteracting || isInMenu) return;
-        playerCombatManager.AttackBtnPressed();
+        if(isInteracting) return;
+        Attack();
     } 
+    private void _OnCriticalBtnPressed(object sender, EventArgs e)
+    {
+        if(isInteracting || isInMenu || !playerCombatManager.canCrit) return;
+        playerCombatManager.AttackBtnPressed(true);
+    }
         #endregion
+    public void Attack()
+    {
+        if(isInMenu) return;
+        playerCombatManager.AttackBtnPressed(false);
+    }
 
+    public void ByPassAttack()
+    {
+        playerCombatManager.ByPassAttack();
+    }
     
+    private void _OnAbilityBtnPressed(object sender, EventArgs e)
+    {
+        if(isInteracting || isInMenu) return;
+        Ability();
+    }
+
+    private void Ability()
+    {
+        try
+        {
+            characterType.Ability(this);
+        }
+        catch (NullReferenceException ex)
+        {
+            Debug.LogWarning($"Ability failed: {ex.Message}\nLikely cause: characterType is null or unassigned.");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Unexpected error in Ability: {ex.Message}");
+        }
+    }
     
     public void PlayActionAnimation(string animationID, bool isInteracting, bool IsOwner)
     {
@@ -263,6 +307,11 @@ public class PlayerManager : CharacterManager
     public void TakeDamage(float damage)
     {
         characterStatHandler.TakeDamage(damage);
+    }
+
+    public void HealHealth(float healthAmt)
+    {
+        characterStatHandler.HealHealth((int)healthAmt);
     }
 
     #endregion

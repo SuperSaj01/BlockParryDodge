@@ -7,14 +7,12 @@ using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
 using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
-using Unity;
 using UnityEngine;
-using UnityEngine.UI;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using TMPro;
 using System.Threading.Tasks;
-using System.Runtime.CompilerServices;
+using UnityEngine.UIElements;
 
 public class LobbyManager : MonoBehaviour
 {
@@ -40,11 +38,12 @@ public class LobbyManager : MonoBehaviour
 
     public event EventHandler<OnLobbyListChangedEventArgs> OnLobbyListChanged;
     public class OnLobbyListChangedEventArgs : EventArgs {
-        public List<Lobby> lobbyList;
+    public List<Lobby> lobbyList;
     }
 
     void Awake()
-    {
+    {   
+        //creates singleton
         if(instance == null)
         {
             instance = this;
@@ -57,6 +56,12 @@ public class LobbyManager : MonoBehaviour
 
     private void Start()
     {
+        UnityEngine.Cursor.lockState = CursorLockMode.None;
+        UnityEngine.Cursor.visible = true;
+
+        joinedLobby = null; //prevents a lobby already joined when the game had started
+
+        if(WorldManager.instance.isAlreadySignedIn) return; //prevents player trying to log in twice when already logged in
         playerName = "User" + UnityEngine.Random.Range(0, 100);
         Authenticate(playerName);
     }
@@ -74,12 +79,15 @@ public class LobbyManager : MonoBehaviour
         AuthenticationService.Instance.SignedIn += () => {
             Debug.Log("Signed in " + AuthenticationService.Instance.PlayerId);
             };
+
+        WorldManager.instance.isAlreadySignedIn = true;
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
     }
 
 
     private void Update()
     {
+        //Prevents the lobby from deleting when a player joined and refreshes for updates
         HandleLobbyHeartbeat();
         HandleLobbyPollForUpdates();
     }
@@ -185,7 +193,7 @@ public class LobbyManager : MonoBehaviour
             };
 
             QueryResponse lobbyListQueryResponse = await LobbyService.Instance.QueryLobbiesAsync(queryLobbiesOptions); //queries the lobbies with the options provided
-         
+            
             OnLobbyListChanged?.Invoke(this, new OnLobbyListChangedEventArgs { lobbyList = lobbyListQueryResponse.Results }); 
         }
         catch(LobbyServiceException e)
@@ -343,7 +351,9 @@ public class LobbyManager : MonoBehaviour
     ///This method is used to start the game for the host
     public async void StartGameBTN()
     {
-        relayCode = await CreateRelay(); //Will not be sending the relay code ONLY lobby code // This makes the host spawn
+        try
+        {
+            relayCode = await CreateRelay(); //Will not be sending the relay code ONLY lobby code // This makes the host spawn
 
             hostLobby = await LobbyService.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions
             {
@@ -357,6 +367,11 @@ public class LobbyManager : MonoBehaviour
             });
 
             joinedLobby = hostLobby; //Updates the joined lobby to the hosts lobby
+        }
+        catch(Exception e)
+        {
+            Debug.Log(e);
+        }
     }
 
     private void StartRestofClients()

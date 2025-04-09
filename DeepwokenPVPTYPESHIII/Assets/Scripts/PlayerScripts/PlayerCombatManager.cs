@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using System.Linq;
 
 public class PlayerCombatManager : MonoBehaviour
 {
@@ -33,14 +34,17 @@ public class PlayerCombatManager : MonoBehaviour
     bool isBlocking = false;
     bool isInIFrames = false;
     bool wasBlocking = false;
-
-    float attackDelay = 2f;
+    float attackDelay = 0.5f;
     //private GameObject currentWeapon
-
 
     [Header("Checking Hit")]
     private DealDamage dealDamage; // accesses the damage script on the weapon
-
+    private float multiplier = 2f;
+    private bool isCriticalApplied = false;
+    private Queue<int> attackQueue = new Queue<int>();
+    public bool isAttacking = false;
+    private const int maxComboQueue = 2;
+    public bool canCrit {get; private set;} = true;
 
     private int i = 0;
 
@@ -48,7 +52,7 @@ public class PlayerCombatManager : MonoBehaviour
 
     void Awake()
     {
-        
+        isAttacking = false;
         playerManager = GetComponent<PlayerManager>();
         // make current wep spawn from SO
     }
@@ -65,20 +69,7 @@ public class PlayerCombatManager : MonoBehaviour
         wasBlocking = isBlocking;
     }
 
-    public void AttackBtnPressed()
-    {
-        if(!HasWeaponEquipped() && dealDamage.isActive) return;
-        dealDamage.isActive = true;
-        if(i == 2)
-        {
-            i = 0;
-        }
-        
-        playerManager.PlayActionAnimation(currentWeaponSO.b_aniamtions[i++], true, playerManager.IsOwner);// needs to be in custom logic
-        dealDamage.DetectCollision();
-
-        StartCoroutine(SwingCooldown());
-    }
+   
 
 
     #region IFrames
@@ -109,9 +100,11 @@ public class PlayerCombatManager : MonoBehaviour
 
     private IEnumerator ParryWindow()
     {
+        isInIFrames = true;
         Debug.Log("is Parrying frames mashaAllah");
         yield return new WaitForSeconds(parryWindow);
         canParry = true;
+        isInIFrames = false;
         Debug.Log("Stopped iframes");
     }
 
@@ -122,41 +115,101 @@ public class PlayerCombatManager : MonoBehaviour
     }
     #endregion
 
-    private IEnumerator SwingCooldown()
-    {
-        yield return new WaitForSeconds(currentWeaponSO.b_SwingSpeed);
-        dealDamage.isActive = false;
-    }
 
     #region Dealing damage and recieving damage
 
-    public void DealDamageToTarget(PlayerManager target, float damage)
+     public void AttackBtnPressed(bool isCritical)
     {
-        //handle whatever client sided logic here
-        
-        //tell server to handle the damage
-        StartCoroutine(InitiateAttack(target, attackDelay, damage));
+        if(isCritical && canCrit) 
+        {
+            isCriticalApplied = true;
+            StartCoroutine(CritReadyTimer(2f));
+        }
+        else
+        {
+            isCriticalApplied = false;
+        }
+        if(!HasWeaponEquipped()) return;
+        if (attackQueue.Count < maxComboQueue)
+        {
+            attackQueue.Enqueue(i);
+            i = (i + 1) % currentWeaponSO.b_aniamtions.Length;
+        }
+        if(!isAttacking)
+        {
+            StartCoroutine(ProcessAttackQueue());
+        }
     }
 
-    private IEnumerator InitiateAttack(PlayerManager target, float attackDelay, float damage)
+    private IEnumerator ProcessAttackQueue()
     {
-    
+        isAttacking = true;
+
+        while (attackQueue.Count > 0)
+        {
+            int attackIndex = attackQueue.Dequeue();
+
+            // Play animation and activate damage
+            if(!isCriticalApplied)
+            {
+                playerManager.PlayActionAnimation(currentWeaponSO.b_aniamtions[attackIndex], true, playerManager.IsOwner);
+            }
+            else
+            {
+                playerManager.PlayActionAnimation("Critical", true, playerManager.IsOwner);
+            }
+            dealDamage.DetectCollision();
+            // Wait for weapon's swing speed
+            
+            yield return new WaitForSeconds(currentWeaponSO.b_SwingSpeed);
+            isCriticalApplied = false;
+        }
+
+        isAttacking = false;
+        i = 0; // reset combo index after queue finishes
+    }
+
+
+    public void ByPassAttack()
+    {
+        dealDamage.DetectCollision();
+    }
+
+    public void DealDamageToTarget(PlayerManager target)
+    {
+        Debug.Log(isCriticalApplied);
+        //tell server to handle the damage
+        StartCoroutine(InitiateAttack(target, attackDelay, currentWeaponSO.b_Damage, isCriticalApplied));
+        
+    }
+
+    private IEnumerator InitiateAttack(PlayerManager target, float attackDelay, float damage, bool isCriticalApplied)
+    {
         yield return new WaitForSeconds(attackDelay);
         ulong targetId = target.OwnerClientId;
+        if(isCriticalApplied)
+        {
+            damage *= multiplier;
+        }
+        Debug.Log(damage);
         playerManager.characterNetworkManager.RequestDamageServerRpc(targetId, damage);
+    }
+
+    private IEnumerator CritReadyTimer(float duration)
+    {
+        canCrit = false; // reset first if it's already ready
+        yield return new WaitForSeconds(duration);
+        canCrit = true;
     }
 
     public string ValidateDamage()
     {
-        Debug.Log(isInIFrames);
         if(isInIFrames)
         {
-            Debug.Log("invalid");
             return "invalid";
         }
         else if(isBlocking)
         {
-            Debug.Log("blocked");
             return "blocking";
         }
         else
@@ -205,7 +258,7 @@ public class PlayerCombatManager : MonoBehaviour
 
     private void ChangeWeaponStats(WeaponSO currentWeaponSO)
     {
-        dealDamage.SetWeaponStats(this.GetComponent<PlayerManager>(),this, currentWeaponSO.b_Damage, currentWeaponSO.range, currentWeaponSO.boxColliderSize, currentWeaponSO.b_LayerMask);
+        dealDamage.SetWeaponStats(this.GetComponent<PlayerManager>(),this, currentWeaponSO.range, currentWeaponSO.boxColliderSize, currentWeaponSO.b_LayerMask);
     }
 
     

@@ -284,9 +284,18 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Critical"",
+                    ""name"": ""Ability"",
                     ""type"": ""Button"",
                     ""id"": ""9acea79e-2359-4187-bddf-c29cdfa13aff"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Critical"",
+                    ""type"": ""Button"",
+                    ""id"": ""1f443e85-cae9-4cc7-b939-d1ca312bbe6f"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -429,11 +438,11 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""3615ba5f-0458-48cb-8ce0-61e4c073f947"",
-                    ""path"": ""<Keyboard>/r"",
+                    ""path"": ""<Keyboard>/x"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Critical"",
+                    ""action"": ""Ability"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -441,6 +450,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""a9ad729c-0d48-4feb-92eb-9a4fb0da13e0"",
                     ""path"": ""<Gamepad>/rightStick/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Ability"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a65667c4-eb6f-4079-a64e-eae338206ec1"",
+                    ""path"": ""<Keyboard>/r"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -504,6 +524,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_PlayerActions_BasicAttack = m_PlayerActions.FindAction("Basic Attack", throwIfNotFound: true);
         m_PlayerActions_LockCamera = m_PlayerActions.FindAction("LockCamera", throwIfNotFound: true);
         m_PlayerActions_Blocking = m_PlayerActions.FindAction("Blocking", throwIfNotFound: true);
+        m_PlayerActions_Ability = m_PlayerActions.FindAction("Ability", throwIfNotFound: true);
         m_PlayerActions_Critical = m_PlayerActions.FindAction("Critical", throwIfNotFound: true);
         // User Input
         m_UserInput = asset.FindActionMap("User Input", throwIfNotFound: true);
@@ -629,6 +650,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerActions_BasicAttack;
     private readonly InputAction m_PlayerActions_LockCamera;
     private readonly InputAction m_PlayerActions_Blocking;
+    private readonly InputAction m_PlayerActions_Ability;
     private readonly InputAction m_PlayerActions_Critical;
     public struct PlayerActionsActions
     {
@@ -640,6 +662,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @BasicAttack => m_Wrapper.m_PlayerActions_BasicAttack;
         public InputAction @LockCamera => m_Wrapper.m_PlayerActions_LockCamera;
         public InputAction @Blocking => m_Wrapper.m_PlayerActions_Blocking;
+        public InputAction @Ability => m_Wrapper.m_PlayerActions_Ability;
         public InputAction @Critical => m_Wrapper.m_PlayerActions_Critical;
         public InputActionMap Get() { return m_Wrapper.m_PlayerActions; }
         public void Enable() { Get().Enable(); }
@@ -668,6 +691,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Blocking.started += instance.OnBlocking;
             @Blocking.performed += instance.OnBlocking;
             @Blocking.canceled += instance.OnBlocking;
+            @Ability.started += instance.OnAbility;
+            @Ability.performed += instance.OnAbility;
+            @Ability.canceled += instance.OnAbility;
             @Critical.started += instance.OnCritical;
             @Critical.performed += instance.OnCritical;
             @Critical.canceled += instance.OnCritical;
@@ -693,6 +719,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Blocking.started -= instance.OnBlocking;
             @Blocking.performed -= instance.OnBlocking;
             @Blocking.canceled -= instance.OnBlocking;
+            @Ability.started -= instance.OnAbility;
+            @Ability.performed -= instance.OnAbility;
+            @Ability.canceled -= instance.OnAbility;
             @Critical.started -= instance.OnCritical;
             @Critical.performed -= instance.OnCritical;
             @Critical.canceled -= instance.OnCritical;
@@ -772,6 +801,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnBasicAttack(InputAction.CallbackContext context);
         void OnLockCamera(InputAction.CallbackContext context);
         void OnBlocking(InputAction.CallbackContext context);
+        void OnAbility(InputAction.CallbackContext context);
         void OnCritical(InputAction.CallbackContext context);
     }
     public interface IUserInputActions

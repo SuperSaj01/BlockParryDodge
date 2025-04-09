@@ -16,6 +16,8 @@ public class WorldManager : NetworkBehaviour
     public event Action OnOpenGlobalMenuCalled;
     public event Action OnCloseGlobalMenuCalled;
 
+    public bool isAlreadySignedIn = false;
+
     [SerializeField] private SpawnPointSO testingSpawnPoints; //to be changed to a list of spawn points
 
     //private static Dictionary<PlayerManager, ulong> playerDict = new Dictionary<PlayerManager, ulong>();

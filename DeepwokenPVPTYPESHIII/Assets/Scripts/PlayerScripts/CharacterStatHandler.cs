@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using UnityEngine.InputSystem;
+using UnityEngine.AI;
 
 public class CharacterStatHandler : MonoBehaviour
 {   
-    [Header("References")]
-    [SerializeField] private GameObject healthSlider;
-    [SerializeField] private GameObject postureSlider;
      
 
     [Header("Health")]
@@ -24,9 +22,9 @@ public class CharacterStatHandler : MonoBehaviour
     private float maxPosture = 25f;
     public float currentPosture; 
 
-    [Header("Stamina")]
+    [Header("currentStamina")]
     private float maxStamina;
-    public float stamina;
+    public float currentStamina;
 
     [Header("Windows")]
     public float rollWindow = 5f;
@@ -35,6 +33,7 @@ public class CharacterStatHandler : MonoBehaviour
     [Header("Sliders")]
     private ISliderHandler healthHandler;
     private ISliderHandler postureHandler;
+    private ISliderHandler staminaHandler;
     private List<ISliderHandler> sliderHandlers = new List<ISliderHandler>();
 
     void Awake()
@@ -47,30 +46,87 @@ public class CharacterStatHandler : MonoBehaviour
         AssignStats(CharacterDatabase.GetCharacterTypeByID(1)); // setting default value
         
         AssignSliders();
+        InitialiseStats();
     }
 
     private void Update()
     {
-        
+        RegenStamina();
+        RegenPosture();
+
+        if(Input.GetKeyDown(KeyCode.K))
+        {
+            TakePostureDamage();
+        }
 
     }
 
+    void RegenStamina()
+    {   
+        
+        if(currentStamina > maxStamina) currentStamina = maxStamina; 
+
+        if(staminaHandler is null) return;
+        staminaHandler.ChangeValue(currentStamina);
+
+        if (currentStamina < maxStamina)
+        {
+           currentStamina += 0.2f * Time.deltaTime;
+            if (currentStamina > maxStamina)
+            {
+                currentStamina = maxStamina;
+            }
+            
+        }
+    }
+    void RegenPosture()
+    {
+        if(currentPosture > maxPosture) 
+        {
+            currentPosture = maxPosture;
+        
+        } 
+        postureHandler.ChangeValue(currentPosture);
+        
+        if (currentPosture < maxPosture)
+        { 
+            currentPosture += 0.1f * Time.deltaTime;
+            if (currentPosture > maxPosture)
+            {
+                currentPosture = maxPosture;
+            }
+            
+        }
+    }
     public void AssignStats(CharacterSO characterType)
     {
         maxHealth = characterType.health;
         maxPosture = characterType.posture;
+        maxStamina = characterType.stamina;
         resistance = characterType.resistance;
         rollWindow = characterType.rollWindow;
         parryWindow = characterType.parryWindow;
-        maxStamina = characterType.stamina;
- 
-        InitialiseStats();
+        
+        AssignSliders();
+        
+    }
+     void AssignSliders()
+    {
+        healthHandler = GameUIManager.instance.healthSlider.GetComponent<ISliderHandler>();
+        postureHandler = GameUIManager.instance.postureSlider.GetComponent<ISliderHandler>();
+        staminaHandler = GameUIManager.instance.staminaSlider.GetComponent<ISliderHandler>();
+
+        sliderHandlers.Add(healthHandler);
+        sliderHandlers.Add(postureHandler);
+        sliderHandlers.Add(staminaHandler);
+
+        healthHandler.SetMaxValue(maxHealth);
+        postureHandler.SetMaxValue(maxPosture);
+        staminaHandler.SetMaxValue(maxStamina);
     }
 
     private void InitialiseStats()
     {
-        
-
         try
         {
             if (maxHealth <= 0)
@@ -80,6 +136,7 @@ public class CharacterStatHandler : MonoBehaviour
             
             currentHealth = maxHealth;
             currentPosture = maxPosture;
+            currentStamina = maxStamina;
 
         }
         catch (System.Exception ex)
@@ -91,17 +148,7 @@ public class CharacterStatHandler : MonoBehaviour
     }
 
 
-    void AssignSliders()
-    {
-        healthHandler = GameUIManager.instance.healthSlider.GetComponent<ISliderHandler>();
-        postureHandler = GameUIManager.instance.postureSlider.GetComponent<ISliderHandler>();
-
-        sliderHandlers.Add(healthHandler);
-        sliderHandlers.Add(postureHandler);
-
-        healthHandler.SetMaxValue(maxHealth);
-        postureHandler.SetMaxValue(maxPosture);
-    }
+   
 
     public void HealHealth(int healAmt)
     {
@@ -115,7 +162,6 @@ public class CharacterStatHandler : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        Debug.Log(this.name + damage + "yess");
         if(currentHealth  > 0)
         {
             float appliedDamage = damage * (1 - resistance); //resistance of character is applied to negate damage
@@ -127,14 +173,20 @@ public class CharacterStatHandler : MonoBehaviour
         CheckIfAlive();
     }
 
-    public void TakePostureDamage(float postureDamage)
+    public void TakePostureDamage()
     {
         if(currentPosture > 0)
         {
-            currentPosture -= postureDamage; //damage is applied to posture
+            currentPosture -= 1; //damage is applied to posture
             postureHandler.ChangeValue(currentPosture);
         }
         CheckIfPostureBroken();
+    }
+
+    public void UseStamina()
+    {
+        currentStamina -= 1;
+        if(currentStamina < 0) currentStamina = 0;
     }
 
     private void CheckIfAlive()
