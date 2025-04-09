@@ -167,6 +167,7 @@ public class PlayerLocomotion : MonoBehaviour
 
             yield return null;
         }
+        playerManager.canAttack = true;
     }
     
     ///Summary of the method

@@ -20,6 +20,7 @@ public class PlayerManager : CharacterManager
 
     bool isRunning;
     public bool isBlocking;
+    public bool canAttack = true;
 
     public bool isInteracting;
     bool isInMenu;
@@ -242,6 +243,7 @@ public class PlayerManager : CharacterManager
         if(isInteracting || isInMenu) return;    
         if(characterStatHandler.currentStamina <= 1) return;
         playerLocomotion.HandleRolling();
+        canAttack = false;
         PlayActionAnimation("Rolling", true, IsOwner);    
         characterStatHandler.UseStamina();    
     }
@@ -250,7 +252,7 @@ public class PlayerManager : CharacterManager
     /// Notifies other scripts that the attack button has been pressed
     private void _OnAttackBtnPressed(object sender, EventArgs e)
     {
-        if(isInteracting) return;
+        if(!canAttack) return;
         Attack();
     } 
     private void _OnCriticalBtnPressed(object sender, EventArgs e)

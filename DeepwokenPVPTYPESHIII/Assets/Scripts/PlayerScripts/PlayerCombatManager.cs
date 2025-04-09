@@ -133,6 +133,7 @@ public class PlayerCombatManager : MonoBehaviour
         if (attackQueue.Count < maxComboQueue)
         {
             attackQueue.Enqueue(i);
+            Debug.Log("Yeye");
             i = (i + 1) % currentWeaponSO.b_aniamtions.Length;
         }
         if(!isAttacking)
