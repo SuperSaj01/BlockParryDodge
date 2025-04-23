@@ -11,7 +11,7 @@ public class CharacterStatHandler : MonoBehaviour
      
 
     [Header("Health")]
-    private float maxHealth;
+    [SerializeField] private float maxHealth;
     public float currentHealth = 100f;
     private float resistance = 0f;
     private int regenAmount = 5;
@@ -20,11 +20,11 @@ public class CharacterStatHandler : MonoBehaviour
 
 
     [Header("Posture")]
-    private float maxPosture = 25f;
+    [SerializeField] private float maxPosture = 25f;
     public float currentPosture; 
 
     [Header("currentStamina")]
-    private float maxStamina;
+    [SerializeField] private float maxStamina;
     public float currentStamina;
 
     [Header("Windows")]
@@ -124,6 +124,9 @@ public class CharacterStatHandler : MonoBehaviour
         healthHandler.SetMaxValue(maxHealth);
         postureHandler.SetMaxValue(maxPosture);
         staminaHandler.SetMaxValue(maxStamina);
+        healthHandler.ChangeValue(currentHealth);
+        postureHandler.ChangeValue(currentPosture);
+        staminaHandler.ChangeValue(currentStamina);
     }
 
     private void InitialiseStats()

@@ -253,7 +253,7 @@ public class PlayerManager : CharacterManager
     /// Notifies other scripts that the attack button has been pressed
     private void _OnAttackBtnPressed(object sender, EventArgs e)
     {
-        if(!canAttack) return;
+        if(!canAttack || !IsOwner) return;
         Attack();
     } 
     private void _OnCriticalBtnPressed(object sender, EventArgs e)

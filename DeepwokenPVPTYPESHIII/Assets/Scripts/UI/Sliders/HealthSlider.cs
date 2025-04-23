@@ -31,7 +31,6 @@ public class HealthSlider : MonoBehaviour, ISliderHandler
     public void SetMaxValue(float maxValue)
     {
         healthSlider.maxValue = maxValue;
-        healthSlider.value = maxValue; // Set the current value to max as well
     }
     
 

@@ -18,7 +18,6 @@ public class StaminaSlider : MonoBehaviour, ISliderHandler
     public void SetMaxValue(float maxValue)
     {
         postureSlider.maxValue = maxValue;
-        postureSlider.value = maxValue; // Set the current value to max as well
     }
     
     public void SetValueToMax()
