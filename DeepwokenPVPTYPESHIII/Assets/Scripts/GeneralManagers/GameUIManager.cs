@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Unity.Netcode;
+using UnityEditor.Search;
 
 public class GameUIManager : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class GameUIManager : MonoBehaviour
 
     private void Awake()
     {
+        //Singleton pattern
         if (instance != null && instance != this)
         {
             Destroy(gameObject);
@@ -29,6 +31,7 @@ public class GameUIManager : MonoBehaviour
         instance = this;
         DontDestroyOnLoad(gameObject);
 
+        //For debugging purposes I can start a host instantly without needing to make a lobby
         hostBtn.onClick.AddListener(() =>
         {
             NetworkManager.Singleton.StartHost();

@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "ScriptableObjects/CharacterType")]
 public class CharacterSO : ScriptableObject
 {
-
+    //A data container containing all the variables a character type will have
     [SerializeField] public int characterTypeID;
 
     public string characterName;

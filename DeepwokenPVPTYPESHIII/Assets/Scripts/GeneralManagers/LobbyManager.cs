@@ -21,8 +21,8 @@ public class LobbyManager : MonoBehaviour
 
     private Lobby hostLobby;
     private Lobby joinedLobby;
-    private float heartbeatTimer;
-    private float lobbyUpdateTimer;
+    private float heartbeatTimer = 0f;
+    private float lobbyUpdateTimer = 0f;
 
     private string RELAYCODE_KEY = "RELAYCODE_KEY";
     public string LOBBYCODE_KEY {get; private set;} = "LOBBYCODE_KEY";
@@ -167,6 +167,7 @@ public class LobbyManager : MonoBehaviour
     {
         Lobby lobby = await LobbyService.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions
         {
+            //Will change relay code when called
             Data = new Dictionary<string, DataObject>
             {
                 {RELAYCODE_KEY, new DataObject(DataObject.VisibilityOptions.Member, relayCode)}

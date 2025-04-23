@@ -6,13 +6,13 @@ public class CharacterType : MonoBehaviour
     public bool canUseAbility {get; private set;} = true;
     public virtual void Ability(PlayerManager playerManager)
     {
-        if(!canUseAbility) return;
+        if(!canUseAbility) return; //prevents ability to be used if flag is false
         StartCoroutine(AbilityReadyTimer(5f));
     }
     private IEnumerator AbilityReadyTimer(float duration)
     {
         canUseAbility = false; // reset first if it's already ready
-        yield return new WaitForSeconds(duration);
+        yield return new WaitForSeconds(duration); 
         canUseAbility = true;
     }
 }

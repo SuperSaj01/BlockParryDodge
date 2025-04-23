@@ -8,7 +8,7 @@ public class ResetBool : StateMachineBehaviour
 
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        animator.SetBool(isInteractingBool, false);
+        //when an animation state of an action has stopped then the interacting flag is set to false
+        animator.SetBool(isInteractingBool, false); 
     }
-
 }

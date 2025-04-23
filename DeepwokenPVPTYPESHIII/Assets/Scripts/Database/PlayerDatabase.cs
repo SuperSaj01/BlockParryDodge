@@ -15,7 +15,7 @@ public static class PlayerDatabase
 
     public static PlayerManager GetPlayerByID(ulong id)
     {
-        return playerLookup.TryGetValue(id, out var player) ? player : null;
+        return playerLookup.TryGetValue(id, out var player) ? player : null; //Returns tpye based on ID
     }
        
 }

@@ -9,18 +9,12 @@ public class DealDamage : MonoBehaviour
 
     public PlayerManager? ownPlayer;
     private PlayerCombatManager playerCombatManager;
-    private float damage = 4;
     private float range;
     private Vector3 boxColliderSize;
     [SerializeField] private LayerMask layerMask;
     List<CharacterManager> listOfTargets = new List<CharacterManager>();
 
     int offset = 1; //offset box collider (the detection) up from floor as it spawns on floor 
-
-    void Awake()
-    {
-
-    }
     public void SetWeaponStats(PlayerManager self, PlayerCombatManager playerCombatManager, float range, Vector3 boxColliderSize, LayerMask layerMask)
     {
         ownPlayer = self;
@@ -56,13 +50,13 @@ public class DealDamage : MonoBehaviour
 
     void ValidateTarget(PlayerManager target)
     {
-        if(listOfTargets.Contains(target)) return;
+        if(listOfTargets.Contains(target)) return; //If the same player has been detected then do not validate the target
 
         listOfTargets.Add(target);
 
-        playerCombatManager.DealDamageToTarget(target);
+        playerCombatManager.DealDamageToTarget(target); 
 
-        listOfTargets.Remove(target);
+        listOfTargets.Remove(target); //Ensure the same player can be damaged after
     }
 
     

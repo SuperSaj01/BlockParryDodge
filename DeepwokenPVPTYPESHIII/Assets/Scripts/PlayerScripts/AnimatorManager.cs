@@ -115,7 +115,6 @@ public class AnimatorManager : MonoBehaviour
 
     }
 
-
     public bool GetBool()
     {
         //Getter of isInteracting bool

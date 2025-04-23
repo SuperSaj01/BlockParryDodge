@@ -34,26 +34,24 @@ public class InputManager : MonoBehaviour
     public event EventHandler OnCriticalBtnPressed;
     public event EventHandler OnMenuTogglePressed;
 
-    private void Awake() 
-    { 
-        
-    }
-
     private void OnEnable() 
     {
 
         animManager = GetComponent<AnimatorManager>();   
 
         if(playerControls == null)
-        {
+        {   
+
+            ///Invokes all events respective to a button being pressed.
             playerControls = new PlayerControls();
 
             playerControls.PlayerMovement.Movement.performed += i => movementInput = i.ReadValue<Vector2>();
             playerControls.PlayerMovement.Camera.performed += i => cameraInput = i.ReadValue<Vector2>();
 
+            //isRunning changes depending if running button is held down
             playerControls.PlayerActions.Running.performed += i => isRunning = true;
             playerControls.PlayerActions.Running.canceled += i => isRunning = false;
-            
+            //isBlocking changes depending if running button is held down
             playerControls.PlayerActions.Blocking.performed += i => isBlocking = true;
             playerControls.PlayerActions.Blocking.canceled += i => isBlocking = false;
 
@@ -89,12 +87,6 @@ public class InputManager : MonoBehaviour
 
         playerControls.Enable();
     }
-
-    private void OnDisable()
-    {
-        
-    }
-
     public void HandleAllInputs()
     {
         HandleMovementInput();
@@ -106,7 +98,7 @@ public class InputManager : MonoBehaviour
         vertical = movementInput.y;
         moveAmount = Mathf.Clamp01(Mathf.Abs(horizontal) + Mathf.Abs(vertical));
 
-        animManager.UpdateAnimatorValues(0, moveAmount, isRunning, isBlocking);
+        animManager.UpdateAnimatorValues(0, moveAmount, isRunning, isBlocking); //Updates animator based on input
     }
     
     public bool GetRunningBool()

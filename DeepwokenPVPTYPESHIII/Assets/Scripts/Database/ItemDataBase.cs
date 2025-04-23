@@ -12,14 +12,17 @@ public static class ItemDatabse
 
     private static void LoadWeapons()
     {
+        //Ensures previous loaded weapons are removed
         sortedWeapons.Clear();
 
-        WeaponSO[] allWeapons = Resources.LoadAll<WeaponSO>("Weapons");
+        // Load all WeaponSO assets from the "Weapons" Resources folder
+        WeaponSO[] allWeapons = Resources.LoadAll<WeaponSO>("Weapons"); 
 
         foreach (var weapon in allWeapons)
         {
             if (!sortedWeapons.Exists(w => w.itemID == weapon.itemID))
             {
+                 // Add weapon if its itemID is unique
                 sortedWeapons.Add(weapon);
             }
             else
@@ -32,7 +35,7 @@ public static class ItemDatabse
         sortedWeapons = MergeSort(sortedWeapons);
     }
 
-    // 🔁 Merge Sort (based on itemID)
+    //Merge Sort (based on itemID)
     private static List<WeaponSO> MergeSort(List<WeaponSO> list)
     {
         if (list.Count <= 1) return list;
@@ -49,21 +52,23 @@ public static class ItemDatabse
         List<WeaponSO> result = new List<WeaponSO>();
         int i = 0, j = 0;
 
+         // Merge two sorted halves
         while (i < left.Count && j < right.Count)
         {
             if (left[i].itemID < right[j].itemID)
                 result.Add(left[i++]);
             else
                 result.Add(right[j++]);
-        }
+        }   
 
+         // Append any remaining elements
         while (i < left.Count) result.Add(left[i++]);
         while (j < right.Count) result.Add(right[j++]);
 
         return result;
     }
 
-    // 🔍 Binary Search by itemID
+    // Binary Search by itemID
     public static WeaponSO GetWeaponByID(int id)
     {
         int index = BinarySearch(sortedWeapons, id);

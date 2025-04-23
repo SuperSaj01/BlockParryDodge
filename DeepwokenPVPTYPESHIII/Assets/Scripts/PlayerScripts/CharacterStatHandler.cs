@@ -14,18 +14,15 @@ public class CharacterStatHandler : MonoBehaviour
     [SerializeField] private float maxHealth;
     public float currentHealth = 100f;
     private float resistance = 0f;
-    private int regenAmount = 5;
-    private int timeUntilRegen = 2;
-    private int lastTimeSinceDamage;
 
 
     [Header("Posture")]
     [SerializeField] private float maxPosture = 25f;
     public float currentPosture; 
 
-    [Header("currentStamina")]
+    [Header("Stamina")]
     [SerializeField] private float maxStamina;
-    public float currentStamina;
+    public float currentStamina {get; private set;}
 
     [Header("Windows")]
     public float rollWindow = 5f;
@@ -37,10 +34,6 @@ public class CharacterStatHandler : MonoBehaviour
     private ISliderHandler staminaHandler;
     private List<ISliderHandler> sliderHandlers = new List<ISliderHandler>();
 
-    void Awake()
-    {
-
-    }
 
     void Start()
     {
@@ -64,33 +57,27 @@ public class CharacterStatHandler : MonoBehaviour
 
     void RegenStamina()
     {   
-        
+        // Prevent overflow
         if(currentStamina > maxStamina) currentStamina = maxStamina; 
 
         if(staminaHandler is null) return;
-        staminaHandler.ChangeValue(currentStamina);
+        staminaHandler.ChangeValue(currentStamina); //Update the stamina slider
 
         if (currentStamina < maxStamina)
         {
-           currentStamina += 0.2f * Time.deltaTime;
-            if (currentStamina > maxStamina)
-            {
-                currentStamina = maxStamina;
-            }
-            
+            // Regenerate stamina
+           currentStamina += 0.2f * Time.deltaTime;            
         }
     }
     void RegenPosture()
     {
-        if(currentPosture > maxPosture) 
-        {
-            currentPosture = maxPosture;
-        
-        } 
+        // Prevent overflow
+        if(currentPosture > maxPosture) currentPosture = maxPosture;
         postureHandler.ChangeValue(currentPosture);
         
         if (currentPosture < maxPosture)
         { 
+            // Regenerate posture
             currentPosture += 0.1f * Time.deltaTime;
             if (currentPosture > maxPosture)
             {
@@ -121,9 +108,11 @@ public class CharacterStatHandler : MonoBehaviour
         sliderHandlers.Add(postureHandler);
         sliderHandlers.Add(staminaHandler);
 
+        //When sliders are initialised change all max values to the character types repective value
         healthHandler.SetMaxValue(maxHealth);
         postureHandler.SetMaxValue(maxPosture);
         staminaHandler.SetMaxValue(maxStamina);
+        //Ensure slider current value is represented when character changes
         healthHandler.ChangeValue(currentHealth);
         postureHandler.ChangeValue(currentPosture);
         staminaHandler.ChangeValue(currentStamina);
@@ -171,7 +160,6 @@ public class CharacterStatHandler : MonoBehaviour
             float appliedDamage = damage * (1 - resistance); //resistance of character is applied to negate damage
             currentHealth -= appliedDamage;
             healthHandler.ChangeValue(currentHealth);
-            lastTimeSinceDamage = (int)Time.time;
         }
         
         CheckIfAlive();
@@ -189,8 +177,8 @@ public class CharacterStatHandler : MonoBehaviour
 
     public void UseStamina()
     {
-        currentStamina -= 1;
-        if(currentStamina < 0) currentStamina = 0;
+        currentStamina -= 1; 
+        if(currentStamina < 0) currentStamina = 0; //Prevent stamina going below 0
     }
 
     private void CheckIfAlive()
@@ -198,7 +186,7 @@ public class CharacterStatHandler : MonoBehaviour
         if(currentHealth <= 0) 
         {
             Die();
-            currentHealth = 0;
+            currentHealth = 0; 
         }
     }
 
@@ -206,13 +194,13 @@ public class CharacterStatHandler : MonoBehaviour
     {
         if(currentPosture <= 0)
         {
-            postureHandler.ChangeValue(0);
+            postureHandler.ChangeValue(0); //Hard sets posture value to 0
         }
     }
 
     private void Die()
     {
-        WorldManager.instance.OpenDeathMenuServerRpc();
+        WorldManager.instance.OpenDeathMenuServerRpc(); //Calls serevr to open menu for all clients
     }
 
 }

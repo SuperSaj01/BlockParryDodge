@@ -30,6 +30,6 @@ public static class CharacterDatabase
 
     public static CharacterSO GetCharacterTypeByID(int id)
     {
-        return characterTypeLookup.TryGetValue(id, out var type) ? type : null;
+        return characterTypeLookup.TryGetValue(id, out var type) ? type : null; //Returns tpye based on ID
     }
 }

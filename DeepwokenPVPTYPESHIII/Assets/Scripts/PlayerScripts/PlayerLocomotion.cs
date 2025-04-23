@@ -191,5 +191,4 @@ public class PlayerLocomotion : MonoBehaviour
             return walkingSpeed;
         }
     }
-    
 }

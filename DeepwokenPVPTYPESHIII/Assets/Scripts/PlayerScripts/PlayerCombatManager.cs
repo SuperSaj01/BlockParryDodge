@@ -7,19 +7,6 @@ using System.Linq;
 
 public class PlayerCombatManager : MonoBehaviour
 {
-    /*
-    What I want this script to handle:
-        - Spawning the player class (chosen)
-        - Spawning the weapon (chosen)
-            -can equip weapons. 
-            -dynamically updates the weapon.
-        - Handle what animations to be sent to animatorManager
-        - Handle comboes
-        - Handle Blocking, Parrying, Attacking
-        - Hitting enemy doesnt deal damage more than once []
-        - Sword touching enemy despite not swinging doesnt do damage []
-    */
-
     private PlayerManager playerManager;
 
     [SerializeField] private GameObject placeWeaponLH;
@@ -30,6 +17,7 @@ public class PlayerCombatManager : MonoBehaviour
     private float rollWindow;
     private float parryWindow;
 
+    [Header("Flags")]
     private bool canParry = true;
     bool isBlocking = false;
     bool isInIFrames = false;
@@ -41,12 +29,13 @@ public class PlayerCombatManager : MonoBehaviour
     private DealDamage dealDamage; // accesses the damage script on the weapon
     private float multiplier = 2f;
     private bool isCriticalApplied = false;
+
+    [Header("Queuing attacks")]
     private Queue<int> attackQueue = new Queue<int>();
     public bool isAttacking = false;
     private const int maxComboQueue = 2;
     public bool canCrit {get; private set;} = true;
-
-    private int i = 0;
+    private int comboCount = 0;
 
 
 
@@ -66,11 +55,8 @@ public class PlayerCombatManager : MonoBehaviour
             HandleIFrames("Parrying");
         }
 
-        wasBlocking = isBlocking;
+        wasBlocking = isBlocking; //Allows me to check if the player was previously blocking
     }
-
-   
-
 
     #region IFrames
     public void HandleIFrames(string action)
@@ -89,23 +75,21 @@ public class PlayerCombatManager : MonoBehaviour
         //Disable hitbox for a few seconds. Perhaps use a coroutine
     }
     private IEnumerator RollWindow()
-    {
+    {   
+        //Causes IFrames during this window to be true
         isInIFrames = true;
-        Debug.Log("is rolling iframes active inshaAllah");
-        Debug.Log(rollWindow);
         yield return new WaitForSeconds(rollWindow);
         isInIFrames = false;
-        Debug.Log("stopped iframes");
     }
 
     private IEnumerator ParryWindow()
     {
+        //Causes IFrames during this window to be true
         isInIFrames = true;
-        Debug.Log("is Parrying frames mashaAllah");
         yield return new WaitForSeconds(parryWindow);
         canParry = true;
+        //Can parry when IFrames deactive
         isInIFrames = false;
-        Debug.Log("Stopped iframes");
     }
 
     public void InitiliaseStats(float rollWindow, float parryWindow)
@@ -122,6 +106,7 @@ public class PlayerCombatManager : MonoBehaviour
     {
         if(isCritical && canCrit) 
         {
+            //If player did a critical attack and can crit then a crit is applied
             isCriticalApplied = true;
             StartCoroutine(CritReadyTimer(2f));
         }
@@ -132,9 +117,9 @@ public class PlayerCombatManager : MonoBehaviour
         if(!HasWeaponEquipped()) return;
         if (attackQueue.Count < maxComboQueue)
         {
-            attackQueue.Enqueue(i);
-            Debug.Log("Yeye");
-            i = (i + 1) % currentWeaponSO.b_aniamtions.Length;
+            attackQueue.Enqueue(comboCount);
+            comboCount = (comboCount + 1) % currentWeaponSO.b_aniamtions.Length;
+            //Caps combo count between 0 and 1. 
         }
         if(!isAttacking)
         {
@@ -167,7 +152,7 @@ public class PlayerCombatManager : MonoBehaviour
         }
 
         isAttacking = false;
-        i = 0; // reset combo index after queue finishes
+        comboCount = 0; // reset combo index after queue finishes
     }
 
 
@@ -186,10 +171,12 @@ public class PlayerCombatManager : MonoBehaviour
 
     private IEnumerator InitiateAttack(PlayerManager target, float attackDelay, float damage, bool isCriticalApplied)
     {
+        //Allows opponent to parry before applying damage
         yield return new WaitForSeconds(attackDelay);
         ulong targetId = target.OwnerClientId;
         if(isCriticalApplied)
         {
+            //Increases damage
             damage *= multiplier;
         }
         Debug.Log(damage);
@@ -205,6 +192,7 @@ public class PlayerCombatManager : MonoBehaviour
 
     public string ValidateDamage()
     {
+        //determines how player responded to damage
         if(isInIFrames)
         {
             return "invalid";
@@ -231,6 +219,7 @@ public class PlayerCombatManager : MonoBehaviour
 
     public void EquipWeapon(int newWeaponID, bool IsOwner)
     {
+        //Removes weapon then spawns in the new weapon and updating the stats
         DequipWeapon();
         currentWeaponSO = ItemDatabse.GetWeaponByID(newWeaponID);
         Func<GameObject, GameObject, Vector3, Quaternion, GameObject> EquippingWeapon = (wepPrefab, parent, offset, rotation) => {

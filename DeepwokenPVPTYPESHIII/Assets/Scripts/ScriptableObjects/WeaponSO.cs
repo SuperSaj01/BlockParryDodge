@@ -1,11 +1,11 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "ScriptableObjects/Items/WeaponsSO")]
 public class WeaponSO : ItemSO
 {
+
+    
+    //A data container containing all the variables a weapon type will have
     //"b_" = base
     [SerializeField] public float b_Damage;
     public LayerMask b_LayerMask;

@@ -21,13 +21,14 @@ public class PlayerManager : CharacterManager
     bool isRunning;
     public bool isBlocking;
     public bool canAttack = true;
-
     public bool isInteracting;
     bool isInMenu;
+
 
     private void Awake() 
     {
         base.Awake();
+        //Assigns all references to necessary scripts
         playerLocomotion = GetComponent<PlayerLocomotion>();
         inputManager = GetComponent<InputManager>();
         playerLocomotion = GetComponent<PlayerLocomotion>();
@@ -36,6 +37,7 @@ public class PlayerManager : CharacterManager
         camManager = CameraManager.instance;
         DontDestroyOnLoad(gameObject);
 
+        //Removes any accidnetal equipped weapons
         playerCombatManager.DequipWeapon();
 
         clientId = NetworkManager.Singleton.LocalClientId;
@@ -44,6 +46,7 @@ public class PlayerManager : CharacterManager
     protected override void Start()
     {
         base.Start();
+        //Hides cursor
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -53,28 +56,24 @@ public class PlayerManager : CharacterManager
         base.Update();
         isInMenu = GameUIManager.instance.gameMenu.isInMenu;
 
+        //Prevents any background processes happening if player is in menu
         if(isInMenu) return;
         UpdatePlayers();
+        //Prevents this local player to be moved by other clients on the network. Ensures its the owner controlling the object
         if(!IsOwner) return;
-        //Handle states
-        //Need to move and change
+        if(isBlocking) isRunning = false; //Stops running when blocking
 
-        if(isBlocking) isRunning = false;
         isBlocking = inputManager.isBlocking;
-        isInteracting = inputManager.isBlocking;
+        isInteracting = isBlocking;
+
+        //Calls methods to handle logic per frame in every other script and itself 
         playerCombatManager.HandleBlocking(isBlocking);
         characterStatHandler.UpdateSliders();
-        if(Input.GetKeyDown(KeyCode.H))
-        {
-            TakeDamage(5);
-        }
-       
-
-
         HandleCamera();
         HandleMovementLocomotion();
         ResetFlags();
 
+        //Change and customise character when pressing the respective number
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             playerCombatManager.EquipWeapon(1, IsOwner);
@@ -95,15 +94,11 @@ public class PlayerManager : CharacterManager
             OnCharacterChange(characterType);
         }
     }
-    
-    private void FixedUpdate()
-    {
-        if(!IsOwner) return;
-    }
 
     private void LateUpdate()
     {
         if(!IsOwner) return;
+        //Handles camera movement in a late frame as this logic is reliant on the new player position
         CameraManager.instance.HandleAllCameraMovement();
         isInteracting = animatorManager.GetBool();
     }
@@ -115,21 +110,23 @@ public class PlayerManager : CharacterManager
         if(IsOwner)
         {
             PlayerDatabase.AddPlayer(clientId, this);
-            CameraManager.instance.player = this;
+            CameraManager.instance.SetPlayer(this);
         }
     } 
     
     void OnCharacterChange(CharacterSO characterTypeSO)
     {   
+        //Spawns head of new character
         if(headObject != null) Destroy(headObject);
         headObject = Instantiate(characterTypeSO.characterHead, headPosition.position, headPosition.rotation);
         headObject.transform.SetParent(headPosition);
+        //Updates stats based on new character type
         characterStatHandler.AssignStats(characterTypeSO);
         playerCombatManager.InitiliaseStats(characterStatHandler.rollWindow, characterStatHandler.parryWindow);
         characterType = headObject.GetComponent<CharacterType>();
     }
 
-    #region enabling and disabling
+    #region subscribing and unsubscribing to events
     private void OnEnable()
     {
         //Input Events
@@ -142,8 +139,6 @@ public class PlayerManager : CharacterManager
         //UI events
         inputManager.OnMenuTogglePressed += _OnMenuTogglePressed;
 
-        //World Events
-        WorldManager.instance.OnLoadSceneEvent += _OnSceneLoaded;
 
     }
 
@@ -156,7 +151,6 @@ public class PlayerManager : CharacterManager
         inputManager.OnMenuTogglePressed -= _OnMenuTogglePressed;
         inputManager.OnAbilityBtnPressed -= _OnAbilityBtnPressed;
         inputManager.OnCriticalBtnPressed -= _OnCriticalBtnPressed;
-        WorldManager.instance.OnLoadSceneEvent -= _OnSceneLoaded;
     }
     #endregion
 
@@ -166,30 +160,11 @@ public class PlayerManager : CharacterManager
         
         if(IsOwner)
         {
-            //position
-            //characterNetworkManager.netPosition.Value = transform.position;
-            //rotation
-            //characterNetworkManager.netRotation.Value = transform.rotation;
-            //animation
             characterNetworkManager.netMoveAmount.Value = inputManager.moveAmount;
-            //characterNetworkManager.netIsRunning.Value = inputManager.GetBlockingBool();
         }
         else
         {
-            //movement
-           // transform.position = Vector3.SmoothDamp(transform.position,
-            //characterNetworkManager.netPosition.Value,
-            //ref characterNetworkManager.netPositionVel,
-            // characterNetworkManager.netPositionSmoothTime);
-            
-            //rotation
-            //transform.rotation = Quaternion.Slerp(transform.rotation,
-              //  characterNetworkManager.netRotation.Value,
-                //characterNetworkManager.rotationSpeed);
-
-            //animation
             inputManager.moveAmount = characterNetworkManager.netMoveAmount.Value;
-            //isBlocking = characterNetworkManager.netIsRunning.Value;
             animatorManager.UpdateAnimatorValues(0, characterNetworkManager.netMoveAmount.Value, isRunning, isBlocking);
         }
     }
@@ -256,6 +231,8 @@ public class PlayerManager : CharacterManager
         if(!canAttack || !IsOwner) return;
         Attack();
     } 
+    /// Summary of the method
+    /// Notifies other scripts that the critical button has been pressed
     private void _OnCriticalBtnPressed(object sender, EventArgs e)
     {
         if(isInteracting || isInMenu || !playerCombatManager.canCrit) return;
@@ -273,6 +250,8 @@ public class PlayerManager : CharacterManager
         playerCombatManager.ByPassAttack();
     }
     
+    /// Summary of the method
+    /// Notifies other scripts that the ability button has been pressed
     private void _OnAbilityBtnPressed(object sender, EventArgs e)
     {
         if(isInteracting || isInMenu) return;
@@ -322,27 +301,17 @@ public class PlayerManager : CharacterManager
     {
         if(isInteracting)
         {
+            //Prevents actions being called during another action
             inputManager.isJumping = false;
             inputManager.isRolling = false;
             inputManager.basicHit = false;
         }
     }
-
-    private void _OnSceneLoaded()
-    {
-        //WorldManager.instance.AddPlayer(this, NetworkManager.Singleton.LocalClientId);
-    }
-
     private void _OnMenuTogglePressed(object sender, EventArgs e)
     {
         if(IsOwner)
         {
             GameUIManager.instance.gameMenu.ToggleLocalMenu();
         }
-    }
-
-    public void Died()
-    {
-
     }
 }
